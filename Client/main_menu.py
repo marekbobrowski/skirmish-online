@@ -24,8 +24,9 @@ class MainMenu:
 
         self.logo_text = OnscreenText(text='Skirmish Online', font=self.logo_font, pos=(0, 0.7), scale=0.2)
 
-        self.ip_entry = DirectEntry(scale=0.1, pos=(-0.35, 0, 0.05), frameColor=(0, 0, 0, 0.4), entryFont=self.ui_font,
-                                    width=7)
+        self.ip_entry = DirectEntry(scale=0.1, pos=(-0.35, 0, 0.05), frameColor=(0.7, 0.7, 0.7, 0.4),
+                                    entryFont=self.logo_font,
+                                    width=7, relief=DGG.RIDGE)
         self.ip_entry.set('127.0.0.1')
 
         self.join_btn = DirectButton(scale=0.34, pos=(0, 0, -0.2), frameColor=(0, 0, 0, 0), text_font=self.logo_font,
@@ -67,7 +68,8 @@ class MainMenu:
         self.ambiance_audio_scroll = DirectScrollBar(range=(0, 100), value=50, pageSize=3, orientation=DGG.HORIZONTAL)
         self.ambiance_audio_scroll.set_pos(0, 0, -0.4)
 
-        self.back_to_main_btn = DirectButton(scale=0.34, pos=(0, 0, -0.7), frameColor=(0, 0, 0, 0), text_font=self.logo_font,
+        self.back_to_main_btn = DirectButton(scale=0.34, pos=(0, 0, -0.7), frameColor=(0, 0, 0, 0),
+                                             text_font=self.logo_font,
                                              text_fg=(1, 1, 1, 0.8), text_pos=(0, -0.05), text_scale=0.18,
                                              text='Return', image='textures/button.png',
                                              image_scale=(1.1, 1, 0.3),
@@ -132,6 +134,7 @@ class MainMenu:
         self.hide_every_gui_element()
         self.notification_text.setText(text)
         self.notification_text.show()
+        self.client.graphicsEngine.render_frame()
 
     def load_character_preparation(self):
         self.character_preparation = CharacterPreparation(self.client)
