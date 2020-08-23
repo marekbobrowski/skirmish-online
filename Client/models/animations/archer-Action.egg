@@ -1,0 +1,587 @@
+<CoordinateSystem> { Z-up } 
+<Table> {
+  <Bundle> Armature {
+    <Table> "<skeleton>" {
+      <Table> global {
+        <Xfm$Anim> xform {
+          <Scalar> order { sprht }
+          <Scalar> fps { 24 }
+          <Scalar> contents { ijkprhxyz }
+          <V> {
+            1.000000 1.000000 1.000000 90.000003 0.000000 90.000009 -0.007708 0.404109 -10.308726
+          }
+        }
+        <Table> knee_pole_l {
+          <Xfm$Anim> xform {
+            <Scalar> order { sprht }
+            <Scalar> fps { 24 }
+            <Scalar> contents { ijkprhxyz }
+            <V> {
+              1.000000 1.000000 1.000000 90.000003 0.000000 179.999991 2.461384 4.829999 5.620232
+            }
+          }
+        }
+        <Table> knee_pole_r {
+          <Xfm$Anim> xform {
+            <Scalar> order { sprht }
+            <Scalar> fps { 24 }
+            <Scalar> contents { ijkprhxyz }
+            <V> {
+              1.000000 1.000000 1.000000 90.000003 -0.000000 -179.999991 -0.178294 4.829999 5.620232
+            }
+          }
+        }
+        <Table> foot_ctrl_l {
+          <Xfm$Anim> xform {
+            <Scalar> order { sprht }
+            <Scalar> fps { 24 }
+            <Scalar> contents { ijkprhxyz }
+            <V> {
+              1.000000 1.000000 1.000000 -90.000016 25.000004 -0.000001 1.437562 0.173822 -0.999560
+            }
+          }
+          <Table> ball_ctrl_l {
+            <Xfm$Anim> xform {
+              <Scalar> order { sprht }
+              <Scalar> fps { 24 }
+              <Scalar> contents { ijkprhxyz }
+              <V> {
+                1.000000 1.000000 1.000000 35.676021 0.000002 -0.000007 -0.000000 -1.078378 0.111514
+              }
+            }
+            <Table> ankle_l {
+              <Xfm$Anim> xform {
+                <Scalar> order { sprht }
+                <Scalar> fps { 24 }
+                <Scalar> contents { ijkprhxyz }
+                <V> {
+                  1.000000 1.000000 1.000000 -109.793303 -0.774288 -0.240648 0.000000 1.131109 0.000000
+                }
+              }
+            }
+          }
+          <Table> toe_ctrl_l {
+            <Xfm$Anim> xform {
+              <Scalar> order { sprht }
+              <Scalar> fps { 24 }
+              <Scalar> contents { ijkprhxyz }
+              <V> {
+                1.000000 1.000000 1.000000 -173.659991 0.000076 0.000005 -0.000000 -1.078378 0.111514
+              }
+            }
+          }
+        }
+        <Table> foot_ctrl_r {
+          <Xfm$Anim> xform {
+            <Scalar> order { sprht }
+            <Scalar> fps { 24 }
+            <Scalar> contents { ijkprhxyz }
+            <V> {
+              1.000000 1.000000 1.000000 -90.000016 -4.999999 0.000000 -1.501788 0.173822 -0.999561
+            }
+          }
+          <Table> ball_ctrl_r {
+            <Xfm$Anim> xform {
+              <Scalar> order { sprht }
+              <Scalar> fps { 24 }
+              <Scalar> contents { ijkprhxyz }
+              <V> {
+                1.000000 1.000000 1.000000 35.676021 -0.000002 0.000006 0.000000 -1.078378 0.111514
+              }
+            }
+            <Table> ankle_r {
+              <Xfm$Anim> xform {
+                <Scalar> order { sprht }
+                <Scalar> fps { 24 }
+                <Scalar> contents { ijkprhxyz }
+                <V> {
+                  1.000000 1.000000 1.000000 -109.793296 0.774288 0.240649 0.000000 1.131109 0.000000
+                }
+              }
+            }
+          }
+          <Table> toe_ctrl_r {
+            <Xfm$Anim> xform {
+              <Scalar> order { sprht }
+              <Scalar> fps { 24 }
+              <Scalar> contents { ijkprhxyz }
+              <V> {
+                1.000000 1.000000 1.000000 -173.659991 -0.000076 -0.000005 0.000000 -1.078378 0.111514
+              }
+            }
+          }
+        }
+        <Table> body_ctrl {
+          <Xfm$Anim> xform {
+            <Scalar> order { sprht }
+            <Scalar> fps { 24 }
+            <Scalar> contents { ijkprhxyz }
+            <V> {
+              1.000000 1.000000 1.000000 -90.000003 -0.000000 0.000000 -0.000000 10.089736 0.420000
+            }
+          }
+          <Table> spine_1 {
+            <Xfm$Anim> xform {
+              <Scalar> order { sprht }
+              <Scalar> fps { 24 }
+              <Scalar> contents { ijkprhxyz }
+              <V> {
+                1.000000 1.000000 1.000000 100.521950 -0.000001 0.000008 -0.000000 0.000000 0.000000
+              }
+            }
+            <Table> spine_2 {
+              <Xfm$Anim> xform {
+                <Scalar> order { sprht }
+                <Scalar> fps { 24 }
+                <Scalar> contents { ijkprhxyz }
+                <V> {
+                  1.000000 1.000000 1.000000 -19.105472 -0.000015 0.000002 0.000000 1.177290 -0.000000
+                }
+              }
+              <Table> spine_3 {
+                <Xfm$Anim> xform {
+                  <Scalar> order { sprht }
+                  <Scalar> fps { 24 }
+                  <Scalar> contents { ijkprhxyz }
+                  <V> {
+                    1.000000 1.000000 1.000000 -15.691224 0.000006 -0.000001 -0.000000 1.152339 -0.000000
+                  }
+                }
+                <Table> neck {
+                  <Xfm$Anim> xform {
+                    <Scalar> order { sprht }
+                    <Scalar> fps { 24 }
+                    <Scalar> contents { ijkprhxyz }
+                    <V> {
+                      1.000000 1.000000 1.000000 37.365868 0.000021 -0.000006 -0.000000 1.202779 0.000000
+                    }
+                  }
+                  <Table> skull {
+                    <Xfm$Anim> xform {
+                      <Scalar> order { sprht }
+                      <Scalar> fps { 24 }
+                      <Scalar> contents { ijkprhxyz }
+                      <V> {
+                        1.000000 1.000000 1.000000 -26.620046 -66.244038 31.894835 0.000000 0.949110 -0.000000
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          <Table> pelvis {
+            <Xfm$Anim> xform {
+              <Scalar> order { sprht }
+              <Scalar> fps { 24 }
+              <Scalar> contents { ijkprhxyz }
+              <V> {
+                1.000000 1.000000 1.000000 -90.000187 -0.000000 -0.000019 -0.000000 0.000000 0.000000
+              }
+            }
+            <Table> thigh_r {
+              <Xfm$Anim> xform {
+                <Scalar> order { sprht }
+                <Scalar> fps { 24 }
+                <Scalar> contents { ijkprhxyz }
+                <V> {
+                  1.000000 1.000000 1.000000 -6.954552 -9.309789 4.266651 -0.735000 0.629999 0.176892
+                }
+              }
+              <Table> shin_r {
+                <Xfm$Anim> xform {
+                  <Scalar> order { sprht }
+                  <Scalar> fps { 24 }
+                  <Scalar> contents { ijkprhxyz }
+                  <V> {
+                    1.000000 1.000000 1.000000 31.635585 -0.093052 -0.593184 0.000000 4.912801 0.000000
+                  }
+                }
+                <Table> foot_r {
+                  <Xfm$Anim> xform {
+                    <Scalar> order { sprht }
+                    <Scalar> fps { 24 }
+                    <Scalar> contents { ijkprhxyz }
+                    <V> {
+                      1.000000 1.000000 1.000000 -78.418344 9.722486 0.146091 -0.000000 4.041956 -0.000001
+                    }
+                  }
+                  <Table> toes_r {
+                    <Xfm$Anim> xform {
+                      <Scalar> order { sprht }
+                      <Scalar> fps { 24 }
+                      <Scalar> contents { ijkprhxyz }
+                      <V> {
+                        1.000000 1.000000 1.000000 -29.335960 9.704459 -0.000030 0.000000 1.131105 -0.000000
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            <Table> thigh_l {
+              <Xfm$Anim> xform {
+                <Scalar> order { sprht }
+                <Scalar> fps { 24 }
+                <Scalar> contents { ijkprhxyz }
+                <V> {
+                  1.000000 1.000000 1.000000 -6.713482 -12.207870 -6.877887 0.750417 0.629999 0.176892
+                }
+              }
+              <Table> shin_l {
+                <Xfm$Anim> xform {
+                  <Scalar> order { sprht }
+                  <Scalar> fps { 24 }
+                  <Scalar> contents { ijkprhxyz }
+                  <V> {
+                    1.000000 1.000000 1.000000 31.660034 0.092812 0.593604 -0.000000 4.912801 -0.000000
+                  }
+                }
+                <Table> foot_l {
+                  <Xfm$Anim> xform {
+                    <Scalar> order { sprht }
+                    <Scalar> fps { 24 }
+                    <Scalar> contents { ijkprhxyz }
+                    <V> {
+                      1.000000 1.000000 1.000000 -76.546579 -7.069329 0.505982 0.000000 4.041959 0.000000
+                    }
+                  }
+                  <Table> toes_l {
+                    <Xfm$Anim> xform {
+                      <Scalar> order { sprht }
+                      <Scalar> fps { 24 }
+                      <Scalar> contents { ijkprhxyz }
+                      <V> {
+                        1.000000 1.000000 1.000000 -29.335987 -10.431229 0.000060 0.000000 1.131102 -0.000001
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          <Table> torso_ctrl {
+            <Xfm$Anim> xform {
+              <Scalar> order { sprht }
+              <Scalar> fps { 24 }
+              <Scalar> contents { ijkprhxyz }
+              <V> {
+                1.000000 1.000000 1.000000 0.000000 -0.000000 -0.000000 0.000000 0.451478 3.393361
+              }
+            }
+            <Table> arm_pole_l {
+              <Xfm$Anim> xform {
+                <Scalar> order { sprht }
+                <Scalar> fps { 24 }
+                <Scalar> contents { ijkprhxyz }
+                <V> {
+                  1.000000 1.000000 1.000000 0.000000 -0.000000 -0.000000 4.514983 -3.715536 0.792070
+                }
+              }
+            }
+            <Table> arm_pole_r {
+              <Xfm$Anim> xform {
+                <Scalar> order { sprht }
+                <Scalar> fps { 24 }
+                <Scalar> contents { ijkprhxyz }
+                <V> {
+                  1.000000 1.000000 1.000000 0.000000 -0.000000 -0.000000 -4.499566 3.569995 -0.104997
+                }
+              }
+            }
+            <Table> hand_ctrl_l {
+              <Xfm$Anim> xform {
+                <Scalar> order { sprht }
+                <Scalar> fps { 24 }
+                <Scalar> contents { ijkprhxyz }
+                <V> {
+                  0.806575 0.806575 0.806575 -15.225858 1.829146 96.688738 -1.932091 -1.888520 -2.074495
+                }
+              }
+              <Table> thumb_l {
+                <Xfm$Anim> xform {
+                  <Scalar> order { sprht }
+                  <Scalar> fps { 24 }
+                  <Scalar> contents { ijkprhxyz }
+                  <V> {
+                    1.000000 1.000000 1.000000 -7.637475 -15.957615 -39.070574 0.326935 0.192604 -0.000005
+                  }
+                }
+              }
+              <Table> hand_ik_l {
+                <Xfm$Anim> xform {
+                  <Scalar> order { sprht }
+                  <Scalar> fps { 24 }
+                  <Scalar> contents { ijkprhxyz }
+                  <V> {
+                    1.000000 1.000000 1.000000 90.000481 0.000000 89.999996 -0.000000 0.000001 0.000000
+                  }
+                }
+              }
+              <Table> finger_ctrl_l {
+                <Xfm$Anim> xform {
+                  <Scalar> order { sprht }
+                  <Scalar> fps { 24 }
+                  <Scalar> contents { ijkprhxyz }
+                  <V> {
+                    1.000000 1.000000 1.000000 -10.214080 -9.903938 1.775534 -0.000000 -0.000001 0.000000
+                  }
+                }
+                <Table> finger_ik_l {
+                  <Xfm$Anim> xform {
+                    <Scalar> order { sprht }
+                    <Scalar> fps { 24 }
+                    <Scalar> contents { ijkprhxyz }
+                    <V> {
+                      1.000000 1.000000 1.000000 97.044120 11.028091 72.983986 -0.000000 1.202198 0.000000
+                    }
+                  }
+                }
+              }
+            }
+            <Table> hand_ctrl_r {
+              <Xfm$Anim> xform {
+                <Scalar> order { sprht }
+                <Scalar> fps { 24 }
+                <Scalar> contents { ijkprhxyz }
+                <V> {
+                  1.000000 1.000000 1.000000 -96.492323 76.042873 19.116518 -4.020242 -1.267203 -3.158834
+                }
+              }
+              <Table> thumb_r {
+                <Xfm$Anim> xform {
+                  <Scalar> order { sprht }
+                  <Scalar> fps { 24 }
+                  <Scalar> contents { ijkprhxyz }
+                  <V> {
+                    1.000000 1.000000 1.000000 -63.586227 2.139914 48.804912 -0.326935 0.192604 -0.000005
+                  }
+                }
+              }
+              <Table> hand_ik_r {
+                <Xfm$Anim> xform {
+                  <Scalar> order { sprht }
+                  <Scalar> fps { 24 }
+                  <Scalar> contents { ijkprhxyz }
+                  <V> {
+                    1.000000 1.000000 1.000000 90.000481 0.000001 -89.999996 0.000000 0.000000 -0.000000
+                  }
+                }
+              }
+              <Table> finger_ctrl_r {
+                <Xfm$Anim> xform {
+                  <Scalar> order { sprht }
+                  <Scalar> fps { 24 }
+                  <Scalar> contents { ijkprhxyz }
+                  <V> {
+                    0.773988 0.773988 0.773988 -10.214080 9.903938 -1.775533 0.000000 -0.000002 -0.000000
+                  }
+                }
+                <Table> finger_ik_r {
+                  <Xfm$Anim> xform {
+                    <Scalar> order { sprht }
+                    <Scalar> fps { 24 }
+                    <Scalar> contents { ijkprhxyz }
+                    <V> {
+                      1.000000 1.000000 1.000000 97.044120 -11.028089 -72.983986 0.000000 1.202197 -0.000000
+                    }
+                  }
+                }
+              }
+            }
+            <Table> upper_arm_l {
+              <Xfm$Anim> xform {
+                <Scalar> order { sprht }
+                <Scalar> fps { 24 }
+                <Scalar> contents { ijkprhxyz }
+                <V> {
+                  1.000000 1.000000 1.000000 -35.329061 16.599933 137.114326 1.889985 0.128994 0.105002
+                }
+              }
+              <Table> lower_arm_l {
+                <Xfm$Anim> xform {
+                  <Scalar> order { sprht }
+                  <Scalar> fps { 24 }
+                  <Scalar> contents { ijkprhxyz }
+                  <V> {
+                    1.000000 1.000000 1.000000 22.168559 18.995620 -42.779131 0.000000 2.649406 -0.000000
+                  }
+                }
+                <Table> palm_l {
+                  <Xfm$Anim> xform {
+                    <Scalar> order { sprht }
+                    <Scalar> fps { 24 }
+                    <Scalar> contents { ijkprhxyz }
+                    <V> {
+                      1.000000 1.000000 1.000000 51.568826 -4.940860 4.137709 -0.000000 2.768209 -0.000000
+                    }
+                  }
+                  <Table> fingers_l {
+                    <Xfm$Anim> xform {
+                      <Scalar> order { sprht }
+                      <Scalar> fps { 24 }
+                      <Scalar> contents { ijkprhxyz }
+                      <V> {
+                        1.000000 1.000000 1.000000 -83.219462 -1.693284 13.932391 0.000000 0.343718 -0.000000
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            <Table> upper_arm_r {
+              <Xfm$Anim> xform {
+                <Scalar> order { sprht }
+                <Scalar> fps { 24 }
+                <Scalar> contents { ijkprhxyz }
+                <V> {
+                  1.000000 1.000000 1.000000 -64.891804 -32.354449 104.279770 -1.874568 0.128994 0.105002
+                }
+              }
+              <Table> lower_arm_r {
+                <Xfm$Anim> xform {
+                  <Scalar> order { sprht }
+                  <Scalar> fps { 24 }
+                  <Scalar> contents { ijkprhxyz }
+                  <V> {
+                    1.000000 1.000000 1.000000 29.862414 -28.443848 63.665272 -0.000000 2.649405 0.000000
+                  }
+                }
+                <Table> palm_r {
+                  <Xfm$Anim> xform {
+                    <Scalar> order { sprht }
+                    <Scalar> fps { 24 }
+                    <Scalar> contents { ijkprhxyz }
+                    <V> {
+                      1.000001 1.000001 0.999999 2.269335 107.982354 -98.338209 0.000000 2.768201 -0.000000
+                    }
+                  }
+                  <Table> fingers_r {
+                    <Xfm$Anim> xform {
+                      <Scalar> order { sprht }
+                      <Scalar> fps { 24 }
+                      <Scalar> contents { ijkprhxyz }
+                      <V> {
+                        1.000000 1.000001 1.000000 -90.218705 -0.039350 -14.020953 -0.000000 0.343722 -0.000000
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      <Table> root_bow {
+        <Xfm$Anim> xform {
+          <Scalar> order { sprht }
+          <Scalar> fps { 24 }
+          <Scalar> contents { ijkprhxyz }
+          <V> {
+            1.000000 1.000000 1.000000 -19.332758 0.000001 -179.999991 1.500000 -4.185380 0.241171
+          }
+        }
+        <Table> bow_upper_1 {
+          <Xfm$Anim> xform {
+            <Scalar> order { sprht }
+            <Scalar> fps { 24 }
+            <Scalar> contents { ijkprhxyz }
+            <V> {
+              1.000000 1.000000 1.000000 90.000003 -0.000101 -89.999914 0.000000 -0.000000 -0.000000
+            }
+          }
+          <Table> bow_upper_2 {
+            <Xfm$Anim> xform {
+              <Scalar> order { sprht }
+              <Scalar> fps { 24 }
+              <Scalar> contents { ijkprhxyz }
+              <V> {
+                1.000000 1.000000 1.000000 0.000017 -12.092597 -12.092523 -0.000001 1.622433 -0.000000
+              }
+            }
+            <Table> bow_upper_3 {
+              <Xfm$Anim> xform {
+                <Scalar> order { sprht }
+                <Scalar> fps { 24 }
+                <Scalar> contents { ijkprhxyz }
+                <V> {
+                  1.000000 1.000000 1.000000 -4.139654 -19.540312 -17.171809 0.000000 2.697108 0.000000
+                }
+              }
+              <Table> string_upper {
+                <Xfm$Anim> xform {
+                  <Scalar> order { sprht }
+                  <Scalar> fps { 24 }
+                  <Scalar> contents { ijkprhxyz }
+                  <V> {
+                    1.000000 1.000000 1.000000 -162.757329 26.220251 35.087068 0.000000 2.908819 0.000001
+                  }
+                }
+              }
+            }
+          }
+        }
+        <Table> bow_lower_1 {
+          <Xfm$Anim> xform {
+            <Scalar> order { sprht }
+            <Scalar> fps { 24 }
+            <Scalar> contents { ijkprhxyz }
+            <V> {
+              1.000000 1.000000 1.000000 -90.000009 -0.000109 -89.999921 0.000000 -0.000000 -0.000000
+            }
+          }
+          <Table> bow_lower_2 {
+            <Xfm$Anim> xform {
+              <Scalar> order { sprht }
+              <Scalar> fps { 24 }
+              <Scalar> contents { ijkprhxyz }
+              <V> {
+                1.000000 1.000000 1.000000 -0.000014 12.092596 -12.092522 -0.000000 1.622432 0.000000
+              }
+            }
+            <Table> bow_lower_3 {
+              <Xfm$Anim> xform {
+                <Scalar> order { sprht }
+                <Scalar> fps { 24 }
+                <Scalar> contents { ijkprhxyz }
+                <V> {
+                  1.000000 1.000000 1.000000 4.139503 19.539570 -17.171222 0.000000 2.697109 0.000000
+                }
+              }
+              <Table> string_lower {
+                <Xfm$Anim> xform {
+                  <Scalar> order { sprht }
+                  <Scalar> fps { 24 }
+                  <Scalar> contents { ijkprhxyz }
+                  <V> {
+                    1.000000 1.000001 1.000000 162.758108 -26.219761 35.086105 -0.000001 2.908879 -0.000000
+                  }
+                }
+              }
+            }
+          }
+        }
+        <Table> string_ctrl {
+          <Xfm$Anim> xform {
+            <Scalar> order { sprht }
+            <Scalar> fps { 24 }
+            <Scalar> contents { ijkprhxyz }
+            <V> {
+              1.000000 1.000000 1.000000 -0.000000 -0.000000 -180.000005 -0.000000 -2.065020 -0.000000
+            }
+          }
+          <Table> string_ik {
+            <Xfm$Anim> xform {
+              <Scalar> order { sprht }
+              <Scalar> fps { 24 }
+              <Scalar> contents { ijkprhxyz }
+              <V> {
+                1.000000 1.000000 1.000000 -0.000000 -0.000000 0.000000 0.000000 -0.000000 -0.000000
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
