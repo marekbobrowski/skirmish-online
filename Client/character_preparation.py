@@ -27,6 +27,8 @@ class CharacterPreparation:
         self.client.map.tower2.set_pos(-1, -3.5, 0.7)
         self.client.map.tower2.set_h(30)
 
+        self.selected_class = 0
+
         rollover_sound = self.client.loader.loadSfx('sounds/mouse_rollover.wav')
         click_sound = self.client.loader.loadSfx('sounds/mouse_click.wav')
 
@@ -40,6 +42,7 @@ class CharacterPreparation:
         self.knight.set_pos(-2.0, -4.1, 1.11)
         self.knight.set_h(-60)
         self.knight.loop('idle')
+
         # self.p = ParticleEffect()
         # self.p.loadConfig('particle_effects/test.ptf')
         # self.p.start(parent=self.knight.expose_joint(None, 'modelRoot', 'thumb_l'), renderParent=self.client.render)
@@ -50,7 +53,6 @@ class CharacterPreparation:
         # self.plnp = self.client.render.attach_new_node(self.plight)
         # self.plnp.reparent_to(self.knight.expose_joint(None, 'modelRoot', 'thumb_l'))
         # self.client.render.set_light(self.plnp)
-
 
         self.priest = Actor("models/priest", {'idle': 'models/animations/priest-Idle',
                                               'run': 'models/animations/priest-Walk',
@@ -120,8 +122,8 @@ class CharacterPreparation:
                                        clickSound=click_sound,
                                        command=self.show_archer_only)
 
-        self.class_name = OnscreenText(text='', font=self.client.main_menu.logo_font,
-                                       pos=(1, 0.6), scale=0.1, mayChange=True)
+        self.class_name_text = OnscreenText(text='', font=self.client.main_menu.logo_font,
+                                            pos=(1, 0.6), scale=0.1, mayChange=True)
 
         self.player_name_entry = DirectEntry(scale=0.1, pos=(-0.4, 0, -0.9), frameColor=(1, 1, 1, 0.1),
                                              entryFont=self.client.main_menu.logo_font,
@@ -132,7 +134,8 @@ class CharacterPreparation:
                                            text='Join world', image='textures/button.png',
                                            image_scale=(1.1, 1, 0.3),
                                            rolloverSound=rollover_sound,
-                                           clickSound=click_sound)
+                                           clickSound=click_sound,
+                                           command=self.join_game)
         self.join_world_btn.set_transparency(1)
         self.character_description_text = OnscreenText(text='',
                                                        font=self.client.main_menu.logo_font,
@@ -143,36 +146,52 @@ class CharacterPreparation:
         self.show_warrior_only()
 
     def show_warrior_description(self):
-        self.class_name.setText('Warrior')
-        self.class_name.setFg((1, 0, 0, 1))
+        self.class_name_text.setText('Warrior')
+        self.class_name_text.setFg((1, 0, 0, 1))
         self.character_description_text.setText('Abilities: '
                                                 '\n ability 1 - lorem ipsum'
                                                 '\n ability 2 - lorem iisppsum'
                                                 '\n ability 3 - loreeem ipsm')
 
     def show_mage_description(self):
-        self.class_name.setText('Mage')
-        self.class_name.setFg((0, 0, 1, 1))
+        self.class_name_text.setText('Mage')
+        self.class_name_text.setFg((0, 0, 1, 1))
         self.character_description_text.setText('Abilities: '
                                                 '\n fireball - fajny ogieniek'
                                                 '\n nova - fajny wybuch'
                                                 '\n ability 3 - loreeem ipsm')
 
     def show_priest_description(self):
-        self.class_name.setText('Priest')
-        self.class_name.setFg((1, 1, 1, 1))
+        self.class_name_text.setText('Priest')
+        self.class_name_text.setFg((1, 1, 1, 1))
         self.character_description_text.setText('Abilities: '
                                                 '\n ability 1 - lorem ipsum'
                                                 '\n ability 2 - lorem iisppsum'
                                                 '\n ability 3 - loreeem ipsm')
 
     def show_archer_description(self):
-        self.class_name.setText('Archer')
-        self.class_name.setFg((0, 0, 1, 1))
+        self.class_name_text.setText('Archer')
+        self.class_name_text.setFg((0, 0, 1, 1))
         self.character_description_text.setText('Abilities: '
                                                 '\n zarombista strzala - aauu boli'
                                                 '\n ability 2 - lorem iisppsum'
                                                 '\n ability 3 - loreeem ipsm')
+
+    def hide_every_gui_element(self):
+        self.warrior_btn.hide()
+        self.mage_btn.hide()
+        self.priest_btn.hide()
+        self.archer_btn.hide()
+        self.player_name_entry.hide()
+        self.join_world_btn.hide()
+        self.class_name_text.hide()
+        self.character_description_text.hide()
+
+    def hide_scenery(self):
+        self.client.map.terrain.hide()
+        self.client.map.tower.hide()
+        self.client.map.tower2.hide()
+        self.client.map.background_image.hide()
 
     def hide_every_character(self):
         self.priest.hide()
@@ -181,21 +200,45 @@ class CharacterPreparation:
         self.knight.hide()
 
     def show_warrior_only(self):
+        self.selected_class = 0
         self.show_warrior_description()
         self.hide_every_character()
         self.knight.show()
 
     def show_priest_only(self):
+        self.selected_class = 2
         self.show_priest_description()
         self.hide_every_character()
         self.priest.show()
 
     def show_mage_only(self):
+        self.selected_class = 1
         self.show_mage_description()
         self.hide_every_character()
         self.mage.show()
 
     def show_archer_only(self):
+        self.selected_class = 3
         self.show_archer_description()
         self.hide_every_character()
         self.archer.show()
+
+    def join_game(self):
+        self.hide()
+        self.client.main_menu.display_notification('Logging in...')
+        if self.client.network_manager.ask_for_pass(self.player_name_entry.get(), self.selected_class):
+            self.client.main_menu.display_notification('Successfully logged in!\nLoading world...')
+            if self.client.network_manager.ask_for_initial_data():
+                self.client.main_menu.hide()
+                self.client.world.show()
+            else:
+                self.client.main_menu.display_notification('Failed to load world.')
+                self.client.main_menu.back_to_main_btn.show()
+        else:
+            self.client.main_menu.display_notification('Failed to log in.')
+            self.client.main_menu.back_to_main_btn.show()
+
+    def hide(self):
+        self.hide_every_gui_element()
+        self.hide_every_character()
+        self.hide_scenery()

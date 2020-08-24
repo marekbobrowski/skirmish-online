@@ -35,7 +35,7 @@ class MainMenu:
                                      image_scale=(1.1, 1, 0.3),
                                      rolloverSound=rollover_sound,
                                      clickSound=click_sound,
-                                     command=lambda: self.client.network_manager.connect(self.ip_entry.get()))
+                                     command=self.connect_to_server)
         self.join_btn.set_transparency(1)
 
         self.audio_btn = DirectButton(scale=0.34, pos=(0, 0, -0.45), frameColor=(0, 0, 0, 0), text_font=self.logo_font,
@@ -128,12 +128,22 @@ class MainMenu:
         self.back_to_main_btn.show()
 
     def connect_to_server(self):
-        self.client.network_manager.connect(self.join_btn.get())
+        self.display_notification("Connecting...")
+        if self.client.network_manager.connect(self.ip_entry.get()):
+            self.display_notification("Connected!\nLoading models...")
+            self.load_character_preparation()
+        else:
+            self.display_notification('Failed to connect.')
+            self.back_to_main_btn.show()
 
     def display_notification(self, text):
         self.hide_every_gui_element()
+        self.logo_text.show()
+        self.background.show()
         self.notification_text.setText(text)
         self.notification_text.show()
+        self.client.graphicsEngine.render_frame()
+        self.client.graphicsEngine.render_frame()
         self.client.graphicsEngine.render_frame()
 
     def load_character_preparation(self):

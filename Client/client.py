@@ -3,6 +3,7 @@ from panda3d.core import WindowProperties
 from main_menu import MainMenu
 from network_manager import NetworkManager
 from map import Map
+from world import World
 
 
 class Client(ShowBase):
@@ -17,6 +18,7 @@ class Client(ShowBase):
         self.main_menu = MainMenu(self)
         self.map = Map(self)
         self.main_menu.display_main()
+        self.world = World(self)
 
 
 if __name__ == "__main__":
