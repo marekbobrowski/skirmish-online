@@ -5,7 +5,6 @@ from time import sleep
 from direct.distributed.PyDatagram import PyDatagram
 from direct.distributed.PyDatagramIterator import PyDatagramIterator
 from panda3d.core import NetDatagram
-from other_player import OtherPlayer
 from player import Player
 
 # === PACKET TYPES ==== #
@@ -87,14 +86,19 @@ class NetworkManager:
                     id = iterator.get_uint8()
                     name = iterator.get_string()
                     class_number = iterator.get_uint8()
+                    x = iterator.get_float64()
+                    y = iterator.get_float64()
+                    z = iterator.get_float64()
+                    h = iterator.get_float64()
+                    p = iterator.get_float64()
+                    r = iterator.get_float64()
                     self.client.world.main_player = Player(self.client, class_number)
+                    self.client.world.main_player.set_name(name)
+                    self.client.world.main_player.set_id(id)
                     self.client.world.main_player.reparent_to(self.client.render)
+                    self.client.world.main_player.set_pos_hpr(x, y, z, h, p, r)
                     self.client.world.main_player.hide()
                     return True
 
         return False
-
-
-
-
 

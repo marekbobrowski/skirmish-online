@@ -79,15 +79,16 @@ class Server:
         class_number = iterator.get_uint8()
         connection = datagram.get_connection()
         allow_player = 0
-        if True:
-            player = self.find_player_by_connection(connection)
-            if player is not None:
-                player.joined_game = True
-                player.set_name(name)
-                player.set_player_class(class_number)
-                allow_player = 1
-            else:
-                allow_player = 0
+        player = self.find_player_by_connection(connection)
+        if player is not None:
+            player.joined_game = True
+            player.set_name(name)
+            player.set_player_class(class_number)
+            player.set_id(self.last_id)
+            self.last_id += 1
+            allow_player = 1
+        else:
+            allow_player = 0
         response = PyDatagram()
         response.add_uint8(ASK_FOR_PASS)
         response.add_uint8(allow_player)  # 0 - don't allow player to join, 1 - allow player to join
@@ -104,7 +105,7 @@ class Server:
         player = self.find_player_by_connection(connection)
 
         if player is not None and player.get_joined_game():
-            x, y, z, h, p, r = 0, 0, 0, 0, 0, 0
+            x, y, z, h, p, r = -3, -5, 1, 120, 0, 0
             player.set_pos_hpr(x, y, z, h, p, r)
 
             response = PyDatagram()
@@ -115,20 +116,27 @@ class Server:
             response.add_string(player.get_name())
             response.add_uint8(player.get_player_class())
 
+            # send player his own position and rotation
+            response.add_float64(player.get_x())
+            response.add_float64(player.get_y())
+            response.add_float64(player.get_z())
+            response.add_float64(player.get_h())
+            response.add_float64(player.get_p())
+            response.add_float64(player.get_r())
+
             # send players' id's, names and positions & rotations
             for other_player in self.connected_players:
                 if other_player is not player and other_player.get_joined_game():
                     # order: id, name, class, x, y, z, h, p, r
                     response.add_uint8(other_player.get_id())
                     response.add_string(other_player.get_name())
-                    response.add_string(other_player.get_player_class())
+                    response.add_uint8(other_player.get_player_class())
                     response.add_float64(other_player.get_x())
                     response.add_float64(other_player.get_y())
                     response.add_float64(other_player.get_z())
                     response.add_float64(other_player.get_h())
                     response.add_float64(other_player.get_p())
                     response.add_float64(other_player.get_r())
-
         self.writer.send(response, connection)
 
 

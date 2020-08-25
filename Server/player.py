@@ -3,8 +3,8 @@ class Player:
         self.connection = connection
         self.joined_game = False
         self.id = 0
-        self.name = None
-        self.player_class = None
+        self.name = 'unknown'
+        self.player_class = 0
         self.x = 0
         self.y = 0
         self.z = 0
