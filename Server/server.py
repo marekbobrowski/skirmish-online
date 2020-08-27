@@ -10,6 +10,7 @@ from player import Player
 from direct.distributed.PyDatagram import PyDatagram
 from direct.distributed.PyDatagramIterator import PyDatagramIterator
 import random
+from time import sleep
 
 # === PACKET TYPES ==== #
 
@@ -45,6 +46,7 @@ class Server:
     def run(self):
         start_new_thread(self.listen_for_new_connections, ())
         start_new_thread(self.listen_for_new_data, ())
+        start_new_thread(self.send_updates_to_active_players, ())
 
     def listen_for_new_connections(self):
         while True:
@@ -66,13 +68,22 @@ class Server:
                 if self.reader.get_data(datagram):
                     self.process_data(datagram)
 
+    def send_updates_to_active_players(self):
+        while True:
+            for player in self.connected_players:
+                if player.get_joined_game():
+                    self.send_pos_hpr(player.get_connection())
+            sleep(0.1)
+
     def process_data(self, datagram):
         iterator = PyDatagramIterator(datagram)
         packet_type = iterator.get_uint8()
         if packet_type == ASK_FOR_PASS:
             self.handle_ask_for_pass(datagram, iterator)
-        if packet_type == ASK_FOR_INITIAL_DATA:
+        elif packet_type == ASK_FOR_INITIAL_DATA:
             self.handle_ask_for_initial_data(datagram, iterator)
+        elif packet_type == TYPE_POS_HPR:
+            self.handle_pos_hpr(datagram, iterator)
 
     def handle_ask_for_pass(self, datagram, iterator):
         name = iterator.get_string()
@@ -81,9 +92,8 @@ class Server:
         allow_player = 0
         player = self.find_player_by_connection(connection)
         if player is not None:
-            player.joined_game = True
             player.set_name(name)
-            player.set_player_class(class_number)
+            player.set_class_number(class_number)
             player.set_id(self.last_id)
             self.last_id += 1
             allow_player = 1
@@ -104,7 +114,7 @@ class Server:
         connection = datagram.get_connection()
         player = self.find_player_by_connection(connection)
 
-        if player is not None and player.get_joined_game():
+        if player is not None:
             x, y, z, h, p, r = -3, -5, 1, 120, 0, 0
             player.set_pos_hpr(x, y, z, h, p, r)
 
@@ -114,7 +124,7 @@ class Server:
             # send player his own id, nickname and class
             response.add_uint8(player.get_id())
             response.add_string(player.get_name())
-            response.add_uint8(player.get_player_class())
+            response.add_uint8(player.get_class_number())
 
             # send player his own position and rotation
             response.add_float64(player.get_x())
@@ -124,13 +134,17 @@ class Server:
             response.add_float64(player.get_p())
             response.add_float64(player.get_r())
 
+            # send number of other players that are already participating in game
+            active_players = self.get_number_of_players_in_world()
+            response.add_uint8(active_players)
+
             # send players' id's, names and positions & rotations
-            for other_player in self.connected_players:
-                if other_player is not player and other_player.get_joined_game():
+            for i, other_player in enumerate(self.connected_players):
+                if other_player is not player and other_player.get_joined_game() and i < active_players:
                     # order: id, name, class, x, y, z, h, p, r
                     response.add_uint8(other_player.get_id())
                     response.add_string(other_player.get_name())
-                    response.add_uint8(other_player.get_player_class())
+                    response.add_uint8(other_player.get_class_number())
                     response.add_float64(other_player.get_x())
                     response.add_float64(other_player.get_y())
                     response.add_float64(other_player.get_z())
@@ -138,6 +152,41 @@ class Server:
                     response.add_float64(other_player.get_p())
                     response.add_float64(other_player.get_r())
         self.writer.send(response, connection)
+        player.set_joined_game(True)
+
+    def handle_pos_hpr(self, datagram, iterator):
+        player = self.find_player_by_connection(datagram.get_connection())
+        if player is not None:
+            x = datagram.get_float64()
+            y = datagram.get_float64()
+            z = datagram.get_float64()
+            h = datagram.get_float64()
+            p = datagram.get_float64()
+            r = datagram.get_float64()
+            player.set_pos_hpr(x, y, z, h, p, r)
+
+    def get_number_of_players_in_world(self):
+        count = 0
+        for other_player in self.connected_players:
+            if other_player.get_joined_game():
+                count += 1
+        return count
+
+    def send_pos_hpr(self, connection):
+        datagram = PyDatagram()
+        active_players = self.get_number_of_players_in_world()
+        datagram.add_uint8(TYPE_POS_HPR)
+        datagram.add_uint8(active_players)
+        for i, player in enumerate(self.connected_players):
+            if player.get_joined_game() and i < active_players:
+                datagram.add_uint8(player.get_id())
+                datagram.add_float64(player.get_x())
+                datagram.add_float64(player.get_y())
+                datagram.add_float64(player.get_z())
+                datagram.add_float64(player.get_h())
+                datagram.add_float64(player.get_p())
+                datagram.add_float64(player.get_r())
+        self.writer.send(datagram, connection)
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@ class Player:
         self.joined_game = False
         self.id = 0
         self.name = 'unknown'
-        self.player_class = 0
+        self.class_number = 0
         self.x = 0
         self.y = 0
         self.z = 0
@@ -30,11 +30,11 @@ class Player:
     def get_name(self):
         return self.name
 
-    def set_player_class(self, player_class):
-        self.player_class = player_class
+    def set_class_number(self, player_class):
+        self.class_number = player_class
 
-    def get_player_class(self):
-        return self.player_class
+    def get_class_number(self):
+        return self.class_number
 
     def set_pos_hpr(self, x, y, z, h, p, r):
         self.x = x
@@ -61,4 +61,7 @@ class Player:
 
     def get_r(self):
         return self.r
+
+    def get_connection(self):
+        return self.connection
 

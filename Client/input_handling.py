@@ -5,10 +5,11 @@ from camera_control import CameraControl
 
 class InputHandling:
 
-    def __init__(self, client, char_ctrl):
+    def __init__(self, client, char_ctrl, cam_ctrl):
         self.client = client
-        self.cam_ctrl = CameraControl(client)
         self.char_ctrl = char_ctrl
+        self.cam_ctrl = cam_ctrl
+
         self.mouse_clicked = False
 
         self.client.accept('w', self.w_handler)
@@ -69,7 +70,7 @@ class InputHandling:
         md = self.client.win.get_pointer(0)
         self.last_mouse_x = md.get_x()
         self.last_mouse_y = md.get_y()
-        base.win.move_pointer(0, 200, 200)
+        self.client.win.move_pointer(0, 200, 200)
 
     def mouse_3_up_handler(self):
         self.mouse_clicked = False
@@ -106,10 +107,10 @@ class InputHandling:
     def handle_rotating(self, task):
         props = WindowProperties()
         props.setCursorHidden(True)
-        if base.mouseWatcherNode.hasMouse() and self.mouse_clicked:
-            md = base.win.getPointer(0)
+        if self.client.mouseWatcherNode.hasMouse() and self.mouse_clicked:
+            md = self.client.win.getPointer(0)
             delta_x = md.get_x() - 200
-            base.win.movePointer(0, 200, 200)
+            self.client.win.movePointer(0, 200, 200)
             self.client.world.main_player.set_h(self.client.world.main_player.get_h() - 0.3 * delta_x)
         return Task.cont
 

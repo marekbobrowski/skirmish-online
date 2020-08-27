@@ -1,8 +1,8 @@
 from direct.actor.Actor import Actor
 
 
-class Player(Actor):
-    def __init__(self, client, class_number):
+class Character(Actor):
+    def __init__(self, client, class_number, id, name):
         if class_number == 0:
             Actor.__init__(self, "models/knight", {'idle': 'models/animations/knight-Idle',
                                                    'run': 'models/animations/knight-Walk',
@@ -31,11 +31,10 @@ class Player(Actor):
                                                    'hit': 'models/animations/archer-Hit',
                                                    'die': 'models/animations/archer-Die'})
             self.set_scale(0.02)
-        self.loop('idle')
         self.client = client
-        self.id = None
-        self.name = 'unknown'
-        self.player_class = class_number
+        self.id = id
+        self.name = name
+        self.class_number = class_number
 
     def set_id(self, id):
         self.id = id
@@ -49,5 +48,5 @@ class Player(Actor):
     def get_name(self):
         return self.name
 
-    def get_player_class(self):
-        return self.player_class
+    def get_class_number(self):
+        return self.class_number

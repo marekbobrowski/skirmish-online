@@ -9,11 +9,13 @@ from world import World
 class Client(ShowBase):
     def __init__(self):
         ShowBase.__init__(self)
+
         props = WindowProperties()
         props.set_title('Skirmish Online')
         props.set_icon_filename('artwork/icon.ico')
         props.set_cursor_filename('artwork/cursor.ico')
         base.win.request_properties(props)
+
         self.network_manager = NetworkManager(self)
         self.menu = Menu(self)
         self.menu.display_main()

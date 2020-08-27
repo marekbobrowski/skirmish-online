@@ -1,6 +1,5 @@
 class Map:
-    def __init__(self, client):
-        self.client = client
+    def __init__(self):
         self.terrain = None
         self.tower = None
         self.tower2 = None

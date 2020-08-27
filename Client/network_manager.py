@@ -5,7 +5,9 @@ from time import sleep
 from direct.distributed.PyDatagram import PyDatagram
 from direct.distributed.PyDatagramIterator import PyDatagramIterator
 from panda3d.core import NetDatagram
-from player import Player
+from character import Character
+from _thread import start_new_thread
+from direct.task.Task import Task
 
 # === PACKET TYPES ==== #
 
@@ -57,7 +59,7 @@ class NetworkManager:
         data.add_uint8(class_number)  # class number
         self.writer.send(data, self.server_connection)
 
-        # wait for response from the server
+        # wait for datagram from the server
         self.manager.wait_for_readers(self.timeout/1000)
         if self.reader.data_available():
             datagram = NetDatagram()
@@ -75,7 +77,7 @@ class NetworkManager:
         data = PyDatagram()
         data.add_uint8(ASK_FOR_INITIAL_DATA)
         self.writer.send(data, self.server_connection)
-        # wait for response from the server
+        # wait for datagram from the server
         self.manager.wait_for_readers(self.timeout/1000)
         if self.reader.data_available():
             datagram = NetDatagram()
@@ -92,13 +94,74 @@ class NetworkManager:
                     h = iterator.get_float64()
                     p = iterator.get_float64()
                     r = iterator.get_float64()
-                    self.client.world.main_player = Player(self.client, class_number)
-                    self.client.world.main_player.set_name(name)
-                    self.client.world.main_player.set_id(id)
-                    self.client.world.main_player.reparent_to(self.client.render)
-                    self.client.world.main_player.set_pos_hpr(x, y, z, h, p, r)
-                    self.client.world.main_player.hide()
-                    return True
+                    self.client.world.create_main_player(class_number, id, name, x, y, z, h, p, r)
 
+                    number_of_active_players = iterator.get_uint8()
+                    i = 0
+                    while i < number_of_active_players:
+                        id = iterator.get_uint8()
+                        name = iterator.get_string()
+                        class_number = iterator.get_uint8()
+                        x = iterator.get_float64()
+                        y = iterator.get_float64()
+                        z = iterator.get_float64()
+                        h = iterator.get_float64()
+                        p = iterator.get_float64()
+                        r = iterator.get_float64()
+                        self.client.world.create_a_player(class_number, id, name, x, y, z, h, p, r)
+                        i += 1
+
+                    return True
         return False
+
+    def start_listening_for_updates(self):
+        self.client.taskMgr.add(self.listen_for_updates, "ListenForUpdates")
+
+    def start_sending_updates(self):
+        self.client.taskMgr.add(self.send_updates, "SendUpdates")
+
+    def listen_for_updates(self, task):
+        if self.reader.data_available():
+            datagram = NetDatagram()
+            iterator = PyDatagramIterator(datagram)
+            if self.reader.get_data(datagram):
+                self.process_updates(datagram, iterator)
+        return Task.cont
+
+    def send_updates(self, task):
+        self.send_pos_hpr()
+        return Task.cont
+
+    def process_updates(self, datagram, iterator):
+        packet_type = iterator.get_uint8()
+        if packet_type == TYPE_POS_HPR:
+            self.process_pos_hpr_from_server(datagram, iterator)
+
+    def send_pos_hpr(self):
+        datagram = PyDatagram()
+        datagram.add_float64(self.client.world.main_player.get_x())
+        datagram.add_float64(self.client.world.main_player.get_y())
+        datagram.add_float64(self.client.world.main_player.get_z())
+        datagram.add_float64(self.client.world.main_player.get_h())
+        datagram.add_float64(self.client.world.main_player.get_p())
+        datagram.add_float64(self.client.world.main_player.get_r())
+        self.writer.send(datagram, self.server_connection)
+
+    def process_pos_hpr_from_server(self, datagram, iterator):
+        number_of_active_players = iterator.get_uint8()
+        i = 0
+        while i < number_of_active_players:
+            id = iterator.get_uint8()
+            x = iterator.get_float64()
+            y = iterator.get_float64()
+            z = iterator.get_float64()
+            h = iterator.get_float64()
+            p = iterator.get_float64()
+            r = iterator.get_float64()
+            self.client.world.update_player_pos_hpr(id, x, y, z, h, p, r)
+            i += 1
+
+
+
+
 
