@@ -19,10 +19,12 @@ ASK_FOR_INITIAL_DATA = 2
 TYPE_POS_HPR = 3
 TYPE_IS_MOVING = 4
 TYPE_SKILL = 5
+TYPE_DISCONNECTION = 6
 
 # SENT ONLY BY SERVER
-TYPE_CHARACTER_REACTION = 6  # reaction to hit, or spell-casting animation'
-TYPE_TELEPORT = 7
+TYPE_CHARACTER_REACTION = 7  # reaction to hit, or spell-casting animation'
+TYPE_TELEPORT = 8
+TYPE_NEW_PLAYER = 9
 
 # ===================== #
 
@@ -110,7 +112,6 @@ class NetworkManager:
                         r = iterator.get_float64()
                         self.client.world.create_a_player(class_number, id, name, x, y, z, h, p, r)
                         i += 1
-
                     return True
         return False
 
@@ -121,24 +122,35 @@ class NetworkManager:
         self.client.taskMgr.add(self.send_updates, "SendUpdates")
 
     def listen_for_updates(self, task):
-        if self.reader.data_available():
-            datagram = NetDatagram()
-            iterator = PyDatagramIterator(datagram)
-            if self.reader.get_data(datagram):
-                self.process_updates(datagram, iterator)
-        return Task.cont
+        if self.connected:
+            if self.reader.data_available():
+                datagram = NetDatagram()
+                iterator = PyDatagramIterator(datagram)
+                if self.reader.get_data(datagram):
+                    self.process_updates(datagram, iterator)
+            return Task.cont
+        else:
+            return Task.done
 
     def send_updates(self, task):
-        self.send_pos_hpr()
-        return Task.cont
+        if self.connected:
+            self.send_pos_hpr()
+            return Task.cont
+        else:
+            return Task.done
 
     def process_updates(self, datagram, iterator):
         packet_type = iterator.get_uint8()
         if packet_type == TYPE_POS_HPR:
-            self.process_pos_hpr_from_server(datagram, iterator)
+            self.handle_pos_hpr_from_server(datagram, iterator)
+        elif packet_type == TYPE_NEW_PLAYER:
+            self.handle_new_player(datagram, iterator)
+        elif packet_type == TYPE_DISCONNECTION:
+            self.handle_disconnection(datagram, iterator)
 
     def send_pos_hpr(self):
         datagram = PyDatagram()
+        datagram.add_uint8(TYPE_POS_HPR)
         datagram.add_float64(self.client.world.main_player.get_x())
         datagram.add_float64(self.client.world.main_player.get_y())
         datagram.add_float64(self.client.world.main_player.get_z())
@@ -147,7 +159,7 @@ class NetworkManager:
         datagram.add_float64(self.client.world.main_player.get_r())
         self.writer.send(datagram, self.server_connection)
 
-    def process_pos_hpr_from_server(self, datagram, iterator):
+    def handle_pos_hpr_from_server(self, datagram, iterator):
         number_of_active_players = iterator.get_uint8()
         i = 0
         while i < number_of_active_players:
@@ -160,6 +172,35 @@ class NetworkManager:
             r = iterator.get_float64()
             self.client.world.update_player_pos_hpr(id, x, y, z, h, p, r)
             i += 1
+
+    def handle_new_player(self, datagram, iterator):
+        id = iterator.get_uint8()
+        name = iterator.get_string()
+        class_number = iterator.get_uint8()
+        x = iterator.get_float64()
+        y = iterator.get_float64()
+        z = iterator.get_float64()
+        h = iterator.get_float64()
+        p = iterator.get_float64()
+        r = iterator.get_float64()
+        new_player = self.client.world.create_a_player(class_number, id, name, x, y, z, h, p, r)
+        new_player.show()
+
+    def handle_disconnection(self, datagram, iterator):
+        id = iterator.get_uint8()
+        player = self.client.world.get_player_by_id(id)
+        if player is not None:
+            self.client.world.destroy_character(player)
+
+    def disconnect(self):
+        datagram = PyDatagram()
+        datagram.add_uint8(TYPE_DISCONNECTION)
+        self.writer.send(datagram, self.server_connection)
+        while self.writer.get_current_queue_size() != 0:
+            print(self.writer.get_current_queue_size())
+        self.connected = False
+
+
 
 
 

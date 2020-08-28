@@ -31,6 +31,7 @@ class Character(Actor):
                                                    'hit': 'models/animations/archer-Hit',
                                                    'die': 'models/animations/archer-Die'})
             self.set_scale(0.02)
+        self.loop('attack')
         self.client = client
         self.id = id
         self.name = name

@@ -41,6 +41,7 @@ class World:
         self.main_player.reparent_to(self.client.render)
         self.main_player.set_pos_hpr(x, y, z, h, p, r)
         self.main_player.hide()
+        return self.main_player
 
     def create_a_player(self, class_number, id, name, x, y, z, h, p, r):
         new_player = Character(self.client, class_number, id, name)
@@ -48,6 +49,7 @@ class World:
         new_player.set_pos_hpr(x, y, z, h, p, r)
         new_player.hide()
         self.other_players.append(new_player)
+        return new_player
 
     def enable_character_control(self):
         self.character_control = CharacterControl(self.main_player)
@@ -57,7 +59,6 @@ class World:
     def update_player_pos_hpr(self, id, x, y, z, h, p, r):
         player = self.get_player_by_id(id)
         if player is not None:
-            print(player.get_name())
             player.set_pos_hpr(x, y, z, h, p, r)
 
     def get_player_by_id(self, id):
@@ -65,4 +66,8 @@ class World:
             if other_player.id == id:
                 return other_player
         return None
+
+    def destroy_character(self, player):
+        self.other_players.remove(player)
+        player.delete()
 

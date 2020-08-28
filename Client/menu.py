@@ -101,6 +101,8 @@ class Menu:
         self.join_btn.show()
         self.audio_btn.show()
         self.exit_btn.show()
+        self.logo_text.show()
+        self.background.show()
 
     def hide_every_gui_element(self):
         self.ip_entry.hide()
@@ -147,4 +149,8 @@ class Menu:
         self.client.graphicsEngine.render_frame()
 
     def load_character_preparation(self):
-        self.character_preparation = CharacterPreparation(self.client)
+        if self.character_preparation is None:
+            self.character_preparation = CharacterPreparation(self.client)
+        else:
+            self.client.menu.hide()
+            self.character_preparation.show()

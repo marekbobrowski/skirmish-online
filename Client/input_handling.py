@@ -102,7 +102,10 @@ class InputHandling:
         pass
 
     def esc_handler(self):
-        self.client.taskMgr.add(self.client.menu.go_to_menu, "ShowMenu")
+        if self.client.in_game_menu.is_hidden:
+            self.client.in_game_menu.show()
+        else:
+            self.client.in_game_menu.hide()
 
     def handle_rotating(self, task):
         props = WindowProperties()

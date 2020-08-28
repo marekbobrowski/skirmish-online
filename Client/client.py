@@ -4,6 +4,7 @@ from menu import Menu
 from network_manager import NetworkManager
 from map import Map
 from world import World
+from in_game_menu import InGameMenu
 
 
 class Client(ShowBase):
@@ -18,6 +19,7 @@ class Client(ShowBase):
 
         self.network_manager = NetworkManager(self)
         self.menu = Menu(self)
+        self.in_game_menu = InGameMenu(self)
         self.menu.display_main()
         self.world = World(self)
 

@@ -142,6 +142,14 @@ class CharacterPreparation:
                                                        bg=(0, 0, 0, 0.8))
         self.show_mage_only()
 
+    def show(self):
+        self.client.camera.reparent_to(self.client.render)
+        self.client.camera.set_pos(-2.9, -4.9, 0.94)
+        self.client.camera.set_hpr(-50, 0, 0)
+        self.show_gui()
+        self.show_scenery()
+        self.show_mage_only()
+
     def show_warrior_description(self):
         self.class_name_text.setText('Warrior')
         self.class_name_text.setFg((1, 0, 0, 1))
@@ -189,6 +197,22 @@ class CharacterPreparation:
         self.client.world.map.tower.hide()
         self.client.world.map.tower2.hide()
         self.client.world.map.background_image.hide()
+
+    def show_scenery(self):
+        self.client.world.map.terrain.show()
+        self.client.world.map.tower.show()
+        self.client.world.map.tower2.show()
+        self.client.world.map.background_image.show()
+
+    def show_gui(self):
+        self.class_name_text.show()
+        self.character_description_text.show()
+        self.archer_btn.show()
+        self.warrior_btn.show()
+        self.priest_btn.show()
+        self.mage_btn.show()
+        self.player_name_entry.show()
+        self.join_world_btn.show()
 
     def hide_every_character(self):
         self.priest.hide()
