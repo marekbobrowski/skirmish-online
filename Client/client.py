@@ -23,6 +23,9 @@ class Client(ShowBase):
         self.menu.display_main()
         self.world = World(self)
 
+    def reset_connection_manager(self):
+        self.network_manager = NetworkManager(self)
+
 
 if __name__ == "__main__":
     client = Client()

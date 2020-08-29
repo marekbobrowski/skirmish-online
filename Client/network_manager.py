@@ -26,6 +26,9 @@ TYPE_CHARACTER_REACTION = 7  # reaction to hit, or spell-casting animation'
 TYPE_TELEPORT = 8
 TYPE_NEW_PLAYER = 9
 
+# SENT ONLY BY CLIENT
+TYPE_READY_FOR_UPDATES = 10
+
 # ===================== #
 
 
@@ -60,7 +63,6 @@ class NetworkManager:
         data.add_string(name)  # player's name
         data.add_uint8(class_number)  # class number
         self.writer.send(data, self.server_connection)
-
         # wait for datagram from the server
         self.manager.wait_for_readers(self.timeout/1000)
         if self.reader.data_available():
@@ -114,6 +116,11 @@ class NetworkManager:
                         i += 1
                     return True
         return False
+
+    def send_ready_for_updates(self):
+        data = PyDatagram()
+        data.add_uint8(TYPE_READY_FOR_UPDATES)
+        self.writer.send(data, self.server_connection)
 
     def start_listening_for_updates(self):
         self.client.taskMgr.add(self.listen_for_updates, "ListenForUpdates")

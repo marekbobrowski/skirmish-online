@@ -15,6 +15,10 @@ class World:
         self.character_control = None
         self.camera_control = None
 
+    def clear_all_players(self):
+        self.main_player = None
+        self.other_players = []
+
     def show(self):
         self.main_player.show()
         for other_player in self.other_players:

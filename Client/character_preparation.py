@@ -250,6 +250,7 @@ class CharacterPreparation:
         if self.client.network_manager.ask_for_pass(self.player_name_entry.get(), self.selected_class):
             self.client.menu.display_notification('Successfully logged in!\nLoading world...')
             if self.client.network_manager.ask_for_initial_data():
+                self.client.network_manager.send_ready_for_updates()
                 self.client.network_manager.start_listening_for_updates()
                 self.client.network_manager.start_sending_updates()
                 self.client.menu.hide()

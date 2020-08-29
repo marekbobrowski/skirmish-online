@@ -29,6 +29,9 @@ TYPE_CHARACTER_REACTION = 7  # reaction to hit, or spell-casting animation'
 TYPE_TELEPORT = 8
 TYPE_NEW_PLAYER = 9
 
+# SENT ONLY BY CLIENT
+TYPE_READY_FOR_UPDATES = 10
+
 # ===================== #
 
 
@@ -84,6 +87,8 @@ class Server:
             self.handle_ask_for_pass(datagram, iterator)
         elif packet_type == ASK_FOR_INITIAL_DATA:
             self.handle_ask_for_initial_data(datagram, iterator)
+        elif packet_type == TYPE_READY_FOR_UPDATES:
+            self.handle_ready_for_updates(datagram, iterator)
         elif packet_type == TYPE_POS_HPR:
             self.handle_pos_hpr(datagram, iterator)
         elif packet_type == TYPE_DISCONNECTION:
@@ -93,7 +98,7 @@ class Server:
         name = iterator.get_string()
         class_number = iterator.get_uint8()
         connection = datagram.get_connection()
-        allow_player = 1
+        allow_player = 0
         # the client had to connect to the server, before he asked for pass
         # so now the server searches for the player object in his connection list
         player = self.find_player_by_connection(connection)
@@ -143,6 +148,7 @@ class Server:
 
             # send number of other players that are already participating in game
             active_players = self.get_number_of_players_in_world()
+            print('Active players: ' + str(active_players))
             response.add_uint8(active_players)
 
             # send players' id's, names and positions & rotations
@@ -158,26 +164,34 @@ class Server:
                     response.add_float64(other_player.get_h())
                     response.add_float64(other_player.get_p())
                     response.add_float64(other_player.get_r())
+                    print(i)
             self.writer.send(response, connection)
 
-            # send info about new player to everyone else
-            datagram = PyDatagram()
-            datagram.add_uint8(TYPE_NEW_PLAYER)
-            datagram.add_uint8(player.get_id())
-            datagram.add_string(player.get_name())
-            datagram.add_uint8(player.get_class_number())
-            datagram.add_float64(player.get_x())
-            datagram.add_float64(player.get_y())
-            datagram.add_float64(player.get_z())
-            datagram.add_float64(player.get_h())
-            datagram.add_float64(player.get_p())
-            datagram.add_float64(player.get_r())
+    def handle_ready_for_updates(self, datagram, iterator):
+        connection = datagram.get_connection()
+        player = self.find_player_by_connection(connection)
 
-            for player in self.active_connections:
-                if player.get_joined_game():
-                    self.writer.send(datagram, player.get_connection())
-
+        if player is None:
+            return
+        else:
             player.set_joined_game(True)
+
+        # send info about new player to everyone else
+        datagram = PyDatagram()
+        datagram.add_uint8(TYPE_NEW_PLAYER)
+        datagram.add_uint8(player.get_id())
+        datagram.add_string(player.get_name())
+        datagram.add_uint8(player.get_class_number())
+        datagram.add_float64(player.get_x())
+        datagram.add_float64(player.get_y())
+        datagram.add_float64(player.get_z())
+        datagram.add_float64(player.get_h())
+        datagram.add_float64(player.get_p())
+        datagram.add_float64(player.get_r())
+
+        for other_player in self.active_connections:
+            if other_player.get_joined_game() and other_player is not player:
+                self.writer.send(datagram, other_player.get_connection())
 
     def handle_pos_hpr(self, datagram, iterator):
         player = self.find_player_by_connection(datagram.get_connection())
@@ -200,6 +214,7 @@ class Server:
     def send_pos_hpr(self, connection):
         datagram = PyDatagram()
         active_players = self.get_number_of_players_in_world()
+        print('Active players :' + str(active_players))
         datagram.add_uint8(TYPE_POS_HPR)
         datagram.add_uint8(active_players)
         for i, player in enumerate(self.active_connections):
@@ -211,6 +226,7 @@ class Server:
                 datagram.add_float64(player.get_h())
                 datagram.add_float64(player.get_p())
                 datagram.add_float64(player.get_r())
+                print(i)
         self.writer.send(datagram, connection)
 
     def handle_disconnection(self, datagram, iterator):

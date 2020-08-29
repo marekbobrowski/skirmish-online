@@ -1,6 +1,7 @@
 from direct.gui.DirectGui import DirectButton
 import sys
 
+
 class InGameMenu:
     def __init__(self, client):
         self.client = client
@@ -18,8 +19,7 @@ class InGameMenu:
                                       text='Audio settings', image='artwork/button.png',
                                       image_scale=(1.1, 1, 0.3),
                                       rolloverSound=self.client.menu.rollover_sound,
-                                      clickSound=self.client.menu.click_sound,
-                                      command=self.client.menu.display_audio)
+                                      clickSound=self.client.menu.click_sound)
         self.back_to_main_menu_btn = DirectButton(scale=0.34, pos=(0, 0, 0), frameColor=(0, 0, 0, 0),
                                                   text_font=self.client.menu.logo_font,
                                                   text_fg=(1, 1, 1, 0.8), text_pos=(0, -0.05), text_scale=0.18,
@@ -59,13 +59,16 @@ class InGameMenu:
 
     def logout(self):
         self.client.network_manager.disconnect()
+        self.client.reset_connection_manager()
         self.client.ignore_all()
         self.client.world.hide()
+        self.client.world.clear_all_players()
         self.client.in_game_menu.hide()
         self.client.menu.display_main()
 
     def exit_game(self):
         self.client.network_manager.disconnect()
+        self.client.reset_connection_manager()
         sys.exit()
 
 
