@@ -100,9 +100,7 @@ class NetworkManager:
                     r = iterator.get_float64()
                     self.client.world.create_main_player(class_number, id, name, x, y, z, h, p, r)
 
-                    number_of_active_players = iterator.get_uint8()
-                    i = 0
-                    while i < number_of_active_players:
+                    while iterator.get_remaining_size() > 0:
                         id = iterator.get_uint8()
                         name = iterator.get_string()
                         class_number = iterator.get_uint8()
@@ -113,7 +111,6 @@ class NetworkManager:
                         p = iterator.get_float64()
                         r = iterator.get_float64()
                         self.client.world.create_a_player(class_number, id, name, x, y, z, h, p, r)
-                        i += 1
                     return True
         return False
 
@@ -167,9 +164,7 @@ class NetworkManager:
         self.writer.send(datagram, self.server_connection)
 
     def handle_pos_hpr_from_server(self, datagram, iterator):
-        number_of_active_players = iterator.get_uint8()
-        i = 0
-        while i < number_of_active_players:
+        while iterator.get_remaining_size() > 0:
             id = iterator.get_uint8()
             x = iterator.get_float64()
             y = iterator.get_float64()
@@ -178,7 +173,6 @@ class NetworkManager:
             p = iterator.get_float64()
             r = iterator.get_float64()
             self.client.world.update_player_pos_hpr(id, x, y, z, h, p, r)
-            i += 1
 
     def handle_new_player(self, datagram, iterator):
         id = iterator.get_uint8()

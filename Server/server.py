@@ -146,10 +146,7 @@ class Server:
             response.add_float64(player.get_p())
             response.add_float64(player.get_r())
 
-            # send number of other players that are already participating in game
             active_players = self.get_number_of_players_in_world()
-            print('Active players: ' + str(active_players))
-            response.add_uint8(active_players)
 
             # send players' id's, names and positions & rotations
             for i, other_player in enumerate(self.active_connections):
@@ -164,7 +161,7 @@ class Server:
                     response.add_float64(other_player.get_h())
                     response.add_float64(other_player.get_p())
                     response.add_float64(other_player.get_r())
-                    print(i)
+                    # print(i)
             self.writer.send(response, connection)
 
     def handle_ready_for_updates(self, datagram, iterator):
@@ -214,9 +211,8 @@ class Server:
     def send_pos_hpr(self, connection):
         datagram = PyDatagram()
         active_players = self.get_number_of_players_in_world()
-        print('Active players :' + str(active_players))
+        # print('Active players :' + str(active_players))
         datagram.add_uint8(TYPE_POS_HPR)
-        datagram.add_uint8(active_players)
         for i, player in enumerate(self.active_connections):
             if player.get_joined_game() and i < active_players:
                 datagram.add_uint8(player.get_id())
@@ -226,7 +222,6 @@ class Server:
                 datagram.add_float64(player.get_h())
                 datagram.add_float64(player.get_p())
                 datagram.add_float64(player.get_r())
-                print(i)
         self.writer.send(datagram, connection)
 
     def handle_disconnection(self, datagram, iterator):
