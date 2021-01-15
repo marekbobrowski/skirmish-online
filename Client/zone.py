@@ -1,4 +1,4 @@
-class Map:
+class Zone:
     def __init__(self):
         self.terrain = None
         self.tower = None

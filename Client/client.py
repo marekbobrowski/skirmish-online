@@ -2,7 +2,7 @@ from direct.showbase.ShowBase import ShowBase
 from panda3d.core import WindowProperties
 from menu import Menu
 from network_manager import NetworkManager
-from map import Map
+from zone import Zone
 from world import World
 from in_game_menu import InGameMenu
 

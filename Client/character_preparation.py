@@ -1,10 +1,7 @@
 from direct.gui.OnscreenImage import OnscreenImage
 from direct.actor.Actor import Actor
-from panda3d.core import GraphicsOutput
-from direct.gui.DirectGui import DirectFrame, DirectEntry, DirectButton, DirectLabel, DirectScrollBar, DGG
+from direct.gui.DirectGui import DirectEntry, DirectButton, DGG
 from direct.gui.OnscreenText import OnscreenText
-from direct.particles.ParticleEffect import ParticleEffect
-from panda3d.core import PointLight
 
 
 class CharacterPreparation:
@@ -15,17 +12,17 @@ class CharacterPreparation:
         self.client.disable_mouse()
         self.client.camera.set_pos(-2.9, -4.9, 0.94)
         self.client.camera.set_h(-50)
-        self.client.world.map.terrain = self.client.loader.load_model('models/terrain.egg')
-        self.client.world.map.terrain.reparent_to(self.client.render)
-        self.client.world.map.tower = self.client.loader.load_model('models/tower.egg')
-        self.client.world.map.tower.reparent_to(self.client.render)
-        self.client.world.map.tower.set_scale(0.5)
-        self.client.world.map.tower.set_pos(5, 5, 0.4)
-        self.client.world.map.tower2 = self.client.loader.load_model('models/tower2.egg')
-        self.client.world.map.tower2.reparent_to(self.client.render)
-        self.client.world.map.tower2.set_scale(0.15)
-        self.client.world.map.tower2.set_pos(-1, -3.5, 0.7)
-        self.client.world.map.tower2.set_h(30)
+        self.client.world.zone.terrain = self.client.loader.load_model('models/terrain.egg')
+        self.client.world.zone.terrain.reparent_to(self.client.render)
+        self.client.world.zone.tower = self.client.loader.load_model('models/tower.egg')
+        self.client.world.zone.tower.reparent_to(self.client.render)
+        self.client.world.zone.tower.set_scale(0.5)
+        self.client.world.zone.tower.set_pos(5, 5, 0.4)
+        self.client.world.zone.tower2 = self.client.loader.load_model('models/tower2.egg')
+        self.client.world.zone.tower2.reparent_to(self.client.render)
+        self.client.world.zone.tower2.set_scale(0.15)
+        self.client.world.zone.tower2.set_pos(-1, -3.5, 0.7)
+        self.client.world.zone.tower2.set_h(30)
 
         self.selected_class = 0
 
@@ -39,17 +36,6 @@ class CharacterPreparation:
         self.knight.set_pos(-2.0, -4.1, 0.92)
         self.knight.set_h(-60)
         self.knight.loop('idle')
-
-        # self.p = ParticleEffect()
-        # self.p.loadConfig('particle_effects/test.ptf')
-        # self.p.start(parent=self.knight.expose_joint(None, 'modelRoot', 'thumb_l'), renderParent=self.client.render)
-        # print(self.knight.listJoints())
-        # self.plight = PointLight('plight')
-        # self.plight.set_max_distance(0.001)
-        # self.plight.set_color((0.8, 0.1, 0.1, 1))
-        # self.plnp = self.client.render.attach_new_node(self.plight)
-        # self.plnp.reparent_to(self.knight.expose_joint(None, 'modelRoot', 'thumb_l'))
-        # self.client.render.set_light(self.plnp)
 
         self.priest = Actor("models/priest", {'idle': 'models/animations/priest-Idle',
                                               'run': 'models/animations/priest-Walk',
@@ -86,8 +72,8 @@ class CharacterPreparation:
 
         self.hide_every_character()
 
-        self.client.world.map.background_image = OnscreenImage(parent=render2dp, image="artwork/map_background.jpg")
-        self.client.world.map.background_image.set_scale(1)
+        self.client.world.zone.background_image = OnscreenImage(parent=render2dp, image="artwork/map_background.jpg")
+        self.client.world.zone.background_image.set_scale(1)
         self.client.cam2dp.node().getDisplayRegion(0).setSort(-20)
         self.client.menu.hide()
 
@@ -193,16 +179,16 @@ class CharacterPreparation:
         self.character_description_text.hide()
 
     def hide_scenery(self):
-        self.client.world.map.terrain.hide()
-        self.client.world.map.tower.hide()
-        self.client.world.map.tower2.hide()
-        self.client.world.map.background_image.hide()
+        self.client.world.zone.terrain.hide()
+        self.client.world.zone.tower.hide()
+        self.client.world.zone.tower2.hide()
+        self.client.world.zone.background_image.hide()
 
     def show_scenery(self):
-        self.client.world.map.terrain.show()
-        self.client.world.map.tower.show()
-        self.client.world.map.tower2.show()
-        self.client.world.map.background_image.show()
+        self.client.world.zone.terrain.show()
+        self.client.world.zone.tower.show()
+        self.client.world.zone.tower2.show()
+        self.client.world.zone.background_image.show()
 
     def show_gui(self):
         self.class_name_text.show()
