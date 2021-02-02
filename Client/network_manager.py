@@ -1,12 +1,9 @@
 from panda3d.core import QueuedConnectionManager
 from panda3d.core import QueuedConnectionReader
 from panda3d.core import ConnectionWriter
-from time import sleep
 from direct.distributed.PyDatagram import PyDatagram
 from direct.distributed.PyDatagramIterator import PyDatagramIterator
 from panda3d.core import NetDatagram
-from character import Character
-from _thread import start_new_thread
 from direct.task.Task import Task
 
 # === PACKET TYPES ==== #
@@ -33,8 +30,8 @@ TYPE_READY_FOR_UPDATES = 10
 
 
 class NetworkManager:
-    def __init__(self, client):
-        self.client = client
+    def __init__(self, core):
+        self.core = core
 
         self.manager = QueuedConnectionManager()
         self.reader = QueuedConnectionReader(self.manager, 0)
@@ -98,7 +95,7 @@ class NetworkManager:
                     h = iterator.get_float64()
                     p = iterator.get_float64()
                     r = iterator.get_float64()
-                    self.client.world.create_main_player(class_number, id, name, x, y, z, h, p, r)
+                    self.core.world.create_main_player(class_number, id, name, x, y, z, h, p, r)
 
                     while iterator.get_remaining_size() > 0:
                         id = iterator.get_uint8()
@@ -110,7 +107,7 @@ class NetworkManager:
                         h = iterator.get_float64()
                         p = iterator.get_float64()
                         r = iterator.get_float64()
-                        self.client.world.create_a_player(class_number, id, name, x, y, z, h, p, r)
+                        self.core.world.create_a_player(class_number, id, name, x, y, z, h, p, r)
                     return True
         return False
 
@@ -120,10 +117,10 @@ class NetworkManager:
         self.writer.send(data, self.server_connection)
 
     def start_listening_for_updates(self):
-        self.client.taskMgr.add(self.listen_for_updates, "ListenForUpdates")
+        self.core.taskMgr.add(self.listen_for_updates, "ListenForUpdates")
 
     def start_sending_updates(self):
-        self.client.taskMgr.add(self.send_updates, "SendUpdates")
+        self.core.taskMgr.add(self.send_updates, "SendUpdates")
 
     def listen_for_updates(self, task):
         if self.connected:
@@ -155,12 +152,12 @@ class NetworkManager:
     def send_pos_hpr(self):
         datagram = PyDatagram()
         datagram.add_uint8(TYPE_POS_HPR)
-        datagram.add_float64(self.client.world.main_player.get_x())
-        datagram.add_float64(self.client.world.main_player.get_y())
-        datagram.add_float64(self.client.world.main_player.get_z())
-        datagram.add_float64(self.client.world.main_player.get_h())
-        datagram.add_float64(self.client.world.main_player.get_p())
-        datagram.add_float64(self.client.world.main_player.get_r())
+        datagram.add_float64(self.core.world.main_player.get_x())
+        datagram.add_float64(self.core.world.main_player.get_y())
+        datagram.add_float64(self.core.world.main_player.get_z())
+        datagram.add_float64(self.core.world.main_player.get_h())
+        datagram.add_float64(self.core.world.main_player.get_p())
+        datagram.add_float64(self.core.world.main_player.get_r())
         self.writer.send(datagram, self.server_connection)
 
     def handle_pos_hpr_from_server(self, datagram, iterator):
@@ -172,7 +169,7 @@ class NetworkManager:
             h = iterator.get_float64()
             p = iterator.get_float64()
             r = iterator.get_float64()
-            self.client.world.update_player_pos_hpr(id, x, y, z, h, p, r)
+            self.core.world.update_player_pos_hpr(id, x, y, z, h, p, r)
 
     def handle_new_player(self, datagram, iterator):
         id = iterator.get_uint8()
@@ -184,14 +181,14 @@ class NetworkManager:
         h = iterator.get_float64()
         p = iterator.get_float64()
         r = iterator.get_float64()
-        new_player = self.client.world.create_a_player(class_number, id, name, x, y, z, h, p, r)
+        new_player = self.core.world.create_a_player(class_number, id, name, x, y, z, h, p, r)
         new_player.show()
 
     def handle_disconnection(self, datagram, iterator):
         id = iterator.get_uint8()
-        player = self.client.world.get_player_by_id(id)
+        player = self.core.world.get_player_by_id(id)
         if player is not None:
-            self.client.world.destroy_character(player)
+            self.core.world.destroy_character(player)
 
     def disconnect(self):
         datagram = PyDatagram()

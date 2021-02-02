@@ -6,35 +6,35 @@ class InGameMenu:
     def __init__(self, client):
         self.client = client
         self.return_btn = DirectButton(scale=0.34, pos=(0, 0, 0.4), frameColor=(0, 0, 0, 0),
-                                       text_font=self.client.menu.logo_font,
+                                       text_font=self.client.parent.font,
                                        text_fg=(1, 1, 1, 0.8), text_pos=(0, -0.05), text_scale=0.18,
                                        text='Return to game', image='artwork/button.png',
                                        image_scale=(1.1, 1, 0.3),
-                                       rolloverSound=self.client.menu.rollover_sound,
-                                       clickSound=self.client.menu.click_sound,
+                                       rolloverSound=self.client.parent.rollover_sound,
+                                       clickSound=self.client.parent.click_sound,
                                        command=lambda: self.client.in_game_menu.hide())
         self.audio_btn = DirectButton(scale=0.34, pos=(0, 0, 0.2), frameColor=(0, 0, 0, 0),
-                                      text_font=self.client.menu.logo_font,
+                                      text_font=self.client.parent.font,
                                       text_fg=(1, 1, 1, 0.8), text_pos=(0, -0.05), text_scale=0.18,
                                       text='Audio settings', image='artwork/button.png',
                                       image_scale=(1.1, 1, 0.3),
-                                      rolloverSound=self.client.menu.rollover_sound,
-                                      clickSound=self.client.menu.click_sound)
+                                      rolloverSound=self.client.parent.rollover_sound,
+                                      clickSound=self.client.parent.click_sound)
         self.back_to_main_menu_btn = DirectButton(scale=0.34, pos=(0, 0, 0), frameColor=(0, 0, 0, 0),
-                                                  text_font=self.client.menu.logo_font,
+                                                  text_font=self.client.parent.font,
                                                   text_fg=(1, 1, 1, 0.8), text_pos=(0, -0.05), text_scale=0.18,
                                                   text='Logout', image='artwork/button.png',
                                                   image_scale=(1.1, 1, 0.3),
-                                                  rolloverSound=self.client.menu.rollover_sound,
-                                                  clickSound=self.client.menu.click_sound,
+                                                  rolloverSound=self.client.parent.rollover_sound,
+                                                  clickSound=self.client.parent.click_sound,
                                                   command=self.logout)
         self.exit_game_btn = DirectButton(scale=0.34, pos=(0, 0, -0.2), frameColor=(0, 0, 0, 0),
-                                          text_font=self.client.menu.logo_font,
+                                          text_font=self.client.parent.font,
                                           text_fg=(1, 1, 1, 0.8), text_pos=(0, -0.05), text_scale=0.18,
                                           text='Exit game', image='artwork/button.png',
                                           image_scale=(1.1, 1, 0.3),
-                                          rolloverSound=self.client.menu.rollover_sound,
-                                          clickSound=self.client.menu.click_sound,
+                                          rolloverSound=self.client.parent.rollover_sound,
+                                          clickSound=self.client.parent.click_sound,
                                           command=self.exit_game)
         self.audio_btn.set_transparency(1)
         self.return_btn.set_transparency(1)
@@ -64,7 +64,7 @@ class InGameMenu:
         self.client.world.hide()
         self.client.world.clear_all_players()
         self.client.in_game_menu.hide()
-        self.client.menu.display_main()
+        self.client.parent.enter_main_menu()
 
     def exit_game(self):
         self.client.network_manager.disconnect()

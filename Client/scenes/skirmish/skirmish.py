@@ -1,21 +1,20 @@
-from zone import Zone
-from input_handling import InputHandling
-from character_control import CharacterControl
-from camera_control import CameraControl
-from character import Character
-from panda3d.core import Vec3
+#from client.scenes.skirmish.input_handling import InputHandling
+#from client.scenes.skirmish.character_control import CharacterControl
+#from client.scenes.skirmish.camera_control import CameraControl
+#from client.scenes.skirmish.player_character import PlayerCharacter
+#from panda3d.core import Vec3
 
 
-class World:
-    def __init__(self, client):
-        self.client = client
+class Skirmish:
+    def __init__(self, core):
+        self.core = core
         self.main_player = None
         self.other_players = []
-        self.zone = Zone()
+        self.zone = None
         self.input_handling = None
         self.character_control = None
         self.camera_control = None
-        self.camera_hook = None
+        self._is_loaded = False
 
     def clear_all_players(self):
         self.main_player = None
@@ -39,15 +38,15 @@ class World:
         self.zone.tower2.hide()
         self.zone.background_image.hide()
 
-    def create_main_player(self, class_number, id, name, x, y, z, h, p, r):
-        self.main_player = Character(self.client, class_number, id, name)
+    def create_main_player(self, class_number, id_, name, x, y, z, h, p, r):
+        self.main_player = PlayerCharacter(self.client, class_number, id_, name)
         self.main_player.reparent_to(self.client.render)
         self.main_player.set_pos_hpr(x, y, z, h, p, r)
         self.main_player.hide()
         return self.main_player
 
     def create_a_player(self, class_number, id, name, x, y, z, h, p, r):
-        new_player = Character(self.client, class_number, id, name)
+        new_player = PlayerCharacter(self.client, class_number, id, name)
         new_player.reparent_to(self.client.render)
         new_player.set_pos_hpr(x, y, z, h, p, r)
         new_player.hide()
@@ -64,18 +63,24 @@ class World:
         self.camera_control.zoom_out()
         self.input_handling = InputHandling(self.client, self.character_control, self.camera_control)
 
-    def update_player_pos_hpr(self, id, x, y, z, h, p, r):
-        player = self.get_player_by_id(id)
+    def update_player_pos_hpr(self, id_, x, y, z, h, p, r):
+        player = self.get_player_by_id(id_)
         if player is not None:
             player.set_pos_hpr(x, y, z, h, p, r)
 
-    def get_player_by_id(self, id):
+    def get_player_by_id(self, id_):
         for other_player in self.other_players:
-            if other_player.id == id:
+            if other_player.id == id_:
                 return other_player
         return None
 
     def destroy_character(self, player):
         self.other_players.remove(player)
         player.delete()
+
+    def set_zone(self, zone):
+        self.zone = zone
+
+    def is_loaded(self):
+        return self.is_loaded
 

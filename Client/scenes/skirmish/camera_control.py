@@ -6,13 +6,10 @@ class CameraControl:
     def __init__(self, camera):
         self.camera = camera
         self.hook = None
-
         self.zoom_speed = 10
         self.max_distance = 400
-
         self.low_vert_limit = -10
         self.upp_vert_limit = 90
-
         self.rotate_with_character = True
 
     def attach_to(self, node, pos):
