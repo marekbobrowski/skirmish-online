@@ -4,6 +4,7 @@ from scenes.menu.audio_submenu import AudioSubmenu
 from scenes.menu.main_menu import MainMenu
 
 
+
 class Menu:
     def __init__(self, scene_manager):
         self.scene_manager = scene_manager
@@ -56,6 +57,7 @@ class Menu:
 
     def leave(self):
         self.menu_node.hide()
+        self.background.hide()
         print('DEBUG: left menu')
 
     def change_subscene_to(self, scene_number):
@@ -64,10 +66,8 @@ class Menu:
         self.current_subscene = self.subscene_mapping.get(scene_number)
         self.subscene_mapping.get(scene_number).enter()
 
-    def handle_connection_attempt(self):
-        self.scene_manager.show_dialog('Connecting...')
-        if self.core.network_manager.connect(self.subscene_mapping.get(0).ip_entry.get()):
-            self.scene_manager.show_dialog('Connected!\nLoading models...')
-            #self.core.scene_manager.change_scene_to(1)
-        else:
-            self.scene_manager.show_dialog('Failed to connect.')
+
+
+
+
+

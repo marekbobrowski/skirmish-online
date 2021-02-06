@@ -6,6 +6,7 @@ class CharacterMenu2D:
 
     def __init__(self, char_menu):
         self.char_menu = char_menu
+        self.core = char_menu.core
         self.node = char_menu.node_2d
         self.warrior_btn = None
         self.mage_btn = None
@@ -13,7 +14,7 @@ class CharacterMenu2D:
         self.archer_btn = None
         self.class_name_text = None
         self.player_name_entry = None
-        self.join_world_btn = None
+        self.join_skirmish_btn = None
         self.character_description_text = None
         self.class_info = [
             ['Warrior', (1, 0, 0, 1), 'Abilities: '
@@ -35,52 +36,86 @@ class CharacterMenu2D:
         ]
 
     def load(self):
-        self.warrior_btn = DirectButton(scale=0.34, pos=(-1.5, 0, 0.6), frameColor=(0, 0, 0, 0),
-                                        image=self.char_menu.core.assets_dir+'artwork/warrior-class.png',
+        assets_dir = self.core.assets_dir
+        rollover_sound = self.core.loader.loadSfx(assets_dir + 'sounds/mouse_rollover.wav')
+        click_sound = self.core.loader.loadSfx(assets_dir + 'sounds/mouse_click.wav')
+        font = self.core.loader.load_font(assets_dir + 'fonts/GODOFWAR.TTF')
+
+        self.warrior_btn = DirectButton(scale=0.34,
+                                        pos=(-1.5, 0, 0.6),
+                                        frameColor=(0, 0, 0, 0),
+                                        image=assets_dir+'artwork/warrior-class.png',
                                         image_scale=0.3,
-                                        rolloverSound=self.char_menu.core.parent.rollover_sound,
-                                        clickSound=self.char_menu.core.parent.click_sound,
-                                        command=self.char_menu.set_selected_class(0))
-        self.archer_btn = DirectButton(scale=0.34, pos=(-1.5, 0, -0.3), frameColor=(0, 0, 0, 0),
-                                       image=self.char_menu.core.assets_dir+'artwork/archer-class.png',
+                                        rolloverSound=rollover_sound,
+                                        clickSound=click_sound,
+                                        command=lambda: self.char_menu.update_class(0),
+                                        parent=self.node)
+        self.archer_btn = DirectButton(scale=0.34,
+                                       pos=(-1.5, 0, -0.3),
+                                       frameColor=(0, 0, 0, 0),
+                                       image=assets_dir+'artwork/archer-class.png',
                                        image_scale=0.3,
-                                       rolloverSound=self.char_menu.core.parent.rollover_sound,
-                                       clickSound=self.char_menu.core.parent.click_sound,
-                                       command=self.char_menu.set_selected_class(1))
-        self.mage_btn = DirectButton(scale=0.34, pos=(-1.5, 0, 0.3), frameColor=(0, 0, 0, 0),
-                                     image=self.char_menu.core.assets_dir+'artwork/mage-class.png',
+                                       rolloverSound=rollover_sound,
+                                       clickSound=click_sound,
+                                       command=lambda: self.char_menu.update_class(1),
+                                       parent=self.node)
+        self.mage_btn = DirectButton(scale=0.34,
+                                     pos=(-1.5, 0, 0.3),
+                                     frameColor=(0, 0, 0, 0),
+                                     image=assets_dir+'artwork/mage-class.png',
                                      image_scale=0.3,
-                                     rolloverSound=self.char_menu.core.parent.rollover_sound,
-                                     clickSound=self.char_menu.core.parent.click_sound,
-                                     command=self.char_menu.set_selected_class(2))
-        self.priest_btn = DirectButton(scale=0.34, pos=(-1.5, 0, 0), frameColor=(0, 0, 0, 0),
-                                       image=self.char_menu.core.assets_dir+'artwork/priest-class.png',
+                                     rolloverSound=rollover_sound,
+                                     clickSound=click_sound,
+                                     command=lambda: self.char_menu.update_class(2),
+                                     parent=self.node)
+        self.priest_btn = DirectButton(scale=0.34,
+                                       pos=(-1.5, 0, 0),
+                                       frameColor=(0, 0, 0, 0),
+                                       image=assets_dir+'artwork/priest-class.png',
                                        image_scale=0.3,
-                                       rolloverSound=self.char_menu.core.parent.rollover_sound,
-                                       clickSound=self.char_menu.core.parent.click_sound,
-                                       command=self.char_menu.set_selected_class(3))
+                                       rolloverSound=rollover_sound,
+                                       clickSound=click_sound,
+                                       command=lambda: self.char_menu.update_class(3),
+                                       parent=self.node)
 
-        self.class_name_text = OnscreenText(text='', font=self.char_menu.core.parent.font,
-                                            pos=(1, 0.6), scale=0.1, mayChange=True)
+        self.class_name_text = OnscreenText(text='',
+                                            font=font,
+                                            pos=(1, 0.6),
+                                            scale=0.1,
+                                            mayChange=True,
+                                            parent=self.node)
 
-        self.player_name_entry = DirectEntry(scale=0.1, pos=(-0.4, 0, -0.9), frameColor=(1, 1, 1, 0.1),
-                                             entryFont=self.char_menu.core.parent.font,
-                                             width=7, relief=DGG.RIDGE)
-        self.join_world_btn = DirectButton(scale=0.34, pos=(1, 0, -0.85), frameColor=(0, 0, 0, 0),
-                                           text_font=self.char_menu.core.parent.font,
-                                           text_fg=(1, 1, 1, 0.8), text_pos=(0, -0.05), text_scale=0.18,
-                                           text='Join world', image=self.char_menu.core.assets_dir+'artwork/button.png',
-                                           image_scale=(1.1, 1, 0.3),
-                                           rolloverSound=self.char_menu.core.parent.rollover_sound,
-                                           clickSound=self.char_menu.core.parent.click_sound,
-                                           command=self.char_menu.join_game)
-        self.join_world_btn.set_transparency(1)
+        self.player_name_entry = DirectEntry(scale=0.1,
+                                             pos=(-0.4, 0, -0.9),
+                                             frameColor=(1, 1, 1, 0.1),
+                                             entryFont=font,
+                                             width=7,
+                                             relief=DGG.RIDGE,
+                                             parent=self.node)
+        self.join_skirmish_btn = DirectButton(scale=0.34,
+                                              pos=(1, 0, -0.85),
+                                              frameColor=(0, 0, 0, 0),
+                                              text_font=font,
+                                              text_fg=(1, 1, 1, 0.8),
+                                              text_pos=(0, -0.05),
+                                              text_scale=0.18,
+                                              text='Join skirmish',
+                                              image=assets_dir+'artwork/button.png',
+                                              image_scale=(1.1, 1, 0.3),
+                                              rolloverSound=rollover_sound,
+                                              clickSound=click_sound,
+                                              command=self.char_menu.join_skirmish_attempt,
+                                              parent=self.node)
+        self.join_skirmish_btn.set_transparency(1)
         self.character_description_text = OnscreenText(text='',
-                                                       font=self.core.parent.font,
+                                                       font=font,
                                                        fg=(1, 1, 1, 0.8),
-                                                       pos=(1, 0.15), scale=0.07, mayChange=True,
+                                                       pos=(1, 0.15),
+                                                       scale=0.07,
+                                                       mayChange=True,
                                                        frame=(0, 0, 0, 0.8),
-                                                       bg=(0, 0, 0, 0.8))
+                                                       bg=(0, 0, 0, 0.8),
+                                                       parent=self.node)
 
     def refresh(self):
         self.class_name_text.setText(self.class_info[self.char_menu.selected_class][0])
