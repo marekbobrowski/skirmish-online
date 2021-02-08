@@ -76,11 +76,9 @@ class MainMenu:
 
     def enter(self):
         self.main_menu_node.show()
-        print('DEBUG: entered main-menu')
 
     def leave(self):
-        self.main_menu_node.hide()
-        print('DEBUG: left main-menu')
+        self.main_menu_node.leave()
 
     def connect_attempt(self):
         if not self.connecting:

@@ -1,9 +1,9 @@
-from client.scenes.character_menu.basic_character import BasicCharacter
+from characters.basic_character import BasicCharacter
 
 
 class PlayerCharacter(BasicCharacter):
-    def __init__(self, class_number, id_, name):
-        BasicCharacter.__init__(self, class_number)
+    def __init__(self, class_number, id_, name, assets_dir):
+        BasicCharacter.__init__(self, class_number, assets_dir)
         self.id = id_
         self.name = name
         self.class_number = class_number

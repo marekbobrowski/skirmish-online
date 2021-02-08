@@ -44,22 +44,16 @@ class CharacterMenu:
 
     def join_skirmish(self):
         self.scene_manager.show_dialog('Asking for pass...')
-
         player_name = self.char_menu_2d.player_name_entry.get()
         passed = self.core.network_manager.ask_for_pass(player_name, self.selected_class)
         if passed:
-            self.scene_manager.show_dialog('Successfully authorized.\nLoading world...')
-            self.scene_manager.load_scene(2)
+            self.scene_manager.hide_dialog()
+            self.scene_manager.change_scene_to(2)
+            self.scene_manager.load_scene(3)
+            self.scene_manager.change_scene_to(3)
 
-            #if self.core.network_manager.ask_for_initial_data():
-                # self.scene_manager.change_scene_to(2)
-                # self.core.network_manager.send_ready_for_updates()
-                # self.core.network_manager.start_listening_for_updates()
-                # self.core.network_manager.start_sending_updates()
-            #else:
-            #    self.scene_manager.show_dialog('Lost connection.')
         else:
-            self.scene_manager.show_dialog('This nickname is already in use.')
+            self.scene_manager.show_dialog('This nickname is already in use.\nPlease change it.')
         self.joining_skirmish = False
 
     def update_class(self, class_number):

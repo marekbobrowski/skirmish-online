@@ -59,9 +59,7 @@ class AudioSubmenu:
         self.return_btn.set_transparency(1)
 
     def enter(self):
-        self.audio_submenu_node.show()
-        print('DEBUG: entered audio submenu')
+        self.audio_submenu_node.enter()
 
     def leave(self):
-        self.audio_submenu_node.hide()
-        print('DEBUG: left audio submenu')
+        self.audio_submenu_node.leave()

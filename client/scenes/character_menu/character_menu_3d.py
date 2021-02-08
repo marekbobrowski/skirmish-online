@@ -8,13 +8,13 @@ class CharacterMenu3D:
         self.core = char_menu.core
         self.node = char_menu.node_3d
         self.class_representatives = []
-        self.zone = None
+        self.zone = Zone(self.core, self.node, self.char_menu.core.render2dp)
 
     def load(self):
         self.core.camera.set_pos(-2.9, -4.9, 0.94)
         self.core.camera.set_h(-50)
 
-        self.zone = Zone(self.core, self.node, self.char_menu.core.render2dp)
+        self.zone.load()
         self.core.cam2dp.node().getDisplayRegion(0).setSort(-20)
 
         knight = BasicCharacter(0, self.core.assets_dir)
@@ -55,13 +55,8 @@ class CharacterMenu3D:
         self.char_menu.core.camera.set_hpr(-50, 0, 0)
 
     def refresh(self):
-        for index, repr_ in enumerate(self.class_representatives):
-            if index != self.char_menu.selected_class:
-                repr_.hide()
-            else:
-                repr_.show()
-
-
+        for repr_ in self.class_representatives:
+            repr_.hide()
         self.class_representatives[self.char_menu.selected_class].show()
         self.node.show()
         self.position_camera()

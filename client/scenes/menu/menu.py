@@ -52,13 +52,11 @@ class Menu:
 
     def enter(self):
         self.menu_node.show()
-        print('DEBUG: entered menu')
         self.change_subscene_to(0)
 
     def leave(self):
         self.menu_node.hide()
         self.background.hide()
-        print('DEBUG: left menu')
 
     def change_subscene_to(self, scene_number):
         if self.current_subscene is not None:

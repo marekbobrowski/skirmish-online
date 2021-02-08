@@ -11,28 +11,7 @@ from direct.distributed.PyDatagram import PyDatagram
 from direct.distributed.PyDatagramIterator import PyDatagramIterator
 import random
 from time import sleep
-
-# === PACKET TYPES ==== #
-
-# INITIAL TYPES #
-ASK_FOR_PASS = 1
-ASK_FOR_INITIAL_DATA = 2
-
-# SENT BY CLIENT AND SERVER #
-TYPE_POS_HPR = 3
-TYPE_IS_MOVING = 4
-TYPE_SKILL = 5
-TYPE_DISCONNECTION = 6
-
-# SENT ONLY BY SERVER
-TYPE_CHARACTER_REACTION = 7  # reaction to hit, or spell-casting animation'
-TYPE_TELEPORT = 8
-TYPE_NEW_PLAYER = 9
-
-# SENT ONLY BY CLIENT
-TYPE_READY_FOR_UPDATES = 10
-
-# ===================== #
+from protocol.message import Message
 
 
 class Server:
@@ -83,15 +62,15 @@ class Server:
     def process_data(self, datagram):
         iterator = PyDatagramIterator(datagram)
         packet_type = iterator.get_uint8()
-        if packet_type == ASK_FOR_PASS:
+        if packet_type == Message.ASK_FOR_PASS:
             self.handle_ask_for_pass(datagram, iterator)
-        elif packet_type == ASK_FOR_INITIAL_DATA:
+        elif packet_type == Message.ASK_FOR_INITIAL_DATA:
             self.handle_ask_for_initial_data(datagram, iterator)
-        elif packet_type == TYPE_READY_FOR_UPDATES:
+        elif packet_type == Message.READY_FOR_UPDATES:
             self.handle_ready_for_updates(datagram, iterator)
-        elif packet_type == TYPE_POS_HPR:
+        elif packet_type == Message.POS_HPR:
             self.handle_pos_hpr(datagram, iterator)
-        elif packet_type == TYPE_DISCONNECTION:
+        elif packet_type == Message.DISCONNECTION:
             self.handle_disconnection(datagram, iterator)
 
     def handle_ask_for_pass(self, datagram, iterator):
@@ -111,7 +90,7 @@ class Server:
         else:
             allow_player = 0
         response = PyDatagram()
-        response.add_uint8(ASK_FOR_PASS)
+        response.add_uint8(Message.ASK_FOR_PASS)
         response.add_uint8(allow_player)  # 0 - don't allow player to join, 1 - allow player to join
         self.writer.send(response, connection)
 
@@ -131,7 +110,7 @@ class Server:
             player.set_pos_hpr(x, y, z, h, p, r)
 
             response = PyDatagram()
-            response.add_uint8(ASK_FOR_INITIAL_DATA)
+            response.add_uint8(Message.ASK_FOR_INITIAL_DATA)
 
             # send player his own id, nickname and class
             response.add_uint8(player.get_id())
@@ -175,7 +154,7 @@ class Server:
 
         # send info about new player to everyone else
         datagram = PyDatagram()
-        datagram.add_uint8(TYPE_NEW_PLAYER)
+        datagram.add_uint8(Message.NEW_PLAYER)
         datagram.add_uint8(player.get_id())
         datagram.add_string(player.get_name())
         datagram.add_uint8(player.get_class_number())
@@ -212,7 +191,7 @@ class Server:
         datagram = PyDatagram()
         active_players = self.get_number_of_players_in_world()
         # print('Active players :' + str(active_players))
-        datagram.add_uint8(TYPE_POS_HPR)
+        datagram.add_uint8(Message.POS_HPR)
         for i, player in enumerate(self.active_connections):
             if player.get_joined_game() and i < active_players:
                 datagram.add_uint8(player.get_id())
@@ -236,7 +215,7 @@ class Server:
             for other_player in self.active_connections:
                 if other_player.get_joined_game():
                     datagram = PyDatagram()
-                    datagram.add_uint8(TYPE_DISCONNECTION)
+                    datagram.add_uint8(Message.DISCONNECTION)
                     datagram.add_uint8(id)
                     self.writer.send(datagram, other_player.get_connection())
 
