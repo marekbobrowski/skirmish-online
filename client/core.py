@@ -1,6 +1,6 @@
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import WindowProperties
-from network_manager import NetworkManager
+from networking.network_manager import NetworkManager
 from scene_manager import SceneManager
 
 

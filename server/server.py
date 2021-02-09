@@ -1,3 +1,4 @@
+from time import sleep
 from panda3d.core import QueuedConnectionManager
 from panda3d.core import QueuedConnectionListener
 from panda3d.core import QueuedConnectionReader
@@ -9,8 +10,9 @@ from panda3d.core import NetDatagram
 from player import Player
 from direct.distributed.PyDatagram import PyDatagram
 from direct.distributed.PyDatagramIterator import PyDatagramIterator
-import random
-from time import sleep
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join('..')))
 from protocol.message import Message
 
 

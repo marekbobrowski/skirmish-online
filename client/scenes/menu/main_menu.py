@@ -78,7 +78,7 @@ class MainMenu:
         self.main_menu_node.show()
 
     def leave(self):
-        self.main_menu_node.leave()
+        self.main_menu_node.hide()
 
     def connect_attempt(self):
         if not self.connecting:

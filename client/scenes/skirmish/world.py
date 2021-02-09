@@ -14,13 +14,12 @@ class World:
     def spawn_player(self, player, x, y, z, h, p, r):
         player.reparent_to(self.node)
         player.set_pos_hpr(x, y, z, h, p, r)
+        player.show()
 
     def update_player_pos_hpr(self, id_, x, y, z, h, p, r):
-        pass
-
-    def update_player(self, id_, x, y, z, h, p, r):
         player = self.skirmish.get_player_by_id(id_)
         if player is not None:
             player.set_pos_hpr(x, y, z, h, p, r)
+
 
 

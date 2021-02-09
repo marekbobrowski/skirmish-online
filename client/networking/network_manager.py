@@ -5,6 +5,11 @@ from direct.distributed.PyDatagram import PyDatagram
 from direct.distributed.PyDatagramIterator import PyDatagramIterator
 from panda3d.core import NetDatagram
 from direct.task.Task import Task
+from networking.skirmish_sender import SkirmishSender
+from networking.skirmish_local_updater import SkirmishLocalUpdater
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join('..')))
 from protocol.message import Message
 
 
@@ -15,6 +20,9 @@ class NetworkManager:
         self.manager = QueuedConnectionManager()
         self.reader = QueuedConnectionReader(self.manager, 0)
         self.writer = ConnectionWriter(self.manager, 0)
+
+        self.skirmish_local_updater = None
+        self.skirmish_sender = None
 
         self.server_port = 5000
         self.server_address = None
@@ -73,11 +81,11 @@ class NetworkManager:
         data.add_uint8(Message.READY_FOR_UPDATES)
         self.writer.send(data, self.server_connection)
 
-    def start_listening_for_updates(self):
-        self.core.taskMgr.add(self.listen_for_updates, "ListenForUpdates")
-
-    def start_sending_updates(self):
-        self.core.taskMgr.add(self.send_updates, "SendUpdates")
+    def start_updating_skirmish(self, skirmish):
+        self.skirmish_sender = SkirmishSender(skirmish, self.writer, self.server_connection)
+        self.skirmish_local_updater = SkirmishLocalUpdater(skirmish)
+        self.core.task_mgr.add(self.listen_for_updates, "Listen For Skirmish Updates")
+        self.core.task_mgr.add(self.send_updates, "Send Skirmish Updates")
 
     def listen_for_updates(self, task):
         if self.connected:
@@ -92,7 +100,7 @@ class NetworkManager:
 
     def send_updates(self, task):
         if self.connected:
-            self.send_pos_hpr()
+            self.skirmish_sender.send_pos_hpr()
             return Task.cont
         else:
             return Task.done
@@ -100,60 +108,17 @@ class NetworkManager:
     def process_updates(self, datagram, iterator):
         packet_type = iterator.get_uint8()
         if packet_type == Message.POS_HPR:
-            self.handle_pos_hpr_from_server(datagram, iterator)
+            self.skirmish_local_updater.update_pos_hpr(datagram, iterator)
         elif packet_type == Message.NEW_PLAYER:
-            self.handle_new_player(datagram, iterator)
+            self.skirmish_local_updater.update_new_player(datagram, iterator)
         elif packet_type == Message.DISCONNECTION:
-            self.handle_disconnection(datagram, iterator)
-
-    def send_pos_hpr(self):
-        datagram = PyDatagram()
-        datagram.add_uint8(Message.POS_HPR)
-        datagram.add_float64(self.core.world.player.get_x())
-        datagram.add_float64(self.core.world.player.get_y())
-        datagram.add_float64(self.core.world.player.get_z())
-        datagram.add_float64(self.core.world.player.get_h())
-        datagram.add_float64(self.core.world.player.get_p())
-        datagram.add_float64(self.core.world.player.get_r())
-        self.writer.send(datagram, self.server_connection)
-
-    def handle_pos_hpr_from_server(self, datagram, iterator):
-        while iterator.get_remaining_size() > 0:
-            id = iterator.get_uint8()
-            x = iterator.get_float64()
-            y = iterator.get_float64()
-            z = iterator.get_float64()
-            h = iterator.get_float64()
-            p = iterator.get_float64()
-            r = iterator.get_float64()
-            self.core.world.update_player_pos_hpr(id, x, y, z, h, p, r)
-
-    def handle_new_player(self, datagram, iterator):
-        id = iterator.get_uint8()
-        name = iterator.get_string()
-        class_number = iterator.get_uint8()
-        x = iterator.get_float64()
-        y = iterator.get_float64()
-        z = iterator.get_float64()
-        h = iterator.get_float64()
-        p = iterator.get_float64()
-        r = iterator.get_float64()
-        new_player = self.core.world.create_other_player(class_number, id, name, x, y, z, h, p, r)
-        new_player.enter()
-
-    def handle_disconnection(self, datagram, iterator):
-        id = iterator.get_uint8()
-        player = self.core.world.get_player_by_id(id)
-        if player is not None:
-            self.core.world.destroy_character(player)
+            self.skirmish_local_updater.update_disconnection(datagram, iterator)
 
     def disconnect(self):
-        datagram = PyDatagram()
-        datagram.add_uint8(Message.DISCONNECTION)
-        self.writer.send(datagram, self.server_connection)
-        while self.writer.get_current_queue_size() != 0:
-            print(self.writer.get_current_queue_size())
+        self.skirmish_sender.send_disconnect()
+        self.reader.remove_connection(self.server_connection)
         self.connected = False
+
 
 
 

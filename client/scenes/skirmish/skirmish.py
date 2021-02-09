@@ -46,8 +46,7 @@ class Skirmish:
             h = data_iterator.get_float64()
             p = data_iterator.get_float64()
             r = data_iterator.get_float64()
-            self.player = self.create_player(class_number, id_, name, x, y, z, h, p, r)
-
+            self.create_main_player(class_number, id_, name, x, y, z, h, p, r)
             while data_iterator.get_remaining_size() > 0:
                 id_ = data_iterator.get_uint8()
                 name = data_iterator.get_string()
@@ -58,31 +57,32 @@ class Skirmish:
                 h = data_iterator.get_float64()
                 p = data_iterator.get_float64()
                 r = data_iterator.get_float64()
-                self.other_players.append(self.create_player(class_number, id_, name, x, y, z, h, p, r))
-
-            # self.core.network_manager.send_ready_for_updates()
-            # self.core.network_manager.start_listening_for_updates()
-            # self.core.network_manager.start_sending_updates()
+                self.create_other_player(class_number, id_, name, x, y, z, h, p, r)
         else:
             self.scene_manager.show_dialog('Lost connection.')
 
         self._is_loaded = True
 
     def enter(self):
+        self.core.network_manager.send_ready_for_updates()
+        self.core.network_manager.start_updating_skirmish(self)
         self.node_2d.show()
         self.node_3d.show()
-        self.core.task_mgr.add(self.update, "game update")
         self.enable_control()
 
     def leave(self):
         self.node_2d.leave()
         self.node_3d.leave()
-        self.disable_control()
 
-    def create_player(self, class_number, id_, name, x, y, z, h, p, r):
+    def create_main_player(self, class_number, id_, name, x, y, z, h, p, r):
         player = PlayerCharacter(class_number, id_, name, self.core.assets_dir)
         self.world.spawn_player(player, x, y, z, h, p, r)
-        return player
+        self.player = player
+
+    def create_other_player(self, class_number, id_, name, x, y, z, h, p, r):
+        player = PlayerCharacter(class_number, id_, name, self.core.assets_dir)
+        self.world.spawn_player(player, x, y, z, h, p, r)
+        self.other_players.append(player)
 
     def enable_control(self):
         self.character_control = CharacterControl(self.player)
@@ -94,18 +94,15 @@ class Skirmish:
         self.camera_control.zoom_out()
         self.input_handling = InputHandling(self)
 
-    def disable_control(self):
-        pass
-
     def get_player_by_id(self, id_):
         for other_player in self.other_players:
             if other_player.id == id_:
                 return other_player
         return None
 
-    def destroy_character(self, player):
-        self.other_players.remove(player)
-        player.delete()
+    def remove_player(self, id_):
+        player = self.get_player_by_id(id_)
+        if player is not None:
+            self.other_players.remove(player)
+            player.delete()
 
-    def update(self, task):
-        return Task.cont
