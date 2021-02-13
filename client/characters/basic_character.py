@@ -16,6 +16,7 @@ class BasicCharacter(Actor):
                                                    'attack': assets_dir + 'models/animations/archer-Attack',
                                                    'hit': assets_dir + 'models/animations/archer-Hit',
                                                    'die': assets_dir + 'models/animations/archer-Die'})
+            self.set_scale(0.02)
         elif model_number == 2:
             Actor.__init__(self, assets_dir + "models/mage", {'idle': assets_dir+ 'models/animations/mage-Idle',
                                                  'run': assets_dir + 'models/animations/mage-Walk',

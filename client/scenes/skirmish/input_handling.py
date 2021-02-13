@@ -1,5 +1,6 @@
 from direct.task.Task import Task
 from panda3d.core import WindowProperties
+import datetime
 
 
 class InputHandling:
@@ -20,6 +21,7 @@ class InputHandling:
         self.d_pressed = False
         self.last_mouse_x = 200
         self.last_mouse_y = 200
+        self.mouse_1_click_time = 0
 
         # Assignment of handling functions.
         self.core.accept('w', self.w_handler)
@@ -110,6 +112,8 @@ class InputHandling:
 
     def mouse_1_handler(self):
         self.mouse_1_clicked = True
+        self.mouse_1_click_time = datetime.datetime.now()
+        self.skirmish.object_picking.find_pickable()
 
         # Run the dragging handler.
         self.core.taskMgr.add(self.handle_m1_dragging_task, "M1Drag")
@@ -128,6 +132,8 @@ class InputHandling:
 
     def mouse_1_up_handler(self):
         self.mouse_1_clicked = False
+        if (datetime.datetime.now() - self.mouse_1_click_time).microseconds < 100000:
+            self.skirmish.object_picking.pick()
 
         self.core.win.move_pointer(0, int(self.last_mouse_x), int(self.last_mouse_y))
 
@@ -244,3 +250,7 @@ class InputHandling:
         props = WindowProperties()
         props.setCursorHidden(value)
         self.core.win.requestProperties(props)
+
+    def attempt_to_select_player(self):
+        mouse_pos = self.core.mouse_watcher_node.get_mouse()
+

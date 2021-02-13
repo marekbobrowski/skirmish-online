@@ -3,9 +3,9 @@ from scenes.skirmish.character_control import CharacterControl
 from scenes.skirmish.camera_control import CameraControl
 from scenes.skirmish.interface import Interface
 from scenes.skirmish.world import World
+from scenes.skirmish.object_picking import ObjectPicking
 from characters.player_character import PlayerCharacter
 from panda3d.core import Vec3
-from direct.task.Task import Task
 
 
 class Skirmish:
@@ -23,6 +23,7 @@ class Skirmish:
         self.character_control = None
         self.camera_control = None
         self.input_handling = None
+        self.object_picking = None
         self._is_loaded = False
 
     def is_loaded(self):
@@ -66,8 +67,10 @@ class Skirmish:
     def enter(self):
         self.core.network_manager.send_ready_for_updates()
         self.core.network_manager.start_updating_skirmish(self)
+        self.core.task_mgr.add(self.interface.update, "interface update")
         self.node_2d.show()
         self.node_3d.show()
+        self.object_picking = ObjectPicking(self)
         self.enable_control()
 
     def leave(self):

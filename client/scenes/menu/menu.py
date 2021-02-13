@@ -4,7 +4,6 @@ from scenes.menu.audio_submenu import AudioSubmenu
 from scenes.menu.main_menu import MainMenu
 
 
-
 class Menu:
     def __init__(self, scene_manager):
         self.scene_manager = scene_manager

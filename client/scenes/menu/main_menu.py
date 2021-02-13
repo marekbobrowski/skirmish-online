@@ -3,6 +3,7 @@ import sys
 from threading import Thread
 
 
+# noinspection PyArgumentList
 class MainMenu:
     def __init__(self, menu):
         self.menu = menu

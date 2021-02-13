@@ -7,7 +7,7 @@ class QuickMenu:
     def __init__(self, interface):
         self.interface = interface
         self.core = interface.core
-        self.node = interface.node
+        self.node = interface.node.attach_new_node("quick menu node")
 
         self.return_btn = None
         self.audio_btn = None

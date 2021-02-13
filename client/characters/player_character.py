@@ -7,6 +7,8 @@ class PlayerCharacter(BasicCharacter):
         self.id = id_
         self.name = name
         self.class_number = class_number
+        self.target = None
+        self.set_tag('player_id', str(id_))
 
     def set_id(self, id_):
         self.id = id_
