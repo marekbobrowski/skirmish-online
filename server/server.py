@@ -78,6 +78,11 @@ class Server:
                 return player
         return None
 
+    def find_player_by_id(self, id_):
+        for player in self.active_connections:
+            if player.id == id_:
+                return player
+
     def send_pos_hpr(self, connection):
         datagram = PyDatagram()
         active_players = self.get_number_of_active_players()
@@ -92,6 +97,7 @@ class Server:
                 datagram.add_float64(player.get_p())
                 datagram.add_float64(player.get_r())
         self.writer.send(datagram, connection)
+
 
 
 if __name__ == "__main__":

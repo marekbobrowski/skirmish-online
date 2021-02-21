@@ -4,12 +4,14 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join('..')))
 from protocol.message import Message
+from action_handler import ActionHandler
 
 
 # noinspection PyArgumentList
 class Handler:
     def __init__(self, server):
         self.server = server
+        self.action_handler = ActionHandler(server)
 
     def handle_data(self, datagram):
         iterator = PyDatagramIterator(datagram)
@@ -25,7 +27,7 @@ class Handler:
         elif packet_type == Message.DISCONNECTION:
             self.handle_disconnection(datagram, iterator)
         elif packet_type == Message.ACTION:
-            self.handle_action(datagram, iterator)
+            self.action_handler.handle_action(datagram, iterator)
 
     def handle_ask_for_pass(self, datagram, iterator):
         name = iterator.get_string()
@@ -152,6 +154,3 @@ class Handler:
                     datagram.add_uint8(id_)
                     self.server.writer.send(datagram, other_player.get_connection())
 
-    def handle_action(self, datagram, iterator):
-        connection = datagram.get_connection()
-        player = self.server.find_player_by_connection(connection)

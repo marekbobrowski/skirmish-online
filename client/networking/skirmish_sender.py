@@ -27,9 +27,10 @@ class SkirmishSender:
         datagram.add_uint8(Message.DISCONNECTION)
         self.writer.send(datagram, self.server_connection)
 
-    def action_attempt(self, action_code):
+    def send_action_attempt(self, action, target):
         datagram = PyDatagram()
         datagram.add_uint8(Message.ACTION)
-        datagram.add_uint8(action_code)
+        datagram.add_uint8(action)
+        datagram.add_uint8(target)
         self.writer.send(datagram, self.server_connection)
 

@@ -200,22 +200,26 @@ class InputHandling:
         self.cam_ctrl.zoom_out()
 
     def q_handler(self):
-        pass
+        if self.skirmish.player.target is not None:
+            self.core.network_manager.skirmish_sender.send_action_attempt(1, self.skirmish.player.target.id)
 
     def q_up_handler(self):
         pass
 
     def e_handler(self):
-        pass
+        if self.skirmish.player.target is not None:
+            self.core.network_manager.skirmish_sender.send_action_attempt(2, self.skirmish.player.target.id)
 
     def e_up_handler(self):
         pass
 
     def r_handler(self):
-        pass
+        if self.skirmish.player.target is not None:
+            self.core.network_manager.skirmish_sender.send_action_attempt(3, self.skirmish.player.target.id)
 
     def f_handler(self):
-        pass
+        if self.skirmish.player.target is not None:
+            self.core.network_manager.skirmish_sender.send_action_attempt(4, self.skirmish.player.target.id)
 
     def esc_handler(self):
         self.skirmish.interface.submodules[0].toggle()

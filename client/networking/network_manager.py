@@ -113,6 +113,8 @@ class NetworkManager:
             self.skirmish_local_updater.update_new_player(datagram, iterator)
         elif packet_type == Message.DISCONNECTION:
             self.skirmish_local_updater.update_disconnection(datagram, iterator)
+        elif packet_type == Message.HEALTH:
+            self.skirmish_local_updater.update_health(datagram, iterator)
 
     def disconnect(self):
         self.skirmish_sender.send_disconnect()

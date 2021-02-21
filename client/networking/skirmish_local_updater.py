@@ -29,3 +29,14 @@ class SkirmishLocalUpdater:
     def update_disconnection(self, datagram, iterator):
         id_ = iterator.get_uint8()
         self.skirmish.remove_player(id_)
+
+    def update_health(self, datagram, iterator):
+        id_ = iterator.get_uint8()
+        health = iterator.get_uint8()
+        player = self.skirmish.get_player_by_id(id_)
+        if player is not None:
+            player.health = health
+            return
+        if self.skirmish.player.id == id_:
+            self.skirmish.player.health = health
+
