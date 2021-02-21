@@ -29,7 +29,9 @@ class ObjectPicking:
                 picked = self.collision_handler.get_entry(0).get_into_node_path()
                 picked = picked.find_net_tag('player_id')
                 if not picked.is_empty():
-                    self.picked = picked
+                    for player in self.skirmish.other_players:
+                        if picked.get_tag('player_id') == player.get_tag('player_id'):
+                            self.picked = player
                 else:
                     self.picked = None
             else:

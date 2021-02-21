@@ -1,4 +1,5 @@
 from direct.gui.DirectGui import DirectFrame, DirectLabel
+from characters.player_character import PlayerCharacter
 
 
 # noinspection PyTypeChecker
@@ -14,13 +15,15 @@ class PlayerFrames:
 
     def load(self):
         self.frames['player_frame'] = PlayerFrame(self, "player frame", (-1.2, 0, 0))
-        self.frames['target_frame'] = PlayerFrame(self, "target frame", (0, 0, 0))
+        self.frames['target_frame'] = PlayerFrame(self, "target frame", (0.7, 0, 0))
 
     def update(self):
         self.frames.get('player_frame').name_label.setText(self.skirmish.player.name)
+        self.frames.get('player_frame').update_health(self.skirmish.player.health)
         if self.skirmish.player.target is not None:
             self.frames.get('target_frame').node.show()
             self.frames.get('target_frame').name_label.setText(self.skirmish.player.target.name)
+            self.frames.get('target_frame').update_health(self.skirmish.player.target.health)
         else:
             self.frames.get('target_frame').node.hide()
 
@@ -56,3 +59,7 @@ class PlayerFrame:
             textMayChange=1,
             frameColor=(0, 0, 0, 0)
         )
+
+    def update_health(self, health):
+        self.sub_frames.get('health_frame')['frameSize'] = (0, health/100 * self.length, -0.2, 0)
+

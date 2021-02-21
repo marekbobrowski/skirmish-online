@@ -2,6 +2,7 @@ class Player:
     def __init__(self, connection):
         self.connection = connection
         self.joined_game = False
+        self.health = 0
         self.id = 0
         self.name = 'unknown'
         self.class_number = 0
@@ -64,4 +65,5 @@ class Player:
 
     def get_connection(self):
         return self.connection
+
 

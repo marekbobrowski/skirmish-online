@@ -24,6 +24,8 @@ class Handler:
             self.handle_pos_hpr(datagram, iterator)
         elif packet_type == Message.DISCONNECTION:
             self.handle_disconnection(datagram, iterator)
+        elif packet_type == Message.ACTION:
+            self.handle_action(datagram, iterator)
 
     def handle_ask_for_pass(self, datagram, iterator):
         name = iterator.get_string()
@@ -54,14 +56,16 @@ class Handler:
         else:
             x, y, z, h, p, r = -3, -5, 1, 120, 0, 0
             player.set_pos_hpr(x, y, z, h, p, r)
+            player.health = 50
 
             response = PyDatagram()
             response.add_uint8(Message.ASK_FOR_INITIAL_DATA)
 
-            # send player his own id, nickname and class
+            # send player his own id, nickname, class and health
             response.add_uint8(player.get_id())
             response.add_string(player.get_name())
             response.add_uint8(player.get_class_number())
+            response.add_uint8(player.health)
 
             # send player his own position and rotation
             response.add_float64(player.get_x())
@@ -80,6 +84,7 @@ class Handler:
                     response.add_uint8(other_player.get_id())
                     response.add_string(other_player.get_name())
                     response.add_uint8(other_player.get_class_number())
+                    response.add_uint8(other_player.health)
                     response.add_float64(other_player.get_x())
                     response.add_float64(other_player.get_y())
                     response.add_float64(other_player.get_z())
@@ -103,6 +108,7 @@ class Handler:
         datagram.add_uint8(player.get_id())
         datagram.add_string(player.get_name())
         datagram.add_uint8(player.get_class_number())
+        datagram.add_uint8(player.health)
         datagram.add_float64(player.get_x())
         datagram.add_float64(player.get_y())
         datagram.add_float64(player.get_z())
@@ -145,3 +151,7 @@ class Handler:
                     datagram.add_uint8(Message.DISCONNECTION)
                     datagram.add_uint8(id_)
                     self.server.writer.send(datagram, other_player.get_connection())
+
+    def handle_action(self, datagram, iterator):
+        connection = datagram.get_connection()
+        player = self.server.find_player_by_connection(connection)

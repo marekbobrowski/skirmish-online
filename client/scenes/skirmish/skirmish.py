@@ -34,31 +34,35 @@ class Skirmish:
         self.node_3d.hide()
 
         self.world.load()
-        self.interface.load()
 
         data_iterator, datagram = self.core.network_manager.ask_for_initial_data()
         if data_iterator is not None and datagram is not None:
             id_ = data_iterator.get_uint8()
             name = data_iterator.get_string()
             class_number = data_iterator.get_uint8()
+            health = data_iterator.get_uint8()
             x = data_iterator.get_float64()
             y = data_iterator.get_float64()
             z = data_iterator.get_float64()
             h = data_iterator.get_float64()
             p = data_iterator.get_float64()
             r = data_iterator.get_float64()
-            self.create_main_player(class_number, id_, name, x, y, z, h, p, r)
+            self.create_main_player(class_number, id_, name, health, x, y, z, h, p, r)
+            self.player.health = health
             while data_iterator.get_remaining_size() > 0:
                 id_ = data_iterator.get_uint8()
                 name = data_iterator.get_string()
                 class_number = data_iterator.get_uint8()
+                health = data_iterator.get_uint8()
                 x = data_iterator.get_float64()
                 y = data_iterator.get_float64()
                 z = data_iterator.get_float64()
                 h = data_iterator.get_float64()
                 p = data_iterator.get_float64()
                 r = data_iterator.get_float64()
-                self.create_other_player(class_number, id_, name, x, y, z, h, p, r)
+                self.create_other_player(class_number, id_, name, health, x, y, z, h, p, r)
+
+            self.interface.load()
         else:
             self.scene_manager.show_dialog('Lost connection.')
 
@@ -77,13 +81,13 @@ class Skirmish:
         self.node_2d.leave()
         self.node_3d.leave()
 
-    def create_main_player(self, class_number, id_, name, x, y, z, h, p, r):
-        player = PlayerCharacter(class_number, id_, name, self.core.assets_dir)
+    def create_main_player(self, class_number, id_, name, health, x, y, z, h, p, r):
+        player = PlayerCharacter(class_number, id_, name, health, self.core.assets_dir)
         self.world.spawn_player(player, x, y, z, h, p, r)
         self.player = player
 
-    def create_other_player(self, class_number, id_, name, x, y, z, h, p, r):
-        player = PlayerCharacter(class_number, id_, name, self.core.assets_dir)
+    def create_other_player(self, class_number, id_, name, health, x, y, z, h, p, r):
+        player = PlayerCharacter(class_number, id_, name, health, self.core.assets_dir)
         self.world.spawn_player(player, x, y, z, h, p, r)
         self.other_players.append(player)
 

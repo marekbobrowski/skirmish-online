@@ -17,13 +17,14 @@ class SkirmishLocalUpdater:
         id_ = iterator.get_uint8()
         name = iterator.get_string()
         class_number = iterator.get_uint8()
+        health = iterator.get_uint8()
         x = iterator.get_float64()
         y = iterator.get_float64()
         z = iterator.get_float64()
         h = iterator.get_float64()
         p = iterator.get_float64()
         r = iterator.get_float64()
-        self.skirmish.create_other_player(class_number, id_, name, x, y, z, h, p, r)
+        self.skirmish.create_other_player(class_number, id_, name, health, x, y, z, h, p, r)
 
     def update_disconnection(self, datagram, iterator):
         id_ = iterator.get_uint8()
