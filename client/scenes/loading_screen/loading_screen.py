@@ -1,6 +1,6 @@
 from direct.gui.OnscreenImage import OnscreenImage
 from direct.gui.OnscreenText import OnscreenText
-
+import config
 
 class LoadingScreen:
     def __init__(self, scene_manager):
@@ -18,7 +18,7 @@ class LoadingScreen:
         return self._is_loaded
 
     def load(self):
-        assets_dir = self.core.assets_dir
+        assets_dir = config.assets_dir
         self.background = OnscreenImage(parent=self.core.render2d,
                                         image=assets_dir + 'artwork/menu_background.jpg')
         self.font = self.core.loader.load_font(assets_dir + 'fonts/GODOFWAR.TTF')

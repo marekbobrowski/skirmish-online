@@ -1,5 +1,5 @@
 from direct.gui.OnscreenImage import OnscreenImage
-
+import config
 
 class Zone:
     def __init__(self, core, parent_3d, parent_2d):
@@ -13,7 +13,7 @@ class Zone:
         # self.background_image = None
 
     def load(self):
-        assets_dir = self.core.assets_dir
+        assets_dir = config.assets_dir
         # self.terrain = self.core.loader.load_model(assets_dir + 'models/terrain.egg')
         # self.terrain.reparent_to(self.node_3d)
 

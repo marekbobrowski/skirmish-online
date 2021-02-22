@@ -1,8 +1,10 @@
 from direct.actor.Actor import Actor
+import config
 
 
 class BasicCharacter(Actor):
-    def __init__(self, model_number, assets_dir):
+    def __init__(self, model_number):
+        assets_dir = config.assets_dir
         if model_number == 0:
             Actor.__init__(self, assets_dir + "models/knight", {'idle': assets_dir + 'models/animations/knight-Idle',
                                                    'run': assets_dir + 'models/animations/knight-Walk',

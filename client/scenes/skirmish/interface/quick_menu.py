@@ -1,6 +1,7 @@
 from direct.gui.DirectGui import DirectButton
 import sys
 from direct.task.Task import Task
+import config
 
 
 class QuickMenu:
@@ -26,7 +27,7 @@ class QuickMenu:
         self.enter() if self.visible else self.leave()
 
     def load(self):
-        assets_dir = self.core.assets_dir
+        assets_dir = config.assets_dir
         font = self.core.loader.load_font(assets_dir + 'fonts/GODOFWAR.TTF')
         rollover_sound = self.core.loader.loadSfx(assets_dir + 'sounds/mouse_rollover.wav')
         click_sound = self.core.loader.loadSfx(assets_dir + 'sounds/mouse_click.wav')
@@ -70,7 +71,7 @@ class QuickMenu:
                                                rolloverSound=rollover_sound,
                                                clickSound=click_sound,
                                                parent=self.node,
-                                               command=sys.exit)
+                                               command=self.leave_skirmish)
         self.exit_game_btn = DirectButton(scale=0.34,
                                           pos=(0, 0, -0.2),
                                           frameColor=(0, 0, 0, 0),
@@ -84,11 +85,22 @@ class QuickMenu:
                                           rolloverSound=rollover_sound,
                                           clickSound=click_sound,
                                           parent=self.node,
-                                          command=sys.exit)
+                                          command=self.exit_app)
         self.audio_btn.set_transparency(1)
         self.return_btn.set_transparency(1)
         self.leave_skirmish_btn.set_transparency(1)
         self.exit_game_btn.set_transparency(1)
+
+    def leave_skirmish(self):
+        self.core.network_manager.disconnect()
+        self.core.network_manager.stop_updating_skirmish()
+        self.interface.skirmish.flush()
+        self.core.scene_manager.change_scene_to(0)
+
+    def exit_app(self):
+        self.core.network_manager.disconnect()
+        self.core.network_manager.stop_updating_skirmish()
+        sys.exit()
 
 
 

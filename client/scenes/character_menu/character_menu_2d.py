@@ -1,6 +1,6 @@
 from direct.gui.OnscreenText import OnscreenText
 from direct.gui.DirectGui import DirectEntry, DirectButton, DGG
-
+import config
 
 class CharacterMenu2D:
 
@@ -36,7 +36,7 @@ class CharacterMenu2D:
         ]
 
     def load(self):
-        assets_dir = self.core.assets_dir
+        assets_dir = config.assets_dir
         rollover_sound = self.core.loader.loadSfx(assets_dir + 'sounds/mouse_rollover.wav')
         click_sound = self.core.loader.loadSfx(assets_dir + 'sounds/mouse_click.wav')
         font = self.core.loader.load_font(assets_dir + 'fonts/GODOFWAR.TTF')

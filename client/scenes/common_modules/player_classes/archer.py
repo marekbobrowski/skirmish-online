@@ -1,5 +1,8 @@
+import config
+
+
 class Archer:
-    assets_dir = '../assets/'
+    assets_dir = config.assets_dir
     # 'action_name': (cooldown [s], artwork path)
     actions = [
         ('action1', 1, assets_dir + 'artwork/archer-class.png'),

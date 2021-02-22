@@ -4,7 +4,6 @@ from panda3d.core import ConnectionWriter
 from direct.distributed.PyDatagram import PyDatagram
 from direct.distributed.PyDatagramIterator import PyDatagramIterator
 from panda3d.core import NetDatagram
-from direct.task.Task import Task
 from networking.skirmish_sender import SkirmishSender
 from networking.skirmish_local_updater import SkirmishLocalUpdater
 import sys
@@ -14,22 +13,31 @@ from protocol.message import Message
 
 
 class NetworkManager:
+    """
+    This class is responsible for managing the communication with the game server.
+    """
     def __init__(self, core):
         self.core = core
 
+        # Networking modules from panda3d.
         self.manager = QueuedConnectionManager()
         self.reader = QueuedConnectionReader(self.manager, 0)
         self.writer = ConnectionWriter(self.manager, 0)
 
+        # Continuous communication submodules.
         self.skirmish_local_updater = None
         self.skirmish_sender = None
 
+        # Network manager state.
         self.server_port = 5000
         self.server_address = None
         self.timeout = 4000
         self.server_connection = None
         self.connected = False
 
+    """
+    Establishes TCP connection with the game server.
+    """
     def connect(self, server_address):
         self.server_address = server_address
         self.server_connection = self.manager.open_TCP_client_connection(self.server_address,
@@ -40,6 +48,10 @@ class NetworkManager:
             return True
         return False
 
+    """
+    Asks the server, if the client can join the game with the specified player name and class.
+    Waits for the server's response and returns it.
+    """
     def ask_for_pass(self, name, class_number):
         # send datagram asking if player can join the world
         data = PyDatagram()
@@ -60,6 +72,12 @@ class NetworkManager:
                         return True
         return False
 
+    """
+    Asks the server for initial data, so the client can load all currently active players within the world.
+    The initial data consists of player names, classes, health points, positions etc. The function waits for
+    the server to respond. If the server sends the initial data, then the function returns the received datagram 
+    and it's iterator.
+    """
     def ask_for_initial_data(self):
         # send datagram asking for initial world data (player's location, other player names, positions)
         data = PyDatagram()
@@ -76,55 +94,48 @@ class NetworkManager:
                     return iterator, datagram
         return None
 
+    """
+    Sends a message to the server announcing that the client is ready for regular game updates (has loaded the world). 
+    The world updates consist of all players' positions, rotations, health points etc.
+    """
     def send_ready_for_updates(self):
         data = PyDatagram()
         data.add_uint8(Message.READY_FOR_UPDATES)
         self.writer.send(data, self.server_connection)
 
+    """
+    Runs 2 separate tasks to continuously communicate with the server:
+    > sender thread -- sends messages from the client (for example: ability usage attempt)
+    > local_updater thread -- handles the data sent by the server (positions, rotations, health point changes etc.)
+    
+    This communication concerns only what's happening during the actual gameplay (the skirmish scene).
+    There are separate functions responsible for establishing communication and other starter actions.
+    """
     def start_updating_skirmish(self, skirmish):
-        self.skirmish_sender = SkirmishSender(skirmish, self.writer, self.server_connection)
-        self.skirmish_local_updater = SkirmishLocalUpdater(skirmish)
-        self.core.task_mgr.add(self.listen_for_updates, "Listen For Skirmish Updates")
-        self.core.task_mgr.add(self.send_updates, "Send Skirmish Updates")
+        self.skirmish_sender = SkirmishSender(skirmish, self.writer, self.server_connection, self)
+        self.skirmish_local_updater = SkirmishLocalUpdater(skirmish, self)
+        self.core.task_mgr.add(self.skirmish_local_updater.listen_for_updates, 'listen for skirmish updates')
+        self.core.task_mgr.add(self.skirmish_sender.send_updates, 'send skirmish updates')
 
-    def listen_for_updates(self, task):
-        if self.connected:
-            if self.reader.data_available():
-                datagram = NetDatagram()
-                iterator = PyDatagramIterator(datagram)
-                if self.reader.get_data(datagram):
-                    self.process_updates(datagram, iterator)
-            return Task.cont
-        else:
-            return Task.done
+    """
+    Stops continuous communication with the server.
+    """
+    def stop_updating_skirmish(self):
+        self.core.task_mgr.remove('listen for skirmish updates')
+        self.core.task_mgr.remove('send skirmish updates')
 
-    def send_updates(self, task):
-        if self.connected:
-            self.skirmish_sender.send_pos_hpr()
-            return Task.cont
-        else:
-            return Task.done
+    """
+    Sends a datagram with disconnection announcement.
+    """
+    def send_disconnect(self):
+        datagram = PyDatagram()
+        datagram.add_uint8(Message.DISCONNECTION)
+        self.writer.send(datagram, self.server_connection)
 
-    def process_updates(self, datagram, iterator):
-        packet_type = iterator.get_uint8()
-        if packet_type == Message.POS_HPR:
-            self.skirmish_local_updater.update_pos_hpr(datagram, iterator)
-        elif packet_type == Message.NEW_PLAYER:
-            self.skirmish_local_updater.update_new_player(datagram, iterator)
-        elif packet_type == Message.DISCONNECTION:
-            self.skirmish_local_updater.update_disconnection(datagram, iterator)
-        elif packet_type == Message.HEALTH:
-            self.skirmish_local_updater.update_health(datagram, iterator)
-
+    """
+    Disconnects from the server.
+    """
     def disconnect(self):
-        self.skirmish_sender.send_disconnect()
-        self.reader.remove_connection(self.server_connection)
+        self.send_disconnect()
+        self.manager.close_connection(self.server_connection)
         self.connected = False
-
-
-
-
-
-
-
-

@@ -24,27 +24,38 @@ class InputHandling:
         self.mouse_1_click_time = 0
 
         # Assignment of handling functions.
-        self.core.accept('w', self.w_handler)
-        self.core.accept('w-up', self.w_up_handler)
-        self.core.accept('s', self.s_handler)
-        self.core.accept('s-up', self.s_up_handler)
-        self.core.accept('a', self.a_handler)
-        self.core.accept('a-up', self.a_up_handler)
-        self.core.accept('d', self.d_handler)
-        self.core.accept('d-up', self.d_up_handler)
-        self.core.accept('mouse1', self.mouse_1_handler)
-        self.core.accept('mouse1-up', self.mouse_1_up_handler)
-        self.core.accept('mouse3', self.mouse_3_handler)
-        self.core.accept('mouse3-up', self.mouse_3_up_handler)
-        self.core.accept('wheel_up', self.wheel_up_handler)
-        self.core.accept('wheel_down', self.wheel_down_handler)
-        self.core.accept('q', self.q_handler)
-        self.core.accept('q-up', self.q_up_handler)
-        self.core.accept('e', self.e_handler)
-        self.core.accept('e-up', self.e_up_handler)
-        self.core.accept('r', self.r_handler)
-        self.core.accept('f', self.f_handler)
-        self.core.accept('escape', self.esc_handler)
+        self.event_handler_mapping = {
+            'w': self.w_handler,
+            'w-up': self.w_up_handler,
+            's': self.s_handler,
+            's-up': self.s_up_handler,
+            'a': self.a_handler,
+            'a-up': self.a_up_handler,
+            'd': self.d_handler,
+            'd-up': self.d_up_handler,
+            'mouse1': self.mouse_1_handler,
+            'mouse1-up': self.mouse_1_up_handler,
+            'mouse3': self.mouse_3_handler,
+            'mouse3-up': self.mouse_3_up_handler,
+            'wheel_up': self.wheel_up_handler,
+            'wheel_down': self.wheel_down_handler,
+            'q': self.q_handler,
+            'q-up': self.q_up_handler,
+            'e': self.e_handler,
+            'e-up': self.e_up_handler,
+            'r': self.r_handler,
+            'f': self.f_handler,
+            'escape': self.esc_handler,
+        }
+        self.enable_event_handling()
+
+    def enable_event_handling(self):
+        for event, handler in self.event_handler_mapping.items():
+            self.core.accept(event, handler)
+
+    def disable_event_handling(self):
+        for event, handler in self.event_handler_mapping.items():
+            self.core.ignore(event)
 
     def w_handler(self):
         self.w_pressed = True

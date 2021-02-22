@@ -1,10 +1,10 @@
-from characters.basic_character import BasicCharacter
-from player_classes import warrior, priest, mage, archer
+from scenes.common_modules.characters.basic_character import BasicCharacter
+from scenes.common_modules.player_classes import archer, priest, mage, warrior
 
 
 class PlayerCharacter(BasicCharacter):
-    def __init__(self, class_number, id_, name, health, assets_dir):
-        BasicCharacter.__init__(self, class_number, assets_dir)
+    def __init__(self, class_number, id_, name, health):
+        BasicCharacter.__init__(self, class_number)
         self.id = id_
         self.name = name
         self.player_class = None

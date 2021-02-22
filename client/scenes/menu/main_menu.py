@@ -1,6 +1,7 @@
 from direct.gui.DirectGui import DirectEntry, DirectButton, DGG
 import sys
 from threading import Thread
+import config
 
 
 # noinspection PyArgumentList
@@ -19,7 +20,7 @@ class MainMenu:
         self.notification_text = None
 
     def load(self):
-        assets_dir = self.menu.core.assets_dir
+        assets_dir = config.assets_dir
 
         # Ip entry
         self.ip_entry = DirectEntry(scale=0.1,

@@ -2,6 +2,7 @@ from direct.gui.OnscreenImage import OnscreenImage
 from direct.gui.OnscreenText import OnscreenText
 from scenes.menu.audio_submenu import AudioSubmenu
 from scenes.menu.main_menu import MainMenu
+import config
 
 
 class Menu:
@@ -32,7 +33,7 @@ class Menu:
         return self._is_loaded
 
     def load(self):
-        assets_dir = self.core.assets_dir
+        assets_dir = config.assets_dir
         self.background = OnscreenImage(parent=self.core.render2d,
                                         image=assets_dir + 'artwork/menu_background.jpg')
         self.font = self.core.loader.load_font(assets_dir + 'fonts/GODOFWAR.TTF')
@@ -51,6 +52,7 @@ class Menu:
 
     def enter(self):
         self.menu_node.show()
+        self.background.show()
         self.change_subscene_to(0)
 
     def leave(self):

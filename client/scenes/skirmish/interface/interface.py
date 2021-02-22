@@ -1,7 +1,7 @@
-from scenes.skirmish.quick_menu import QuickMenu
+from scenes.skirmish.interface.quick_menu import QuickMenu
 from direct.task.Task import Task
-from scenes.skirmish.player_frames import PlayerFrames
-from scenes.skirmish.action_bar import ActionBar
+from scenes.skirmish.interface.player_frames import PlayerFrames
+from scenes.skirmish.interface.action_bar import ActionBar
 
 
 class Interface:

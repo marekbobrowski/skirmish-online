@@ -1,10 +1,10 @@
 from scenes.skirmish.input_handling import InputHandling
 from scenes.skirmish.character_control import CharacterControl
 from scenes.skirmish.camera_control import CameraControl
-from scenes.skirmish.interface import Interface
+from scenes.skirmish.interface.interface import Interface
 from scenes.skirmish.world import World
 from scenes.skirmish.object_picking import ObjectPicking
-from characters.player_character import PlayerCharacter
+from scenes.common_modules.characters.player_character import PlayerCharacter
 from panda3d.core import Vec3
 
 
@@ -78,16 +78,16 @@ class Skirmish:
         self.enable_control()
 
     def leave(self):
-        self.node_2d.leave()
-        self.node_3d.leave()
+        self.node_2d.hide()
+        self.node_3d.hide()
 
     def create_main_player(self, class_number, id_, name, health, x, y, z, h, p, r):
-        player = PlayerCharacter(class_number, id_, name, health, self.core.assets_dir)
+        player = PlayerCharacter(class_number, id_, name, health)
         self.world.spawn_player(player, x, y, z, h, p, r)
         self.player = player
 
     def create_other_player(self, class_number, id_, name, health, x, y, z, h, p, r):
-        player = PlayerCharacter(class_number, id_, name, health, self.core.assets_dir)
+        player = PlayerCharacter(class_number, id_, name, health)
         self.world.spawn_player(player, x, y, z, h, p, r)
         self.other_players.append(player)
 
@@ -112,4 +112,16 @@ class Skirmish:
         if player is not None:
             self.other_players.remove(player)
             player.delete()
+
+    def flush(self):
+        for child in self.node_3d.get_children():
+            child.remove_node()
+        self.input_handling.disable_event_handling()
+        self.other_players = []
+        self.player = None
+        self.camera_control = None
+        self.character_control = None
+        self.object_picking = None
+        self._is_loaded = False
+        self.core.task_mgr.remove('interface update')
 

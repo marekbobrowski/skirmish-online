@@ -88,7 +88,7 @@ class Server:
         active_players = self.get_number_of_active_players()
         datagram.add_uint8(Message.POS_HPR)
         for i, player in enumerate(self.active_connections):
-            if player.get_joined_game() and i < active_players:
+            if player.get_joined_game():
                 datagram.add_uint8(player.get_id())
                 datagram.add_float64(player.get_x())
                 datagram.add_float64(player.get_y())
@@ -97,7 +97,6 @@ class Server:
                 datagram.add_float64(player.get_p())
                 datagram.add_float64(player.get_r())
         self.writer.send(datagram, connection)
-
 
 
 if __name__ == "__main__":

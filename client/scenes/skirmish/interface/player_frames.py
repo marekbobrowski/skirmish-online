@@ -1,5 +1,4 @@
 from direct.gui.DirectGui import DirectFrame, DirectLabel
-from characters.player_character import PlayerCharacter
 
 
 # noinspection PyTypeChecker
