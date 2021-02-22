@@ -7,20 +7,26 @@ from protocol.message import Message
 
 
 class SkirmishSender:
-    def __init__(self, skirmish, writer, server_connection, manager):
+    """
+    Responsible for sending this client's data to the server.
+    The data concerns only the actual skirmish gameplay, such as this client's character position,
+    ability usage.
+    """
+    def __init__(self, manager, skirmish):
         self.manager = manager
         self.skirmish = skirmish
-        self.writer = writer
-        self.server_connection = server_connection
 
     def send_updates(self, task):
-        if self.manager.connected:
-            self.send_pos_hpr()
-            return Task.cont
-        else:
-            return Task.done
+        """
+        Continuously (each frame) calls functions that send certain data to the server.
+        """
+        self.send_pos_hpr()
+        return Task.cont
 
     def send_pos_hpr(self):
+        """
+        Sends this client's character position and rotation to the server.
+        """
         datagram = PyDatagram()
         datagram.add_uint8(Message.POS_HPR)
         datagram.add_float64(self.skirmish.player.get_x())
@@ -29,12 +35,17 @@ class SkirmishSender:
         datagram.add_float64(self.skirmish.player.get_h())
         datagram.add_float64(self.skirmish.player.get_p())
         datagram.add_float64(self.skirmish.player.get_r())
-        self.writer.send(datagram, self.server_connection)
+        self.manager.writer.send(datagram, self.manager.server_connection)
 
-    def send_action_attempt(self, action, target):
+    def send_ability_attempt(self, ability, target):
+        """
+        Sends message to the server, stating that this client's user attempted to use a certain ability.
+        :param ability: The ability's code.
+        :param target: The target's id.
+        """
         datagram = PyDatagram()
         datagram.add_uint8(Message.ACTION)
-        datagram.add_uint8(action)
+        datagram.add_uint8(ability)
         datagram.add_uint8(target)
-        self.writer.send(datagram, self.server_connection)
+        self.manager.writer.send(datagram, self.manager.server_connection)
 
