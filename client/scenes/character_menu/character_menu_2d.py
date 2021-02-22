@@ -2,8 +2,12 @@ from direct.gui.OnscreenText import OnscreenText
 from direct.gui.DirectGui import DirectEntry, DirectButton, DGG
 import config
 
-class CharacterMenu2D:
 
+class CharacterMenu2D:
+    """
+    The interface submodule of the character menu. Displays buttons that represent available classes,
+    input field for character name, class description field etc.
+    """
     def __init__(self, char_menu):
         self.char_menu = char_menu
         self.core = char_menu.core
@@ -16,6 +20,8 @@ class CharacterMenu2D:
         self.player_name_entry = None
         self.join_skirmish_btn = None
         self.character_description_text = None
+
+        # class_name, class_color, class_description
         self.class_info = [
             ['Warrior', (1, 0, 0, 1), 'Abilities: '
                                       '\n ability 1 - lorem ipsum'
@@ -36,6 +42,10 @@ class CharacterMenu2D:
         ]
 
     def load(self):
+        """
+        Loads the character's menu interface components.
+        :return:
+        """
         assets_dir = config.assets_dir
         rollover_sound = self.core.loader.loadSfx(assets_dir + 'sounds/mouse_rollover.wav')
         click_sound = self.core.loader.loadSfx(assets_dir + 'sounds/mouse_click.wav')
@@ -118,6 +128,9 @@ class CharacterMenu2D:
                                                        parent=self.node)
 
     def refresh(self):
+        """
+        Refreshes the character menu by updating the classes name and it's description.
+        """
         self.class_name_text.setText(self.class_info[self.char_menu.selected_class][0])
         self.class_name_text.setFg(self.class_info[self.char_menu.selected_class][1])
         self.character_description_text.setText(self.class_info[self.char_menu.selected_class][2])

@@ -3,6 +3,9 @@ from scenes.skirmish.zone import Zone
 
 
 class CharacterMenu3D:
+    """
+    The 3d submodule of the character menu. Displays the chosen class representative and the scenery.
+    """
     def __init__(self, char_menu):
         self.char_menu = char_menu
         self.core = char_menu.core
@@ -11,6 +14,9 @@ class CharacterMenu3D:
         self.zone = Zone(self.core, self.node, self.char_menu.core.render2dp)
 
     def load(self):
+        """
+        Loads the 3d models of the scene and places everything in the proper position (including the camera).
+        """
         self.core.camera.set_pos(-2.9, -4.9, 0.94)
         self.core.camera.set_h(-50)
 
@@ -50,11 +56,17 @@ class CharacterMenu3D:
         self.class_representatives.append(priest)
 
     def position_camera(self):
+        """
+        Positions the camera for the character menu scene.
+        """
         self.char_menu.core.camera.reparent_to(self.char_menu.core.render)
         self.char_menu.core.camera.set_pos(-2.9, -4.9, 0.94)
         self.char_menu.core.camera.set_hpr(-50, 0, 0)
 
     def refresh(self):
+        """
+        Refreshes the scene by showing the chosen class representative and hiding the rest.
+        """
         for repr_ in self.class_representatives:
             repr_.hide()
         self.class_representatives[self.char_menu.selected_class].show()
