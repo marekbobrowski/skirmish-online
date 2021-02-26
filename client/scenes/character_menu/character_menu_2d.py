@@ -44,7 +44,6 @@ class CharacterMenu2D:
     def load(self):
         """
         Loads the character's menu interface components.
-        :return:
         """
         assets_dir = config.assets_dir
         rollover_sound = self.core.loader.loadSfx(assets_dir + 'sounds/mouse_rollover.wav')

@@ -89,7 +89,9 @@ class MainMenu:
             Thread(target=self.connect).start()
 
     def connect(self):
-        self.menu.scene_manager.show_dialog('Connecting...')
+        # self.menu.scene_manager.dialog.set_button()
+        self.menu.scene_manager.show_dialog(text='Connecting...', button_text='Cancel',
+                                            button_command=self.cancel_connection)
         server_ip = self.ip_entry.get()
         connected = self.menu.core.network_manager.connect(server_ip)
         if connected:
@@ -98,6 +100,10 @@ class MainMenu:
             self.menu.scene_manager.change_scene_to(1)
             self.menu.scene_manager.hide_dialog()
         else:
-            self.menu.scene_manager.show_dialog('Failed to connect.')
+            self.menu.scene_manager.show_dialog(text='Failed to connect.', button_text='Return',
+                                                button_command=self.cancel_connection)
         self.connecting = False
+
+    def cancel_connection(self):
+        self.menu.scene_manager.hide_dialog()
 

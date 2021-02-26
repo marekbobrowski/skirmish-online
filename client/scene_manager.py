@@ -32,16 +32,15 @@ class SceneManager:
 
     def show_dialog(self, text, button_text=None, button_command=None):
         if self.dialog is None:
-            self.dialog = Dialog(parent=self.core.aspect2d,
-                                 frame_size=(-0.75, 0.75, -0.25, 0.25),
-                                 label=text,
-                                 button_label='',
-                                 function=None)
+            self.dialog = Dialog(core=self.core,
+                                 parent=self.core.aspect2d,
+                                 frame_size=(-0.75, 0.75, -0.25, 0.25))
         if button_text is not None:
             self.dialog.label.setText(button_text)
         if button_command is not None:
             self.dialog.button.commandFunc(button_command)
         self.dialog.set_label(text)
+        self.dialog.set_button(button_text, button_command)
         self.dialog.show()
 
     def hide_dialog(self):

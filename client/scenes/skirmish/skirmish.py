@@ -3,6 +3,7 @@ from scenes.skirmish.character_control import CharacterControl
 from scenes.skirmish.camera_control import CameraControl
 from scenes.skirmish.interface.interface import Interface
 from scenes.skirmish.world import World
+from scenes.skirmish.cooldowns import Cooldowns
 from scenes.skirmish.object_picking import ObjectPicking
 from scenes.common_modules.characters.player_character import PlayerCharacter
 from panda3d.core import Vec3
@@ -17,6 +18,7 @@ class Skirmish:
         self.node_3d = self.core.render.attach_new_node("skirmish 3d node")
 
         self.player = None
+        self.cooldowns = Cooldowns(self)
         self.other_players = []
         self.world = World(self)
         self.interface = Interface(self)
