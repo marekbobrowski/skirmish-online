@@ -3,9 +3,12 @@ class Player:
         self.connection = connection
         self.joined_game = False
         self.health = 0
+        self.resource = 0
         self.id = 0
         self.name = 'unknown'
         self.class_number = 0
+        self.health_regen = 5
+        self.resource_regen = 5
         self.x = 0
         self.y = 0
         self.z = 0

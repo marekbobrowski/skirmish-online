@@ -86,14 +86,16 @@ class SkirmishLocalUpdater:
 
     def update_health(self, datagram, iterator):
         """
-        Updates specific player's health.
+        Updates healths points of each player specified in the datagram.
         """
-        id_ = iterator.get_uint8()
-        health = iterator.get_uint8()
-        player = self.skirmish.get_player_by_id(id_)
-        if player is not None:
-            player.health = health
-            return
-        # Check if the message concerns this client's character.
-        if self.skirmish.player.id == id_:
-            self.skirmish.player.health = health
+        while iterator.get_remaining_size() > 0:
+            id_ = iterator.get_uint8()
+            health = iterator.get_uint8()
+            player = self.skirmish.get_player_by_id(id_)
+            if player is not None:
+                player.health = health
+            # Check if the message concerns this client's character.
+            if self.skirmish.player.id == id_:
+                self.skirmish.player.health = health
+
+

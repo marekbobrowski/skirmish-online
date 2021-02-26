@@ -38,6 +38,7 @@ class Server:
         Thread(target=self.listen_for_new_connections, daemon=True).start()
         Thread(target=self.listen_for_new_data, daemon=True).start()
         Thread(target=self.send_updates_to_active_players, daemon=True).start()
+        Thread(target=self.regenerate_health_resource, daemon=True).start()
 
     def listen_for_new_connections(self):
         while True:
@@ -97,6 +98,24 @@ class Server:
                 datagram.add_float64(player.get_p())
                 datagram.add_float64(player.get_r())
         self.writer.send(datagram, connection)
+
+    def regenerate_health_resource(self):
+        while True:
+            datagram = PyDatagram()
+            datagram.add_uint8(Message.HEALTH)
+            for player in self.active_connections:
+                if player.joined_game:
+                    new_health = player.health + player.health_regen
+                    if new_health > 100:
+                        new_health = 100
+                    player.health = new_health
+                    datagram.add_uint8(player.id)
+                    datagram.add_uint8(player.health)
+
+            for player in self.active_connections:
+                if player.joined_game:
+                    self.writer.send(datagram, player.connection)
+            sleep(5)
 
 
 if __name__ == "__main__":
