@@ -49,3 +49,12 @@ class SkirmishSender:
         datagram.add_uint8(target)
         self.manager.writer.send(datagram, self.manager.server_connection)
 
+    def send_chat_message(self, message):
+        """
+        Sends a chat message to the server.
+        """
+        datagram = PyDatagram()
+        datagram.add_uint8(Message.CHAT_MSG)
+        datagram.add_string(message)
+        self.manager.writer.send(datagram, self.manager.server_connection)
+

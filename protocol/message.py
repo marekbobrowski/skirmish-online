@@ -8,12 +8,13 @@ class Message:
     IS_MOVING = 4
     ACTION = 5
     DISCONNECTION = 6
+    CHAT_MSG = 7
 
     # SENT ONLY BY SERVER
-    CHARACTER_REACTION = 7  # reaction to hit, or spell-casting animation'
-    TELEPORT = 8
-    NEW_PLAYER = 9
-    HEALTH = 10
+    CHARACTER_REACTION = 8  # reaction to hit, or spell-casting animation'
+    TELEPORT = 9
+    NEW_PLAYER = 10
+    HEALTH = 11
 
     # SENT ONLY BY CLIENT
-    READY_FOR_UPDATES = 11
+    READY_FOR_UPDATES = 12

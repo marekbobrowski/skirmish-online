@@ -21,7 +21,8 @@ class SkirmishLocalUpdater:
             Message.POS_HPR: self.update_pos_hpr,
             Message.NEW_PLAYER: self.update_new_player,
             Message.DISCONNECTION: self.update_disconnection,
-            Message.HEALTH: self.update_health
+            Message.HEALTH: self.update_health,
+            Message.CHAT_MSG: self.update_chat
         }
 
     def listen_for_updates(self, task):
@@ -98,4 +99,8 @@ class SkirmishLocalUpdater:
             if self.skirmish.player.id == id_:
                 self.skirmish.player.health = health
 
+    def update_chat(self, datagram, iterator):
+        name = iterator.get_string()
+        message = iterator.get_string()
+        self.skirmish.interface.submodules[3].add_message(name, message)
 

@@ -46,16 +46,18 @@ class InputHandling:
             'r': self.r_handler,
             'f': self.f_handler,
             'escape': self.esc_handler,
+            'enter': self.enter_handler
         }
-        self.enable_event_handling()
+        self.enable()
 
-    def enable_event_handling(self):
+    def enable(self):
         for event, handler in self.event_handler_mapping.items():
             self.core.accept(event, handler)
 
-    def disable_event_handling(self):
+    def disable(self):
         for event, handler in self.event_handler_mapping.items():
             self.core.ignore(event)
+
 
     def w_handler(self):
         self.w_pressed = True
@@ -238,6 +240,17 @@ class InputHandling:
 
     def esc_handler(self):
         self.skirmish.interface.submodules[0].toggle()
+
+    def enter_handler(self):
+        chat_frame = self.skirmish.interface.submodules[3]
+        if chat_frame.focused:
+            message = chat_frame.entry.get()
+            if message == '':
+                return
+            self.core.network_manager.skirmish_sender.send_chat_message(message)
+            chat_frame.remove_focus()
+        else:
+            chat_frame.focus()
 
     def handle_m1_dragging_task(self, task):
         # Move the camera on the character's "orbit" only if the first button of the mouse is clicked.

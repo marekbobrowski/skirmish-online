@@ -118,7 +118,7 @@ class Skirmish:
     def flush(self):
         for child in self.node_3d.get_children():
             child.remove_node()
-        self.input_handling.disable_event_handling()
+        self.input_handling.disable()
         self.other_players = []
         self.player = None
         self.camera_control = None

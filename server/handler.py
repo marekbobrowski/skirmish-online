@@ -28,6 +28,8 @@ class Handler:
             self.handle_disconnection(datagram, iterator)
         elif packet_type == Message.ACTION:
             self.action_handler.handle_action(datagram, iterator)
+        elif packet_type == Message.CHAT_MSG:
+            self.handle_chat_message(datagram, iterator)
 
     def handle_ask_for_pass(self, datagram, iterator):
         name = iterator.get_string()
@@ -153,4 +155,20 @@ class Handler:
                     datagram.add_uint8(Message.DISCONNECTION)
                     datagram.add_uint8(id_)
                     self.server.writer.send(datagram, other_player.get_connection())
+
+    def handle_chat_message(self, datagram, iterator):
+        player = self.server.find_player_by_connection(datagram.get_connection())
+        if player is None:
+            return
+        message = iterator.get_string()
+
+        datagram = PyDatagram()
+        datagram.add_uint8(Message.CHAT_MSG)
+        datagram.add_string(player.name)
+        datagram.add_string(message)
+
+        for player in self.server.active_connections:
+            if player.joined_game:
+                self.server.writer.send(datagram, player.get_connection())
+
 
