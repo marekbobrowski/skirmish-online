@@ -58,29 +58,32 @@ class InputHandling:
         for event, handler in self.event_handler_mapping.items():
             self.core.ignore(event)
 
-
     def w_handler(self):
         self.w_pressed = True
         self.core.taskMgr.remove("MoveBackward")
         # Start moving if the character is not moving yet (mouse buttons allow to move, so we have to check).
         if not self.core.taskMgr.hasTaskNamed("MoveForward"):
             self.core.taskMgr.add(self.char_ctrl.move_forward, "MoveForward")
+        self.update_animation()
 
     def w_up_handler(self):
         self.w_pressed = False
         # Stop moving if not both mouse buttons are clicked.
         if not (self.mouse_1_clicked and self.mouse_3_clicked):
             self.core.taskMgr.remove("MoveForward")
+        self.update_animation()
 
     def s_handler(self):
         # Stop moving forward.
         self.core.taskMgr.remove("MoveForward")
         # Start moving backward.
         self.core.taskMgr.add(self.char_ctrl.move_backward, "MoveBackward")
+        self.update_animation()
 
     def s_up_handler(self):
         # Stop moving backward.
         self.core.taskMgr.remove("MoveBackward")
+        self.update_animation()
 
     def a_handler(self):
         self.a_pressed = True
@@ -95,12 +98,15 @@ class InputHandling:
         else:
             self.core.taskMgr.add(self.char_ctrl.rotate_left, "RotateLeft")
 
+        self.update_animation()
+
     def a_up_handler(self):
         self.a_pressed = False
 
         # Stop moving/rotating to the left.
         self.core.taskMgr.remove("RotateLeft")
         self.core.taskMgr.remove("MoveLeft")
+        self.update_animation()
 
     def d_handler(self):
         self.d_pressed = True
@@ -115,6 +121,7 @@ class InputHandling:
         # Else, start rotating(!) to the right.
         else:
             self.core.taskMgr.add(self.char_ctrl.rotate_right, "RotateRight")
+        self.update_animation()
 
     def d_up_handler(self):
         self.d_pressed = False
@@ -122,6 +129,7 @@ class InputHandling:
         # Stop moving/rotating to the right.
         self.core.taskMgr.remove("RotateRight")
         self.core.taskMgr.remove("MoveRight")
+        self.update_animation()
 
     def mouse_1_handler(self):
         self.mouse_1_clicked = True
@@ -283,6 +291,10 @@ class InputHandling:
         props.setCursorHidden(value)
         self.core.win.requestProperties(props)
 
-    def attempt_to_select_player(self):
-        mouse_pos = self.core.mouse_watcher_node.get_mouse()
-
+    def update_animation(self):
+        if self.char_ctrl.is_moving():
+            if self.char_ctrl.character.get_current_anim() != 'run':
+                self.char_ctrl.character.loop('run')
+        else:
+            if self.char_ctrl.character.get_current_anim() == 'run':
+                self.char_ctrl.character.loop('idle')

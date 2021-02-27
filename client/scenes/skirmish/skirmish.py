@@ -94,7 +94,7 @@ class Skirmish:
         self.other_players.append(player)
 
     def enable_control(self):
-        self.character_control = CharacterControl(self.player)
+        self.character_control = CharacterControl(self.player, self.core)
         self.camera_control = CameraControl(self.core.camera)
         self.camera_control.attach_to(self.player, Vec3(0, 0, 5))
         self.camera_control.zoom_out()

@@ -4,7 +4,8 @@ from direct.task import Task
 
 class CharacterControl:
 
-    def __init__(self, character):
+    def __init__(self, character, core):
+        self.core = core
         self.character = character
         self.movement_speed = 50
 
@@ -39,6 +40,16 @@ class CharacterControl:
         rel_hook_hpr = cam_ctrl.hook.get_hpr(self.character.get_parent())
         self.character.set_h(rel_hook_hpr.get_x())
         cam_ctrl.hook.set_hpr(self.character.get_parent(), rel_hook_hpr)
+
+    def is_moving(self):
+        f = self.core.task_mgr.hasTaskNamed
+        if (f("MoveForward") or f("MoveBackward")
+                or f("RotateRight") or f("MoveRight")
+                or f("RotateLeft") or f("MoveLeft")):
+            return True
+
+
+
 
 
 
