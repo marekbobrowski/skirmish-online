@@ -16,7 +16,6 @@ sys.path.append(os.path.abspath(os.path.join('..')))
 from protocol.message import Message
 
 
-# noinspection PyArgumentList
 class Server:
     def __init__(self):
         # Support objects
@@ -62,14 +61,14 @@ class Server:
     def send_updates_to_active_players(self):
         while True:
             for player in self.active_connections:
-                if player.get_joined_game():
-                    self.send_pos_hpr(player.get_connection())
+                if player.joined_game:
+                    self.send_pos_hpr(player.connection)
             sleep(0.005)
 
     def get_number_of_active_players(self):
         count = 0
         for other_player in self.active_connections:
-            if other_player.get_joined_game():
+            if other_player.joined_game:
                 count += 1
         return count
 
@@ -89,14 +88,14 @@ class Server:
         active_players = self.get_number_of_active_players()
         datagram.add_uint8(Message.POS_HPR)
         for i, player in enumerate(self.active_connections):
-            if player.get_joined_game():
-                datagram.add_uint8(player.get_id())
-                datagram.add_float64(player.get_x())
-                datagram.add_float64(player.get_y())
-                datagram.add_float64(player.get_z())
-                datagram.add_float64(player.get_h())
-                datagram.add_float64(player.get_p())
-                datagram.add_float64(player.get_r())
+            if player.joined_game:
+                datagram.add_uint8(player.id)
+                datagram.add_float64(player.x)
+                datagram.add_float64(player.y)
+                datagram.add_float64(player.z)
+                datagram.add_float64(player.h)
+                datagram.add_float64(player.p)
+                datagram.add_float64(player.r)
         self.writer.send(datagram, connection)
 
     def regenerate_health_resource(self):

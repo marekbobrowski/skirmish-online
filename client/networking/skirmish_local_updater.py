@@ -22,7 +22,8 @@ class SkirmishLocalUpdater:
             Message.NEW_PLAYER: self.update_new_player,
             Message.DISCONNECTION: self.update_disconnection,
             Message.HEALTH: self.update_health,
-            Message.CHAT_MSG: self.update_chat
+            Message.CHAT_MSG: self.update_chat,
+            Message.IS_MOVING: self.update_is_moving
         }
 
     def listen_for_updates(self, task):
@@ -74,7 +75,7 @@ class SkirmishLocalUpdater:
         h = iterator.get_float64()
         p = iterator.get_float64()
         r = iterator.get_float64()
-        self.skirmish.create_other_player(class_number, id_, name, health, x, y, z, h, p, r)
+        self.skirmish.create_other_player(id_, class_number, name, health, x, y, z, h, p, r)
 
     def update_disconnection(self, datagram, iterator):
         """
@@ -100,7 +101,22 @@ class SkirmishLocalUpdater:
                 self.skirmish.player.health = health
 
     def update_chat(self, datagram, iterator):
+        """
+        Reads the player name and his message from the datagram. Calls the interface method responsible
+        for displaying new message.
+        """
         name = iterator.get_string()
         message = iterator.get_string()
         self.skirmish.interface.submodules[3].add_message(name, message)
+
+    def update_is_moving(self, datagram, iterator):
+        """
+        Reads the player's id and information whether they're moving.
+        """
+        id_ = iterator.get_uint8()
+        is_moving = iterator.get_uint8()
+        player = self.skirmish.get_player_by_id(id_)
+        if player is None:
+            return
+        player.loop('idle') if is_moving == 0 else player.loop('run')
 

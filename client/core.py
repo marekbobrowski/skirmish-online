@@ -1,7 +1,7 @@
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import WindowProperties
 from networking.network_manager import NetworkManager
-from scene_manager import SceneManager
+from scene.scene_manager import SceneManager
 import config
 
 
@@ -22,3 +22,8 @@ class Core(ShowBase):
         self.scene_manager = SceneManager(self)
         self.network_manager = NetworkManager(self)
         self.scene_manager.change_scene_to(0)
+
+
+if __name__ == "__main__":
+    core = Core()
+    core.run()

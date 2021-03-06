@@ -7,29 +7,27 @@ from protocol.message import Message
 from action_handler import ActionHandler
 
 
-# noinspection PyArgumentList
 class Handler:
     def __init__(self, server):
         self.server = server
         self.action_handler = ActionHandler(server)
+        self.data_handler_mapping = {
+            Message.ASK_FOR_PASS: self.handle_ask_for_pass,
+            Message.ASK_FOR_INITIAL_DATA: self.handle_ask_for_initial_data,
+            Message.READY_FOR_UPDATES: self.handle_ready_for_updates,
+            Message.POS_HPR: self.handle_pos_hpr,
+            Message.DISCONNECTION: self.handle_disconnection,
+            Message.ACTION: self.action_handler.handle_action,
+            Message.CHAT_MSG: self.handle_chat_message,
+            Message.IS_MOVING: self.handle_is_moving
+        }
 
     def handle_data(self, datagram):
         iterator = PyDatagramIterator(datagram)
         packet_type = iterator.get_uint8()
-        if packet_type == Message.ASK_FOR_PASS:
-            self.handle_ask_for_pass(datagram, iterator)
-        elif packet_type == Message.ASK_FOR_INITIAL_DATA:
-            self.handle_ask_for_initial_data(datagram, iterator)
-        elif packet_type == Message.READY_FOR_UPDATES:
-            self.handle_ready_for_updates(datagram, iterator)
-        elif packet_type == Message.POS_HPR:
-            self.handle_pos_hpr(datagram, iterator)
-        elif packet_type == Message.DISCONNECTION:
-            self.handle_disconnection(datagram, iterator)
-        elif packet_type == Message.ACTION:
-            self.action_handler.handle_action(datagram, iterator)
-        elif packet_type == Message.CHAT_MSG:
-            self.handle_chat_message(datagram, iterator)
+        if packet_type not in self.data_handler_mapping:
+            return
+        self.data_handler_mapping[packet_type](datagram, iterator)
 
     def handle_ask_for_pass(self, datagram, iterator):
         name = iterator.get_string()
@@ -40,9 +38,9 @@ class Handler:
         # so now the server searches for the player object in his connection list
         player = self.server.find_player_by_connection(connection)
         if player is not None:
-            player.set_name(name)
-            player.set_class_number(class_number)
-            player.set_id(self.server.last_player_id)
+            player.name = name
+            player.class_number = class_number
+            player.id = self.server.last_player_id
             self.server.last_player_id += 1
             allow_player = 1
         else:
@@ -66,35 +64,34 @@ class Handler:
             response.add_uint8(Message.ASK_FOR_INITIAL_DATA)
 
             # send player his own id, nickname, class and health
-            response.add_uint8(player.get_id())
-            response.add_string(player.get_name())
-            response.add_uint8(player.get_class_number())
+            response.add_uint8(player.id)
+            response.add_string(player.name)
+            response.add_uint8(player.class_number)
             response.add_uint8(player.health)
 
             # send player his own position and rotation
-            response.add_float64(player.get_x())
-            response.add_float64(player.get_y())
-            response.add_float64(player.get_z())
-            response.add_float64(player.get_h())
-            response.add_float64(player.get_p())
-            response.add_float64(player.get_r())
+            response.add_float64(player.x)
+            response.add_float64(player.y)
+            response.add_float64(player.z)
+            response.add_float64(player.h)
+            response.add_float64(player.p)
+            response.add_float64(player.r)
 
             active_players = self.server.get_number_of_active_players()
 
             # send players' id's, names and positions & rotations
             for i, other_player in enumerate(self.server.active_connections):
-                if other_player is not player and other_player.get_joined_game() and i < active_players:
-                    # order: id, name, class, x, y, z, h, p, r
-                    response.add_uint8(other_player.get_id())
-                    response.add_string(other_player.get_name())
-                    response.add_uint8(other_player.get_class_number())
+                if other_player is not player and other_player.joined_game and i < active_players:
+                    response.add_uint8(other_player.id)
+                    response.add_string(other_player.name)
+                    response.add_uint8(other_player.class_number)
                     response.add_uint8(other_player.health)
-                    response.add_float64(other_player.get_x())
-                    response.add_float64(other_player.get_y())
-                    response.add_float64(other_player.get_z())
-                    response.add_float64(other_player.get_h())
-                    response.add_float64(other_player.get_p())
-                    response.add_float64(other_player.get_r())
+                    response.add_float64(other_player.x)
+                    response.add_float64(other_player.y)
+                    response.add_float64(other_player.z)
+                    response.add_float64(other_player.h)
+                    response.add_float64(other_player.p)
+                    response.add_float64(other_player.r)
             self.server.writer.send(response, connection)
 
     def handle_ready_for_updates(self, datagram, iterator):
@@ -104,30 +101,30 @@ class Handler:
         if player is None:
             return
         else:
-            player.set_joined_game(True)
+            player.joined_game = True
 
         # send info about new player to everyone else
         datagram = PyDatagram()
         datagram.add_uint8(Message.NEW_PLAYER)
-        datagram.add_uint8(player.get_id())
-        datagram.add_string(player.get_name())
-        datagram.add_uint8(player.get_class_number())
+        datagram.add_uint8(player.id)
+        datagram.add_string(player.name)
+        datagram.add_uint8(player.class_number)
         datagram.add_uint8(player.health)
-        datagram.add_float64(player.get_x())
-        datagram.add_float64(player.get_y())
-        datagram.add_float64(player.get_z())
-        datagram.add_float64(player.get_h())
-        datagram.add_float64(player.get_p())
-        datagram.add_float64(player.get_r())
+        datagram.add_float64(player.x)
+        datagram.add_float64(player.y)
+        datagram.add_float64(player.z)
+        datagram.add_float64(player.h)
+        datagram.add_float64(player.p)
+        datagram.add_float64(player.r)
 
         print('{connection} joined the game with nickname {nickname} and class {player_class}'.format(
             connection=str(connection.get_address()),
-            nickname=player.get_name(),
-            player_class=player.get_class_number()
+            nickname=player.name,
+            player_class=player.class_number
         ))
         for other_player in self.server.active_connections:
-            if other_player.get_joined_game() and other_player is not player:
-                self.server.writer.send(datagram, other_player.get_connection())
+            if other_player.joined_game and other_player is not player:
+                self.server.writer.send(datagram, other_player.connection)
 
     def handle_pos_hpr(self, datagram, iterator):
         player = self.server.find_player_by_connection(datagram.get_connection())
@@ -147,14 +144,14 @@ class Handler:
             self.server.active_connections.remove(player)
             print(str(connection.get_address()) + ' disconnected.')
             self.server.manager.close_connection(connection)
-            id_ = player.get_id()
+            id_ = player.id
             del player
             for other_player in self.server.active_connections:
-                if other_player.get_joined_game():
+                if other_player.joined_game:
                     datagram = PyDatagram()
                     datagram.add_uint8(Message.DISCONNECTION)
                     datagram.add_uint8(id_)
-                    self.server.writer.send(datagram, other_player.get_connection())
+                    self.server.writer.send(datagram, other_player.connection)
 
     def handle_chat_message(self, datagram, iterator):
         player = self.server.find_player_by_connection(datagram.get_connection())
@@ -169,6 +166,17 @@ class Handler:
 
         for player in self.server.active_connections:
             if player.joined_game:
-                self.server.writer.send(datagram, player.get_connection())
+                self.server.writer.send(datagram, player.connection)
 
+    def handle_is_moving(self, datagram, iterator):
+        is_moving = iterator.get_uint8()
+        the_player = self.server.find_player_by_connection(datagram.get_connection())
+        the_player.is_moving = is_moving
 
+        datagram = PyDatagram()
+        datagram.add_uint8(Message.IS_MOVING)
+        datagram.add_uint8(the_player.id)
+        datagram.add_uint8(the_player.is_moving)
+        for player in self.server.active_connections:
+            if player.joined_game and player is not the_player:
+                self.server.writer.send(datagram, player.connection)

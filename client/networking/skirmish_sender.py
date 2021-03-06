@@ -58,3 +58,12 @@ class SkirmishSender:
         datagram.add_string(message)
         self.manager.writer.send(datagram, self.manager.server_connection)
 
+    def send_is_moving(self, is_moving):
+        """
+        Send message telling whether the controlled character is moving or not.
+        :param is_moving: 0 - not moving, 1 - moving
+        """
+        datagram = PyDatagram()
+        datagram.add_uint8(Message.IS_MOVING)
+        datagram.add_uint8(is_moving)
+        self.manager.writer.send(datagram, self.manager.server_connection)
