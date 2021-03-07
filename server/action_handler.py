@@ -20,13 +20,19 @@ class ActionHandler:
         target.health -= 10
         if target.health <= 0:
             target.health = 0
-        datagram = PyDatagram()
-        datagram.add_uint8(Message.HEALTH)
-        datagram.add_uint8(target.id)
-        datagram.add_uint8(target.health)
+        health_datagram = PyDatagram()
+        health_datagram.add_uint8(Message.HEALTH)
+        health_datagram.add_uint8(target.id)
+        health_datagram.add_uint8(target.health)
 
+        animation_datagram = PyDatagram()
+        animation_datagram.add_uint8(Message.ANIMATION)
+        animation_datagram.add_uint8(source.id)
+        animation_datagram.add_string('attack')
+        animation_datagram.add_uint8(0)
         for player in self.server.active_connections:
             if player.joined_game:
-                self.server.writer.send(datagram, player.connection)
+                self.server.writer.send(health_datagram, player.connection)
+                self.server.writer.send(animation_datagram, player.connection)
 
 

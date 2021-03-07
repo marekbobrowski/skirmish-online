@@ -1,5 +1,7 @@
 from direct.showbase.ShowBaseGlobal import globalClock
 from direct.task import Task
+from direct.interval.IntervalGlobal import *
+
 
 
 class CharacterControl:
@@ -26,11 +28,11 @@ class CharacterControl:
         return Task.cont
 
     def rotate_left(self, task):
-        self.character.set_h(self.character, self.movement_speed * 2 * globalClock.getDt())
+        self.character.set_h(self.character, self.movement_speed * 10 * globalClock.getDt())
         return Task.cont
 
     def rotate_right(self, task):
-        self.character.set_h(self.character, -self.movement_speed * 2 * globalClock.getDt())
+        self.character.set_h(self.character, -self.movement_speed * 10 * globalClock.getDt())
         return Task.cont
 
     def rotate_by_angle(self, angle):

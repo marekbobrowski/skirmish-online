@@ -1,4 +1,5 @@
 from direct.distributed.PyDatagramIterator import PyDatagramIterator
+from direct.interval.IntervalGlobal import *
 from direct.task import Task
 from panda3d.core import NetDatagram
 
@@ -23,7 +24,7 @@ class SkirmishLocalUpdater:
             Message.DISCONNECTION: self.update_disconnection,
             Message.HEALTH: self.update_health,
             Message.CHAT_MSG: self.update_chat,
-            Message.IS_MOVING: self.update_is_moving
+            Message.ANIMATION: self.update_animation
         }
 
     def listen_for_updates(self, task):
@@ -109,14 +110,20 @@ class SkirmishLocalUpdater:
         message = iterator.get_string()
         self.skirmish.interface.submodules[3].add_message(name, message)
 
-    def update_is_moving(self, datagram, iterator):
+    def update_animation(self, datagram, iterator):
         """
-        Reads the player's id and information whether they're moving.
+        Reads the player's id and information about their animation.
         """
         id_ = iterator.get_uint8()
-        is_moving = iterator.get_uint8()
+        animation = iterator.get_string()
+        loop = iterator.get_uint8()
         player = self.skirmish.get_player_by_id(id_)
         if player is None:
-            return
-        player.loop('idle') if is_moving == 0 else player.loop('run')
-
+            if self.skirmish.player.id != id_:
+                return
+            else:
+                player = self.skirmish.player
+        if loop:
+            player.loop(animation)
+        else:
+            player.play(animation)

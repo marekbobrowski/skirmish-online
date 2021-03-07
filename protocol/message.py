@@ -5,7 +5,7 @@ class Message:
 
     # SENT BY CLIENT AND SERVER #
     POS_HPR = 3
-    IS_MOVING = 4
+    ANIMATION = 4
     ACTION = 5
     DISCONNECTION = 6
     CHAT_MSG = 7

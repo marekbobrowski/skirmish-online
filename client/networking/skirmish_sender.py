@@ -58,12 +58,14 @@ class SkirmishSender:
         datagram.add_string(message)
         self.manager.writer.send(datagram, self.manager.server_connection)
 
-    def send_is_moving(self, is_moving):
+    def send_animation(self, animation, loop):
         """
-        Send message telling whether the controlled character is moving or not.
-        :param is_moving: 0 - not moving, 1 - moving
+        Send message telling that we using certain animation.
+        :param animation: animation name
+        :param loop: if it should be looped (0/1)
         """
         datagram = PyDatagram()
-        datagram.add_uint8(Message.IS_MOVING)
-        datagram.add_uint8(is_moving)
+        datagram.add_uint8(Message.ANIMATION)
+        datagram.add_string(animation)
+        datagram.add_uint8(loop)
         self.manager.writer.send(datagram, self.manager.server_connection)

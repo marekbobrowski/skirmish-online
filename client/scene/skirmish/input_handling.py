@@ -229,10 +229,6 @@ class InputHandling:
         self.cam_ctrl.zoom_out()
 
     def q_handler(self):
-        # self.skirmish.player.play("attack", partName="torso", fromFrame=-50, toFrame=0)
-        attack_interval = self.skirmish.player.actor_interval('attack', loop=0)
-        seq = Sequence(attack_interval, Func(lambda: self.update_animation()))
-        seq.start()
         if self.skirmish.player.target is not None:
             self.skirmish.abilities.trigger_cooldown(0)
             self.core.network_manager.skirmish_sender.send_ability_attempt(1, self.skirmish.player.target.id)
@@ -307,15 +303,17 @@ class InputHandling:
         f = self.core.task_mgr.hasTaskNamed
         if f("MoveRight"):
             if self.char_ctrl.character.get_current_anim() != 'strafe_right':
+                self.core.network_manager.skirmish_sender.send_animation('strafe_right', 1)
                 self.char_ctrl.character.loop('strafe_right')
         elif f("MoveLeft"):
             if self.char_ctrl.character.get_current_anim() != 'strafe_left':
+                self.core.network_manager.skirmish_sender.send_animation('strafe_left', 1)
                 self.char_ctrl.character.loop('strafe_left')
         elif f("MoveForward") or f("MoveBackward"):
             if self.char_ctrl.character.get_current_anim() != 'run':
                 self.char_ctrl.character.loop('run')
-                self.core.network_manager.skirmish_sender.send_is_moving(1)
+                self.core.network_manager.skirmish_sender.send_animation('run', 1)
         else:
             if self.char_ctrl.character.get_current_anim() != 'idle':
                 self.char_ctrl.character.loop('idle')
-                self.core.network_manager.skirmish_sender.send_is_moving(0)
+                self.core.network_manager.skirmish_sender.send_animation('idle', 1)

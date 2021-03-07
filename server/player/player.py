@@ -15,7 +15,6 @@ class Player:
         self.h = 0
         self.p = 0
         self.r = 0
-        self.is_moving = 0
 
     def set_pos_hpr(self, x, y, z, h, p, r):
         self.x = x

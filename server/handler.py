@@ -19,7 +19,7 @@ class Handler:
             Message.DISCONNECTION: self.handle_disconnection,
             Message.ACTION: self.action_handler.handle_action,
             Message.CHAT_MSG: self.handle_chat_message,
-            Message.IS_MOVING: self.handle_is_moving
+            Message.ANIMATION: self.handle_animation
         }
 
     def handle_data(self, datagram):
@@ -168,15 +168,16 @@ class Handler:
             if player.joined_game:
                 self.server.writer.send(datagram, player.connection)
 
-    def handle_is_moving(self, datagram, iterator):
-        is_moving = iterator.get_uint8()
+    def handle_animation(self, datagram, iterator):
+        animation = iterator.get_string()
+        loop = iterator.get_uint8()
         the_player = self.server.find_player_by_connection(datagram.get_connection())
-        the_player.is_moving = is_moving
 
         datagram = PyDatagram()
-        datagram.add_uint8(Message.IS_MOVING)
+        datagram.add_uint8(Message.ANIMATION)
         datagram.add_uint8(the_player.id)
-        datagram.add_uint8(the_player.is_moving)
+        datagram.add_string(animation)
+        datagram.add_uint8(loop)
         for player in self.server.active_connections:
             if player.joined_game and player is not the_player:
                 self.server.writer.send(datagram, player.connection)
