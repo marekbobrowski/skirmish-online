@@ -75,6 +75,7 @@ class Skirmish:
         self.core.network_manager.send_ready_for_updates()
         self.core.network_manager.start_updating_skirmish(self)
         self.core.task_mgr.add(self.interface.update, "interface update")
+        # self.core.task_mgr.add(self.world.update_player_z, "update main player z")
         self.node_2d.show()
         self.node_3d.show()
         self.object_picking = ObjectPicking(self)

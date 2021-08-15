@@ -1,5 +1,5 @@
 from scene.skirmish.zone import Zone
-
+from direct.task.Task import Task
 
 class World:
     def __init__(self, skirmish):
@@ -20,6 +20,14 @@ class World:
         player = self.skirmish.get_player_by_id(id_)
         if player is not None:
             player.set_pos_hpr(x, y, z, h, p, r)
+
+    def update_player_z(self, task):
+        x = self.skirmish.player.get_x(self.zone.terrain.get_root())
+        y = self.skirmish.player.get_y(self.zone.terrain.get_root())
+        elevation = self.zone.terrain.get_elevation(x, y)
+        elevation_scale = self.zone.terrain.get_root().get_sz()
+        self.skirmish.player.set_z(elevation * elevation_scale)
+        return Task.cont
 
 
 

@@ -19,6 +19,7 @@ class Core(ShowBase):
 
         self.disable_mouse()  # disable the default Panda3D mouse controlling system
 
+
         self.scene_manager = SceneManager(self)
         self.network_manager = NetworkManager(self)
         self.scene_manager.change_scene_to(0)

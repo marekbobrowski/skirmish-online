@@ -15,9 +15,20 @@ class Zone:
         # self.terrain = GeoMipTerrain('terrain')
         # self.terrain.setHeightfield(config.models_dir + 'tex/HF.bmp')
         # self.terrain.set_color_map(config.models_dir + 'tex/TX.bmp')
-        # self.terrain.get_root().set_scale(0.1)
+        #
+        # self.terrain.set_block_size(32)
+        # self.terrain.set_near(10)
+        # self.terrain.set_far(20)
+        # self.terrain.set_focal_point(self.core.camera)
+
+        # self.terrain.get_root().set_sx(1)
+        # self.terrain.get_root().set_sy(1)
         # self.terrain.get_root().set_pos(-50, -50, 0)
         # self.terrain.getRoot().reparentTo(self.parent_3d)
+        # self.terrain.get_root().set_sz(20)
+
+
+
         # self.terrain.generate()
         # self.terrain = None
         # self.tower = None
