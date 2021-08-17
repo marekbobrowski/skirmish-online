@@ -5,5 +5,11 @@ Skirmish Online is a simple multiplayer, online, PvP focused, fantasy game. Writ
 * deathmatch mode,
 * players can communicate with each other via simple text chat.
 
+# Current state of the game
+Some screenshots from 17th September 2021 (it was already after few months of no work on the project).
+<img src="https://github.com/marekbobrowski/skirmish-online/blob/master/docs/ss1.png?raw=true">
+<img src="https://github.com/marekbobrowski/skirmish-online/blob/master/docs/ss2.png?raw=true">
+
+
 
 
