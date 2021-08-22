@@ -20,17 +20,17 @@ class CameraControl:
         self.camera.set_pos(0, 0, 0)
         self.camera.set_hpr(-180, 0, 0)
 
-    def zoom_in(self):
+    def zoom_in(self, amount):
         camera_direction = self.camera.get_parent().get_relative_vector(self.camera, Vec3.forward())
-        new_pos = self.camera.get_pos() + camera_direction * self.zoom_speed
+        new_pos = self.camera.get_pos() + camera_direction * self.zoom_speed * amount
         if new_pos.length() >= 0 and new_pos.get_y() >= 0:
             self.camera.set_pos(new_pos)
         elif new_pos.length() < 0:
             self.camera.set_pos(Vec3(0, 0, 0))
 
-    def zoom_out(self):
+    def zoom_out(self, amount):
         camera_direction = self.camera.get_parent().get_relative_vector(self.camera, Vec3.forward())
-        new_pos = self.camera.get_pos() - camera_direction * self.zoom_speed
+        new_pos = self.camera.get_pos() - camera_direction * self.zoom_speed * amount
         if new_pos.length() < self.max_distance:
             self.camera.set_pos(new_pos)
         else:

@@ -223,10 +223,10 @@ class InputHandling:
         self.update_animation()
 
     def wheel_up_handler(self):
-        self.cam_ctrl.zoom_in()
+        self.cam_ctrl.zoom_in(1)
 
     def wheel_down_handler(self):
-        self.cam_ctrl.zoom_out()
+        self.cam_ctrl.zoom_out(1)
 
     def q_handler(self):
         if self.skirmish.player.target is not None:

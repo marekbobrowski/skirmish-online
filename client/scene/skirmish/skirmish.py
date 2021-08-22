@@ -107,10 +107,7 @@ class Skirmish:
         self.character_control = CharacterControl(self.player, self.core)
         self.camera_control = CameraControl(self.core.camera)
         self.camera_control.attach_to(self.player, Vec3(0, 0, 2))
-        self.camera_control.zoom_out()
-        self.camera_control.zoom_out()
-        self.camera_control.zoom_out()
-        self.camera_control.zoom_out()
+        self.camera_control.zoom_out(4)
         self.input_handling = InputHandling(self)
 
     def get_player_by_id(self, id_):
