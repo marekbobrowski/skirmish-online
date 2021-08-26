@@ -8,7 +8,6 @@ class ActionBar:
         self.action_frame_size = 0.2
         self.node.set_pos(-2 * self.action_frame_size, 0, -0.7)
         self.skirmish = interface.skirmish
-        self.core = interface.core
         self.action_frames = []
         self.main_frame = None
 

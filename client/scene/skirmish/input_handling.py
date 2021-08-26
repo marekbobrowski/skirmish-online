@@ -11,7 +11,7 @@ class InputHandling:
 
     def __init__(self, skirmish):
         self.skirmish = skirmish
-        self.core = skirmish.core
+        self.core = skirmish.instance
 
         self.char_ctrl = skirmish.character_control
         self.cam_ctrl = skirmish.camera_control
@@ -231,7 +231,7 @@ class InputHandling:
     def q_handler(self):
         if self.skirmish.player.target is not None:
             self.skirmish.abilities.trigger_cooldown(0)
-            self.core.network_manager.skirmish_sender.send_ability_attempt(1, self.skirmish.player.target.id)
+            self.core.networking_manager.skirmish_sender.send_ability_attempt(1, self.skirmish.player.target.id)
 
     def q_up_handler(self):
         pass
@@ -239,7 +239,7 @@ class InputHandling:
     def e_handler(self):
         if self.skirmish.player.target is not None:
             self.skirmish.abilities.trigger_cooldown(1)
-            self.core.network_manager.skirmish_sender.send_ability_attempt(2, self.skirmish.player.target.id)
+            self.core.networking_manager.skirmish_sender.send_ability_attempt(2, self.skirmish.player.target.id)
 
     def e_up_handler(self):
         pass
@@ -247,12 +247,12 @@ class InputHandling:
     def r_handler(self):
         if self.skirmish.player.target is not None:
             self.skirmish.abilities.trigger_cooldown(2)
-            self.core.network_manager.skirmish_sender.send_ability_attempt(3, self.skirmish.player.target.id)
+            self.core.networking_manager.skirmish_sender.send_ability_attempt(3, self.skirmish.player.target.id)
 
     def f_handler(self):
         if self.skirmish.player.target is not None:
             self.skirmish.abilities.trigger_cooldown(3)
-            self.core.network_manager.skirmish_sender.send_ability_attempt(4, self.skirmish.player.target.id)
+            self.core.networking_manager.skirmish_sender.send_ability_attempt(4, self.skirmish.player.target.id)
 
     def esc_handler(self):
         self.skirmish.interface.submodules[0].toggle()
@@ -263,7 +263,7 @@ class InputHandling:
             message = chat_frame.entry.get()
             if message == '':
                 return
-            self.core.network_manager.skirmish_sender.send_chat_message(message)
+            self.core.networking_manager.skirmish_sender.send_chat_message(message)
             chat_frame.remove_focus()
         else:
             chat_frame.focus()
@@ -303,17 +303,17 @@ class InputHandling:
         f = self.core.task_mgr.hasTaskNamed
         if f("MoveRight"):
             if self.char_ctrl.character.get_current_anim() != 'strafe_right':
-                self.core.network_manager.skirmish_sender.send_animation('strafe_right', 1)
+                self.core.networking_manager.skirmish_sender.send_animation('strafe_right', 1)
                 self.char_ctrl.character.loop('strafe_right')
         elif f("MoveLeft"):
             if self.char_ctrl.character.get_current_anim() != 'strafe_left':
-                self.core.network_manager.skirmish_sender.send_animation('strafe_left', 1)
+                self.core.networking_manager.skirmish_sender.send_animation('strafe_left', 1)
                 self.char_ctrl.character.loop('strafe_left')
         elif f("MoveForward") or f("MoveBackward"):
             if self.char_ctrl.character.get_current_anim() != 'run':
                 self.char_ctrl.character.loop('run')
-                self.core.network_manager.skirmish_sender.send_animation('run', 1)
+                self.core.networking_manager.skirmish_sender.send_animation('run', 1)
         else:
             if self.char_ctrl.character.get_current_anim() != 'idle':
                 self.char_ctrl.character.loop('idle')
-                self.core.network_manager.skirmish_sender.send_animation('idle', 1)
+                self.core.networking_manager.skirmish_sender.send_animation('idle', 1)

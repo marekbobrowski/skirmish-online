@@ -1,22 +1,22 @@
-from scene.skirmish.input_handling import InputHandling
-from scene.skirmish.character_control import CharacterControl
-from scene.skirmish.camera_control import CameraControl
-from scene.skirmish.interface.interface import Interface
-from scene.skirmish.world import World
-from scene.skirmish.abilities import Abilities
-from scene.skirmish.object_picking import ObjectPicking
-from scene.common_modules.characters.player_character import PlayerCharacter
+from scenes.skirmish.input_handling import InputHandling
+from scenes.skirmish.character_control import CharacterControl
+from scenes.skirmish.camera_control import CameraControl
+from scenes.skirmish.interface.interface import Interface
+from scenes.skirmish.world import World
+from scenes.skirmish.abilities import Abilities
+from scenes.skirmish.object_picking import ObjectPicking
+from scenes.common_modules.characters.player_character import PlayerCharacter
 from panda3d.core import Vec3
 import config
+import core
 
 
 class Skirmish:
     def __init__(self, scene_manager):
         self.scene_manager = scene_manager
-        self.core = scene_manager.core
 
-        self.node_2d = self.core.aspect2d.attach_new_node("skirmish 2d node")
-        self.node_3d = self.core.render.attach_new_node("skirmish 3d node")
+        self.node_2d = core.instance.aspect2d.attach_new_node("skirmish 2d node")
+        self.node_3d = core.instance.render.attach_new_node("skirmish 3d node")
 
         self.player = None
         self.abilities = Abilities(self)
@@ -38,7 +38,7 @@ class Skirmish:
 
         self.world.load()
 
-        data_iterator, datagram = self.core.network_manager.ask_for_initial_data()
+        data_iterator, datagram = self.core.networking_manager.ask_for_initial_data()
         if data_iterator is not None and datagram is not None:
             id_ = data_iterator.get_uint8()
             name = data_iterator.get_string()
@@ -72,8 +72,8 @@ class Skirmish:
         self._is_loaded = True
 
     def enter(self):
-        self.core.network_manager.send_ready_for_updates()
-        self.core.network_manager.start_updating_skirmish(self)
+        self.core.networking_manager.send_ready_for_updates()
+        self.core.networking_manager.start_updating_skirmish(self)
         self.core.task_mgr.add(self.interface.update, "interface update")
         # self.core.task_mgr.add(self.world.update_player_z, "update main player z")
         self.node_2d.show()

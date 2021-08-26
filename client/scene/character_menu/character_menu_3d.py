@@ -1,6 +1,7 @@
 from direct.actor.Actor import Actor
-from scene.skirmish.zone import Zone
+from scenes.skirmish.zone import Zone
 import config
+import core
 
 
 class CharacterMenu3D:
@@ -9,20 +10,19 @@ class CharacterMenu3D:
     """
     def __init__(self, char_menu):
         self.char_menu = char_menu
-        self.core = char_menu.core
         self.node = char_menu.node_3d
         self.characters = []
-        self.zone = Zone(self, self.node, self.char_menu.core.render2dp)
+        self.zone = Zone(self, self.node, core.instance.render2dp)
 
     def load(self):
         """
-        Loads the 3d models of the scene and places everything in the proper position (including the camera).
+        Loads the 3d models of the scenes and places everything in the proper position (including the camera).
         """
-        self.core.camera.set_pos(-2.9, -4.9, 0.94)
-        self.core.camera.set_h(-50)
+        core.instance.camera.set_pos(-2.9, -4.9, 0.94)
+        core.instance.camera.set_h(-50)
 
         self.zone.load()
-        self.core.cam2dp.node().getDisplayRegion(0).setSort(-20)
+        core.instance.cam2dp.node().getDisplayRegion(0).setSort(-20)
 
         hero_1 = Actor(config.heroes[0])
         hero_1.load_anims({'idle': config.animations_dir + 'idle_1'})
@@ -48,15 +48,15 @@ class CharacterMenu3D:
 
     def position_camera(self):
         """
-        Positions the camera for the character menu scene.
+        Positions the camera for the character menu scenes.
         """
-        self.char_menu.core.camera.reparent_to(self.char_menu.core.render)
-        self.char_menu.core.camera.set_pos(-2.9, -4.9, 0.94)
-        self.char_menu.core.camera.set_hpr(-50, 0, 0)
+        core.instance.camera.reparent_to(core.instance.render)
+        core.instance.camera.set_pos(-2.9, -4.9, 0.94)
+        core.instance.camera.set_hpr(-50, 0, 0)
 
     def refresh(self):
         """
-        Refreshes the scene by showing the chosen class representative and hiding the rest.
+        Refreshes the scenes by showing the chosen class representative and hiding the rest.
         """
         for repr_ in self.characters:
             repr_.hide()

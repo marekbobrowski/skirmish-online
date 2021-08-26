@@ -5,7 +5,6 @@ import config
 class Abilities:
     def __init__(self, skirmish):
         self.skirmish = skirmish
-        self.core = skirmish.core
         # (time left to cool down, cooldown time)
         self.icons = [config.artwork_dir + 'warrior_ability_1.png',
                       config.artwork_dir + 'warrior_ability_2.png',

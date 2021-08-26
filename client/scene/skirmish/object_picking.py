@@ -5,7 +5,7 @@ from panda3d.core import CollisionNode, GeomNode, CollisionRay, CollisionTravers
 class ObjectPicking:
     def __init__(self, skirmish):
         self.skirmish = skirmish
-        self.core = skirmish.core
+        self.core = skirmish.instance
         self.traverse_node = skirmish.node_3d
         self.picked = None
 

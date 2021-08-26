@@ -5,7 +5,7 @@ import config
 class AudioSubmenu:
     def __init__(self, menu):
         self.menu = menu
-        self.audio_submenu_node = menu.menu_node.attach_new_node("Audio Submenu Node")
+        self.audio_submenu_node = menu.node.attach_new_node("Audio Submenu Node")
         self.audio_submenu_node.hide()
         self.master_audio_scroll = None
         self.sfx_audio_scroll = None

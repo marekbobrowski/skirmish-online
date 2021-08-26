@@ -13,7 +13,7 @@ sys.path.append(os.path.abspath(os.path.join('..')))
 from protocol.message import Message
 
 
-class NetworkManager:
+class ServerCommunication:
     """
     This class is responsible for managing the communication with the game server.
     """

@@ -1,16 +1,16 @@
 from direct.gui.DirectGui import DirectEntry, DirectButton, DGG
 import sys
-from threading import Thread
 import config
+from scenes.menu import connect
 
 
 # noinspection PyArgumentList
 class MainMenu:
-    def __init__(self, menu):
-        self.menu = menu
-        self.main_menu_node = menu.menu_node.attach_new_node("Main-Main Node")
+    def __init__(self, parent):
+        self.parent = parent
+        self.node = parent.node.attach_new_node("Main-Menu Node")
         self.connecting = False
-        self.main_menu_node.hide()
+        self.node.hide()
 
         # Main menu graphical/sound/input components
         self.ip_entry = None
@@ -26,84 +26,61 @@ class MainMenu:
         self.ip_entry = DirectEntry(scale=0.1,
                                     pos=(-0.35, 0, 0.05),
                                     frameColor=(0.7, 0.7, 0.7, 0.4),
-                                    entryFont=self.menu.font,
+                                    entryFont=self.parent.font,
                                     width=7,
                                     relief=DGG.RIDGE,
-                                    parent=self.main_menu_node)
+                                    parent=self.node)
         self.ip_entry.set('127.0.0.1')
         # Buttons
         self.connect_btn = DirectButton(scale=0.34, pos=(0, 0, -0.2),
                                         frameColor=(0, 0, 0, 0),
-                                        text_font=self.menu.font,
+                                        text_font=self.parent.font,
                                         text_fg=(1, 1, 1, 0.8),
                                         text_pos=(0, -0.05),
                                         text_scale=0.18,
                                         text='Connect',
                                         image=assets_dir + 'artwork/button.png',
-                                        parent=self.main_menu_node,
+                                        parent=self.node,
                                         image_scale=(1.1, 1, 0.3),
-                                        rolloverSound=self.menu.rollover_sound,
-                                        clickSound=self.menu.click_sound,
-                                        command=self.connect_attempt)
+                                        rolloverSound=self.parent.rollover_sound,
+                                        clickSound=self.parent.click_sound,
+                                        command=lambda: connect.connect_attempt(self.ip_entry.get()))
         self.connect_btn.set_transparency(1)
         self.audio_btn = DirectButton(scale=0.34, pos=(0, 0, -0.45),
                                       frameColor=(0, 0, 0, 0),
-                                      text_font=self.menu.font,
+                                      text_font=self.parent.font,
                                       text_fg=(1, 1, 1, 0.8),
                                       text_pos=(0, -0.05),
                                       text_scale=0.18,
                                       text='Audio settings',
                                       image=assets_dir + 'artwork/button.png',
-                                      parent=self.main_menu_node,
+                                      parent=self.node,
                                       image_scale=(1.1, 1, 0.3),
-                                      rolloverSound=self.menu.rollover_sound,
-                                      clickSound=self.menu.click_sound,
-                                      command=lambda: self.menu.change_subscene_to(1))
+                                      rolloverSound=self.parent.rollover_sound,
+                                      clickSound=self.parent.click_sound,
+                                      command=lambda: self.parent.change_subscene_to(1))
         self.audio_btn.set_transparency(1)
         self.exit_btn = DirectButton(scale=0.34,
                                      pos=(0, 0, -0.7),
                                      frameColor=(0, 0, 0, 0),
-                                     text_font=self.menu.font,
+                                     text_font=self.parent.font,
                                      text_fg=(1, 1, 1, 0.8),
                                      text_pos=(0, -0.05),
                                      text_scale=0.18,
-                                     parent=self.main_menu_node,
+                                     parent=self.node,
                                      text='Exit game',
                                      image=assets_dir + 'artwork/button.png',
                                      image_scale=(1.1, 1, 0.3),
-                                     rolloverSound=self.menu.rollover_sound,
-                                     clickSound=self.menu.click_sound,
+                                     rolloverSound=self.parent.rollover_sound,
+                                     clickSound=self.parent.click_sound,
                                      command=lambda: sys.exit())
         self.exit_btn.set_transparency(1)
 
     def enter(self):
-        self.main_menu_node.show()
+        self.node.show()
 
     def leave(self):
-        self.main_menu_node.hide()
+        self.node.hide()
 
-    def connect_attempt(self):
-        if not self.connecting:
-            self.connecting = True
-            # running this function in new thread so connecting & model loading don't block the main thread
-            Thread(target=self.connect).start()
 
-    def connect(self):
-        # self.menu.scene_manager.dialog.set_button()
-        self.menu.scene_manager.show_dialog(text='Connecting...', button_text='Cancel',
-                                            button_command=self.cancel_connection)
-        server_ip = self.ip_entry.get()
-        connected = self.menu.core.network_manager.connect(server_ip)
-        if connected:
-            self.menu.scene_manager.show_dialog('Connected! Loading models...')
-            self.menu.scene_manager.load_scene(1)
-            self.menu.scene_manager.change_scene_to(1)
-            self.menu.scene_manager.hide_dialog()
-        else:
-            self.menu.scene_manager.show_dialog(text='Failed to connect.', button_text='Return',
-                                                button_command=self.cancel_connection)
-        self.connecting = False
-
-    def cancel_connection(self):
-        self.menu.scene_manager.hide_dialog()
 

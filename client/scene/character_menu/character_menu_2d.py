@@ -1,6 +1,8 @@
 from direct.gui.OnscreenText import OnscreenText
 from direct.gui.DirectGui import DirectEntry, DirectButton, DGG
 import config
+import core
+from scenes.character_menu import join_game
 
 
 class CharacterMenu2D:
@@ -10,7 +12,6 @@ class CharacterMenu2D:
     """
     def __init__(self, char_menu):
         self.char_menu = char_menu
-        self.core = char_menu.core
         self.node = char_menu.node_2d
         self.warrior_btn = None
         self.mage_btn = None
@@ -38,9 +39,9 @@ class CharacterMenu2D:
         Loads the character's menu interface components.
         """
         assets_dir = config.assets_dir
-        rollover_sound = self.core.loader.loadSfx(assets_dir + 'sounds/mouse_rollover.wav')
-        click_sound = self.core.loader.loadSfx(assets_dir + 'sounds/mouse_click.wav')
-        font = self.core.loader.load_font(assets_dir + 'fonts/GODOFWAR.TTF')
+        rollover_sound = core.instance.loader.loadSfx(assets_dir + 'sounds/mouse_rollover.wav')
+        click_sound = core.instance.loader.loadSfx(assets_dir + 'sounds/mouse_click.wav')
+        font = core.instance.loader.load_font(assets_dir + 'fonts/GODOFWAR.TTF')
 
         self.warrior_btn = DirectButton(scale=0.34,
                                         pos=(-1.5, 0, 0.6),
@@ -87,7 +88,7 @@ class CharacterMenu2D:
                                               image_scale=(1.1, 1, 0.3),
                                               rolloverSound=rollover_sound,
                                               clickSound=click_sound,
-                                              command=self.char_menu.join_skirmish_attempt,
+                                              command=join_game.join_skirmish_attempt,
                                               parent=self.node)
         self.join_skirmish_btn.set_transparency(1)
         self.character_description_text = OnscreenText(text='',

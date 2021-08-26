@@ -1,15 +1,14 @@
-from scene.skirmish.interface.quick_menu import QuickMenu
+from scenes.skirmish.interface.quick_menu import QuickMenu
 from direct.task.Task import Task
-from scene.skirmish.interface.player_frames import PlayerFrames
-from scene.skirmish.interface.action_bar import ActionBar
-from scene.skirmish.interface.chat_frame import ChatFrame
-from scene.skirmish.interface.score_board import ScoreBoard
+from scenes.skirmish.interface.player_frames import PlayerFrames
+from scenes.skirmish.interface.action_bar import ActionBar
+from scenes.skirmish.interface.chat_frame import ChatFrame
+from scenes.skirmish.interface.score_board import ScoreBoard
 
 
 class Interface:
     def __init__(self, skirmish):
         self.skirmish = skirmish
-        self.core = skirmish.core
         self.node = skirmish.node_2d.attach_new_node("skirmish interface node")
         self.submodules = [QuickMenu(self), PlayerFrames(self), ActionBar(self), ChatFrame(self),
                            ScoreBoard(self)]

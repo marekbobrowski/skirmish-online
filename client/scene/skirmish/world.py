@@ -1,12 +1,12 @@
-from scene.skirmish.zone import Zone
+from scenes.skirmish.zone import Zone
 from direct.task.Task import Task
+import core
 
 class World:
     def __init__(self, skirmish):
         self.skirmish = skirmish
-        self.core = skirmish.core
         self.node = self.skirmish.node_3d
-        self.zone = Zone(self.skirmish, self.node, self.core.aspect2dp)
+        self.zone = Zone(self.skirmish, self.node, core.instance.aspect2dp)
 
     def load(self):
         self.zone.load()

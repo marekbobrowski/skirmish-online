@@ -1,13 +1,13 @@
 from direct.gui.OnscreenImage import OnscreenImage
 from direct.gui.OnscreenText import OnscreenText
 import config
+import core
 
 class LoadingScreen:
     def __init__(self, scene_manager):
         self.scene_manager = scene_manager
-        self.core = scene_manager.core
         self._is_loaded = False
-        self.node = self.core.aspect2d.attach_new_node("loading screen node")
+        self.node = core.instance.aspect2d.attach_new_node("loading screen node")
 
         self.game_label = None
         self.font = None

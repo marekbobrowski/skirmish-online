@@ -7,7 +7,6 @@ import config
 class QuickMenu:
     def __init__(self, interface):
         self.interface = interface
-        self.core = interface.core
         self.node = interface.node.attach_new_node("quick menu node")
 
         self.return_btn = None
@@ -92,14 +91,14 @@ class QuickMenu:
         self.exit_game_btn.set_transparency(1)
 
     def leave_skirmish(self):
-        self.core.network_manager.disconnect()
-        self.core.network_manager.stop_updating_skirmish()
+        self.core.networking_manager.disconnect()
+        self.core.networking_manager.stop_updating_skirmish()
         self.interface.skirmish.flush()
-        self.core.scene_manager.change_scene_to(0)
+        self.core.view_manager.change_scene_to(0)
 
     def exit_app(self):
-        self.core.network_manager.disconnect()
-        self.core.network_manager.stop_updating_skirmish()
+        self.core.networking_manager.disconnect()
+        self.core.networking_manager.stop_updating_skirmish()
         sys.exit()
 
 
