@@ -1,5 +1,5 @@
 from direct.actor.Actor import Actor
-from scenes.skirmish.zone import Zone
+from scene.skirmish.zone import Zone
 import config
 import core
 
@@ -16,7 +16,7 @@ class CharacterMenu3D:
 
     def load(self):
         """
-        Loads the 3d models of the scenes and places everything in the proper position (including the camera).
+        Loads the 3d models of the scene and places everything in the proper position (including the camera).
         """
         core.instance.camera.set_pos(-2.9, -4.9, 0.94)
         core.instance.camera.set_h(-50)
@@ -48,7 +48,7 @@ class CharacterMenu3D:
 
     def position_camera(self):
         """
-        Positions the camera for the character menu scenes.
+        Positions the camera for the character menu scene.
         """
         core.instance.camera.reparent_to(core.instance.render)
         core.instance.camera.set_pos(-2.9, -4.9, 0.94)
@@ -56,7 +56,7 @@ class CharacterMenu3D:
 
     def refresh(self):
         """
-        Refreshes the scenes by showing the chosen class representative and hiding the rest.
+        Refreshes the scene by showing the chosen class representative and hiding the rest.
         """
         for repr_ in self.characters:
             repr_.hide()

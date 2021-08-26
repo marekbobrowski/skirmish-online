@@ -1,9 +1,9 @@
-from scenes.skirmish.interface.quick_menu import QuickMenu
+from scene.skirmish.interface.quick_menu import QuickMenu
 from direct.task.Task import Task
-from scenes.skirmish.interface.player_frames import PlayerFrames
-from scenes.skirmish.interface.action_bar import ActionBar
-from scenes.skirmish.interface.chat_frame import ChatFrame
-from scenes.skirmish.interface.score_board import ScoreBoard
+from scene.skirmish.interface.player_frames import PlayerFrames
+from scene.skirmish.interface.action_bar import ActionBar
+from scene.skirmish.interface.chat_frame import ChatFrame
+from scene.skirmish.interface.score_board import ScoreBoard
 
 
 class Interface:
@@ -19,6 +19,6 @@ class Interface:
             submodule.load()
 
     def update(self, task):
-        self.submodules[1].update()
-        self.submodules[2].update()
+        # self.submodules[1].update()
+        # self.submodules[2].update()
         return Task.cont

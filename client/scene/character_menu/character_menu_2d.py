@@ -2,7 +2,7 @@ from direct.gui.OnscreenText import OnscreenText
 from direct.gui.DirectGui import DirectEntry, DirectButton, DGG
 import config
 import core
-from scenes.character_menu import join_game
+from scene.character_menu import join_game
 
 
 class CharacterMenu2D:
@@ -88,7 +88,9 @@ class CharacterMenu2D:
                                               image_scale=(1.1, 1, 0.3),
                                               rolloverSound=rollover_sound,
                                               clickSound=click_sound,
-                                              command=join_game.join_skirmish_attempt,
+                                              command=lambda: join_game.join_skirmish_attempt(
+                                                  self.player_name_entry.get(),
+                                                  self.char_menu.selected_class),
                                               parent=self.node)
         self.join_skirmish_btn.set_transparency(1)
         self.character_description_text = OnscreenText(text='',

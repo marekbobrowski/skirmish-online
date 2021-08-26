@@ -3,7 +3,9 @@ from direct.gui.OnscreenText import OnscreenText
 import config
 import core
 
+
 class LoadingScreen:
+
     def __init__(self, scene_manager):
         self.scene_manager = scene_manager
         self._is_loaded = False
@@ -13,15 +15,13 @@ class LoadingScreen:
         self.font = None
         self.background = None
         self.loading_label = None
-
-    def is_loaded(self):
-        return self._is_loaded
+        self.is_loaded = False
 
     def load(self):
         assets_dir = config.assets_dir
-        self.background = OnscreenImage(parent=self.core.render2d,
+        self.background = OnscreenImage(parent=core.instance.render2d,
                                         image=assets_dir + 'artwork/menu_background.jpg')
-        self.font = self.core.loader.load_font(assets_dir + 'fonts/GODOFWAR.TTF')
+        self.font = core.instance.loader.load_font(assets_dir + 'fonts/GODOFWAR.TTF')
         self.game_label = OnscreenText(text='Skirmish Online',
                                        font=self.font,
                                        pos=(0, 0.7),

@@ -1,7 +1,7 @@
 from direct.gui.OnscreenImage import OnscreenImage
 from direct.gui.OnscreenText import OnscreenText
-from scenes.menu.audio_submenu import AudioSubmenu
-from scenes.menu.main_menu import MainMenu
+from scene.menu.audio_submenu import AudioSubmenu
+from scene.menu.main_menu import MainMenu
 import config
 import core
 

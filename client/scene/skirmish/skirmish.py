@@ -1,14 +1,15 @@
-from scenes.skirmish.input_handling import InputHandling
-from scenes.skirmish.character_control import CharacterControl
-from scenes.skirmish.camera_control import CameraControl
-from scenes.skirmish.interface.interface import Interface
-from scenes.skirmish.world import World
-from scenes.skirmish.abilities import Abilities
-from scenes.skirmish.object_picking import ObjectPicking
-from scenes.common_modules.characters.player_character import PlayerCharacter
+from scene.skirmish.input_handling import InputHandling
+from scene.skirmish.character_control import CharacterControl
+from scene.skirmish.camera_control import CameraControl
+from scene.skirmish.interface.interface import Interface
+from scene.skirmish.world import World
+from scene.skirmish.abilities import Abilities
+from scene.skirmish.object_picking import ObjectPicking
+from scene.common_modules.characters.player_character import PlayerCharacter
 from panda3d.core import Vec3
 import config
 import core
+from networking import networking_manager
 
 
 class Skirmish:
@@ -38,7 +39,7 @@ class Skirmish:
 
         self.world.load()
 
-        data_iterator, datagram = self.core.networking_manager.ask_for_initial_data()
+        data_iterator, datagram = networking_manager.instance.ask_for_initial_data()
         if data_iterator is not None and datagram is not None:
             id_ = data_iterator.get_uint8()
             name = data_iterator.get_string()
@@ -72,9 +73,9 @@ class Skirmish:
         self._is_loaded = True
 
     def enter(self):
-        self.core.networking_manager.send_ready_for_updates()
-        self.core.networking_manager.start_updating_skirmish(self)
-        self.core.task_mgr.add(self.interface.update, "interface update")
+        networking_manager.instance.send_ready_for_updates()
+        networking_manager.instance.start_updating_skirmish(self)
+        core.instance.task_mgr.add(self.interface.update, "interface update")
         # self.core.task_mgr.add(self.world.update_player_z, "update main player z")
         self.node_2d.show()
         self.node_3d.show()
@@ -104,8 +105,8 @@ class Skirmish:
         player.loop('idle')
 
     def enable_control(self):
-        self.character_control = CharacterControl(self.player, self.core)
-        self.camera_control = CameraControl(self.core.camera)
+        self.character_control = CharacterControl(self.player, core.instance)
+        self.camera_control = CameraControl(core.instance.camera)
         self.camera_control.attach_to(self.player, Vec3(0, 0, 2))
         self.camera_control.zoom_out(4)
         self.input_handling = InputHandling(self)
@@ -132,5 +133,5 @@ class Skirmish:
         self.character_control = None
         self.object_picking = None
         self._is_loaded = False
-        self.core.task_mgr.remove('interface update')
+        core.instance.task_mgr.remove('interface update')
 

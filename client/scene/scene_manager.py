@@ -1,21 +1,24 @@
-from scenes.character_menu.character_menu import CharacterMenu
-from scenes.menu.menu import Menu
-from scenes.skirmish.skirmish import Skirmish
-from scenes.common_modules.dialog import Dialog
-from scenes.loading_screen.loading_screen import LoadingScreen
+from scene.character_menu.character_menu import CharacterMenu
+from scene.menu.menu import Menu
+from scene.skirmish.skirmish import Skirmish
+from scene.common_modules.dialog import Dialog
+from scene.loading_screen.loading_screen import LoadingScreen
 import core
+from scene.scene import Scene
 
 
 class SceneManager:
+
     def __init__(self):
         self.dialog = None
         self.scene_mapping = {
-            'MENU': Menu(self),
-            'CHARACTER_MENU': CharacterMenu(self),
-            'LOADING_SCREEN': LoadingScreen(self),
-            'SKIRMISH': Skirmish(self)
+            Scene.MENU: Menu(self),
+            Scene.CHARACTER_MENU: CharacterMenu(self),
+            Scene.LOADING_SCREEN: LoadingScreen(self),
+            Scene.SKIRMISH: Skirmish(self)
         }
         self.current_scene = None
+        self.joining_skirmish = False
 
     def load_scene(self, scene):
         scene_to_load = self.scene_mapping.get(scene)

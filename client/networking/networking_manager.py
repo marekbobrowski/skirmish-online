@@ -4,8 +4,9 @@ from panda3d.core import ConnectionWriter
 from panda3d.core import NetDatagram
 from direct.distributed.PyDatagram import PyDatagram
 from direct.distributed.PyDatagramIterator import PyDatagramIterator
-from networking.skirmish_sender import SkirmishSender
-from networking.skirmish_local_updater import SkirmishLocalUpdater
+from networking.server_sync import ServerSync
+from networking.local_sync import LocalSync
+import core
 
 import sys
 import os
@@ -13,13 +14,11 @@ sys.path.append(os.path.abspath(os.path.join('..')))
 from protocol.message import Message
 
 
-class ServerCommunication:
+class NetworkingManager:
     """
     This class is responsible for managing the communication with the game server.
     """
-    def __init__(self, core):
-        self.core = core
-
+    def __init__(self):
         # Networking modules from panda3d.
         self.manager = QueuedConnectionManager()
         self.reader = QueuedConnectionReader(self.manager, 0)
@@ -34,6 +33,8 @@ class ServerCommunication:
         self.server_address = None
         self.timeout = 4000
         self.server_connection = None
+
+        self.is_connecting = False
 
     def connect(self, server_address):
         """
@@ -111,17 +112,17 @@ class ServerCommunication:
         This communication concerns only what's happening during the actual gameplay (the skirmish scene).
         There are separate functions responsible for establishing communication and other starter actions.
         """
-        self.skirmish_sender = SkirmishSender(self, skirmish)
-        self.skirmish_local_updater = SkirmishLocalUpdater(self, skirmish)
-        self.core.task_mgr.add(self.skirmish_local_updater.listen_for_updates, 'listen for skirmish updates')
-        self.core.task_mgr.add(self.skirmish_sender.send_updates, 'send skirmish updates')
+        self.skirmish_sender = ServerSync(self, skirmish)
+        self.skirmish_local_updater = LocalSync(self, skirmish)
+        core.instance.task_mgr.add(self.skirmish_local_updater.listen_for_updates, 'listen for skirmish updates')
+        core.instance.task_mgr.add(self.skirmish_sender.send_updates, 'send skirmish updates')
 
     def stop_updating_skirmish(self):
         """
         Stops continuous communication with the server.
         """
-        self.core.task_mgr.remove('listen for skirmish updates')
-        self.core.task_mgr.remove('send skirmish updates')
+        core.instance.task_mgr.remove('listen for skirmish updates')
+        core.instance.task_mgr.remove('send skirmish updates')
 
     def send_disconnect(self):
         """
@@ -137,3 +138,6 @@ class ServerCommunication:
         """
         self.send_disconnect()
         self.manager.close_connection(self.server_connection)
+
+
+instance = NetworkingManager()

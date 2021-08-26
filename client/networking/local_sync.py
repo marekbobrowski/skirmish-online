@@ -9,7 +9,7 @@ sys.path.append(os.path.abspath(os.path.join('..')))
 from protocol.message import Message
 
 
-class SkirmishLocalUpdater:
+class LocalSync:
     """
     Responsible for continuous reading and handling the data sent from the server.
     The data concerns only the actual skirmish gameplay, such as player positions,

@@ -1,7 +1,7 @@
 from direct.gui.DirectGui import DirectEntry, DirectButton, DGG
 import sys
 import config
-from scenes.menu import connect
+from scene.menu import connect
 
 
 # noinspection PyArgumentList

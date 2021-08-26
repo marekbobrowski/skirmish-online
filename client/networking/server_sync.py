@@ -6,7 +6,7 @@ sys.path.append(os.path.abspath(os.path.join('..')))
 from protocol.message import Message
 
 
-class SkirmishSender:
+class ServerSync:
     """
     Responsible for sending this client's data to the server.
     The data concerns only the actual skirmish gameplay, such as this client's character position,
@@ -20,7 +20,7 @@ class SkirmishSender:
         """
         Continuously (each frame) calls functions that send certain data to the server.
         """
-        self.send_pos_hpr()
+        # self.send_pos_hpr()
         return Task.cont
 
     def send_pos_hpr(self):

@@ -1,4 +1,4 @@
-from scenes.skirmish.zone import Zone
+from scene.skirmish.zone import Zone
 from direct.task.Task import Task
 import core
 
