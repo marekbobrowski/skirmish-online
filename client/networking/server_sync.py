@@ -20,7 +20,7 @@ class ServerSync:
         """
         Continuously (each frame) calls functions that send certain data to the server.
         """
-        # self.send_pos_hpr()
+        self.send_pos_hpr()
         return Task.cont
 
     def send_pos_hpr(self):

@@ -19,6 +19,6 @@ class Interface:
             submodule.load()
 
     def update(self, task):
-        # self.submodules[1].update()
-        # self.submodules[2].update()
+        self.submodules[1].update()
+        self.submodules[2].update()
         return Task.cont

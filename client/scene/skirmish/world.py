@@ -2,6 +2,7 @@ from scene.skirmish.zone import Zone
 from direct.task.Task import Task
 import core
 
+
 class World:
     def __init__(self, skirmish):
         self.skirmish = skirmish

@@ -1,6 +1,6 @@
 from direct.task.Task import Task
 import config
-
+import core
 
 class Abilities:
     def __init__(self, skirmish):
@@ -20,7 +20,7 @@ class Abilities:
 
     def trigger_cooldown(self, ability):
         task = Task(self.count_down_cooldown)
-        self.core.task_mgr.add(task, 'cooldown countdown', extraArgs=[ability, task])
+        core.instance.task_mgr.add(task, 'cooldown countdown', extraArgs=[ability, task])
 
     def count_down_cooldown(self, ability, task):
         diff = self.cooldowns[ability][1] - task.time

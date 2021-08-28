@@ -2,6 +2,9 @@ from direct.gui.DirectGui import DirectButton
 import sys
 from direct.task.Task import Task
 import config
+import core
+from networking import networking_manager
+from scene import scene_manager
 
 
 class QuickMenu:
@@ -27,9 +30,9 @@ class QuickMenu:
 
     def load(self):
         assets_dir = config.assets_dir
-        font = self.core.loader.load_font(assets_dir + 'fonts/GODOFWAR.TTF')
-        rollover_sound = self.core.loader.loadSfx(assets_dir + 'sounds/mouse_rollover.wav')
-        click_sound = self.core.loader.loadSfx(assets_dir + 'sounds/mouse_click.wav')
+        font = core.instance.loader.load_font(assets_dir + 'fonts/GODOFWAR.TTF')
+        rollover_sound = core.instance.loader.loadSfx(assets_dir + 'sounds/mouse_rollover.wav')
+        click_sound = core.instance.loader.loadSfx(assets_dir + 'sounds/mouse_click.wav')
         self.return_btn = DirectButton(scale=0.34,
                                        pos=(0, 0, 0.4),
                                        frameColor=(0, 0, 0, 0),
@@ -91,14 +94,14 @@ class QuickMenu:
         self.exit_game_btn.set_transparency(1)
 
     def leave_skirmish(self):
-        self.core.networking_manager.disconnect()
-        self.core.networking_manager.stop_updating_skirmish()
+        networking_manager.instance.disconnect()
+        networking_manager.instance.stop_updating_skirmish()
         self.interface.skirmish.flush()
-        self.core.view_manager.change_scene_to(0)
+        scene_manager.instance.change_scene_to(0)
 
     def exit_app(self):
-        self.core.networking_manager.disconnect()
-        self.core.networking_manager.stop_updating_skirmish()
+        networking_manager.instance.disconnect()
+        networking_manager.instance.stop_updating_skirmish()
         sys.exit()
 
 

@@ -28,10 +28,7 @@ class Skirmish:
         self.camera_control = None
         self.input_handling = None
         self.object_picking = None
-        self._is_loaded = False
-
-    def is_loaded(self):
-        return self._is_loaded
+        self.is_loaded = False
 
     def load(self):
         self.node_2d.hide()
@@ -70,7 +67,7 @@ class Skirmish:
         else:
             self.scene_manager.show_dialog('Lost connection.')
 
-        self._is_loaded = True
+        self.is_loaded = True
 
     def enter(self):
         networking_manager.instance.send_ready_for_updates()
@@ -132,6 +129,6 @@ class Skirmish:
         self.camera_control = None
         self.character_control = None
         self.object_picking = None
-        self._is_loaded = False
+        self.is_loaded = False
         core.instance.task_mgr.remove('interface update')
 
