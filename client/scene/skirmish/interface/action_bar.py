@@ -31,7 +31,10 @@ class ActionBar:
         for index, frame in enumerate(self.action_frames):
             cd_left = self.skirmish.abilities.cooldowns[index][0]
             cd = self.skirmish.abilities.cooldowns[index][1]
-            ratio = cd_left/cd
+            if cd != 0:
+                ratio = cd_left/cd
+            else:
+                ratio = 0
             frame.update_cooldown(ratio)
 
 

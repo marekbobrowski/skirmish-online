@@ -231,7 +231,6 @@ class InputHandling:
 
     def q_handler(self):
         if self.skirmish.player.target is not None:
-            self.skirmish.abilities.trigger_cooldown(0)
             networking_manager.instance.skirmish_sender.send_ability_attempt(0, self.skirmish.player.target.id)
 
     def q_up_handler(self):
@@ -239,7 +238,6 @@ class InputHandling:
 
     def e_handler(self):
         if self.skirmish.player.target is not None:
-            self.skirmish.abilities.trigger_cooldown(1)
             networking_manager.instance.skirmish_sender.send_ability_attempt(1, self.skirmish.player.target.id)
 
     def e_up_handler(self):
@@ -247,12 +245,10 @@ class InputHandling:
 
     def r_handler(self):
         if self.skirmish.player.target is not None:
-            self.skirmish.abilities.trigger_cooldown(2)
             networking_manager.instance.skirmish_sender.send_ability_attempt(2, self.skirmish.player.target.id)
 
     def f_handler(self):
         if self.skirmish.player.target is not None:
-            self.skirmish.abilities.trigger_cooldown(3)
             networking_manager.instance.skirmish_sender.send_ability_attempt(3, self.skirmish.player.target.id)
 
     def esc_handler(self):

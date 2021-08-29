@@ -24,7 +24,8 @@ class LocalSync:
             Message.DISCONNECTION: self.update_disconnection,
             Message.HEALTH: self.update_health,
             Message.CHAT_MSG: self.update_chat,
-            Message.ANIMATION: self.update_animation
+            Message.ANIMATION: self.update_animation,
+            Message.ACTION: self.update_action
         }
 
     def listen_for_updates(self, task):
@@ -127,3 +128,10 @@ class LocalSync:
             player.loop(animation)
         else:
             player.play(animation)
+
+    def update_action(self, datagram, iterator):
+        id_ = iterator.get_uint8()
+        action_id = iterator.get_uint8()
+        cd_time = iterator.get_uint8()
+        if id_ == self.skirmish.player.id:
+            self.skirmish.abilities.trigger_cooldown(action_id, cd_time)

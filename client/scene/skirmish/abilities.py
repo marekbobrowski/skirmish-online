@@ -13,18 +13,19 @@ class Abilities:
                       assets_dir_config.artwork_dir + 'warrior_ability_4.png']
         self.names = ['ability_1', 'ability_2', 'ability_3', 'ability_4']
         self.cooldowns = [
-            [0, 2],
-            [0, 4],
-            [0, 5],
-            [0, 10]
+            [0, 0],
+            [0, 0],
+            [0, 0],
+            [0, 0]
         ]
 
-    def trigger_cooldown(self, ability):
+    def trigger_cooldown(self, ability, time):
         task = Task(self.count_down_cooldown)
-        core.instance.task_mgr.add(task, 'cooldown countdown', extraArgs=[ability, task])
+        self.cooldowns[ability][1] = time
+        core.instance.task_mgr.add(task, 'cooldown countdown', extraArgs=[ability, time, task])
 
-    def count_down_cooldown(self, ability, task):
-        diff = self.cooldowns[ability][1] - task.time
+    def count_down_cooldown(self, ability, time, task):
+        diff = time - task.time
         if diff > 0:
             self.cooldowns[ability][0] = diff
             return Task.cont

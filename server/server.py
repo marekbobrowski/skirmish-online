@@ -7,7 +7,7 @@ from threading import Thread
 from panda3d.core import PointerToConnection
 from panda3d.core import NetAddress
 from panda3d.core import NetDatagram
-from player.player import Player
+from player import Player
 from direct.distributed.PyDatagram import PyDatagram
 from handler import Handler
 import sys
