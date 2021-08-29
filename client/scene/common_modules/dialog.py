@@ -1,5 +1,5 @@
 from direct.gui.DirectGui import DirectFrame, DirectLabel, DirectButton, DGG
-import config
+import assets_dir_config
 
 
 class Dialog:
@@ -7,7 +7,7 @@ class Dialog:
         self.node = parent.attach_new_node("dialog node")
         self.node.set_pos(0, 0, 0.25)
         self.core = core
-        assets_dir = config.assets_dir
+        assets_dir = assets_dir_config.assets_dir
         rollover_sound = self.core.loader.loadSfx(assets_dir + 'sounds/mouse_rollover.wav')
         click_sound = self.core.loader.loadSfx(assets_dir + 'sounds/mouse_click.wav')
         font = self.core.loader.load_font(assets_dir + 'fonts/GODOFWAR.TTF')

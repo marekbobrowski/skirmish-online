@@ -1,13 +1,12 @@
 from direct.gui.OnscreenImage import OnscreenImage
 from direct.gui.OnscreenText import OnscreenText
-import config
+import assets_dir_config
 import core
 
 
 class LoadingScreen:
 
-    def __init__(self, scene_manager):
-        self.scene_manager = scene_manager
+    def __init__(self):
         self._is_loaded = False
         self.node = core.instance.aspect2d.attach_new_node("loading screen node")
 
@@ -18,7 +17,7 @@ class LoadingScreen:
         self.is_loaded = False
 
     def load(self):
-        assets_dir = config.assets_dir
+        assets_dir = assets_dir_config.assets_dir
         self.background = OnscreenImage(parent=core.instance.render2d,
                                         image=assets_dir + 'artwork/menu_background.jpg')
         self.font = core.instance.loader.load_font(assets_dir + 'fonts/GODOFWAR.TTF')

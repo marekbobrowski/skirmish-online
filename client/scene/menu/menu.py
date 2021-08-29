@@ -2,13 +2,12 @@ from direct.gui.OnscreenImage import OnscreenImage
 from direct.gui.OnscreenText import OnscreenText
 from scene.menu.audio_submenu import AudioSubmenu
 from scene.menu.main_menu import MainMenu
-import config
+import assets_dir_config
 import core
 
 
 class Menu:
-    def __init__(self, scene_manager):
-        self.scene_manager = scene_manager
+    def __init__(self):
         self.node = core.instance.aspect2d.attach_new_node("Menu Node")
         self.node.hide()
 
@@ -28,7 +27,7 @@ class Menu:
         self.is_loaded = False
 
     def load(self):
-        assets_dir = config.assets_dir
+        assets_dir = assets_dir_config.assets_dir
         self.background = OnscreenImage(parent=core.instance.render2d,
                                         image=assets_dir + 'artwork/menu_background.jpg')
         self.font = core.instance.loader.load_font(assets_dir + 'fonts/GODOFWAR.TTF')
@@ -43,7 +42,7 @@ class Menu:
 
         for scene in self.subscene_mapping.values():
             scene.load()
-        self._is_loaded = True
+        self.is_loaded = True
 
     def enter(self):
         self.node.show()

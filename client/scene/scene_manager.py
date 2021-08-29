@@ -12,10 +12,10 @@ class SceneManager:
     def __init__(self):
         self.dialog = None
         self.scene_mapping = {
-            Scene.MENU: Menu(self),
-            Scene.CHARACTER_MENU: CharacterMenu(self),
-            Scene.LOADING_SCREEN: LoadingScreen(self),
-            Scene.SKIRMISH: Skirmish(self)
+            Scene.MENU: Menu(),
+            Scene.CHARACTER_MENU: CharacterMenu(),
+            Scene.LOADING_SCREEN: LoadingScreen(),
+            Scene.SKIRMISH: Skirmish()
         }
         self.current_scene = None
         self.joining_skirmish = False

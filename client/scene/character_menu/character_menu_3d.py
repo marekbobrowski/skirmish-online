@@ -1,6 +1,6 @@
 from direct.actor.Actor import Actor
 from scene.skirmish.zone import Zone
-import config
+import assets_dir_config
 import core
 
 
@@ -24,8 +24,8 @@ class CharacterMenu3D:
         self.zone.load()
         core.instance.cam2dp.node().getDisplayRegion(0).setSort(-20)
 
-        hero_1 = Actor(config.heroes[0])
-        hero_1.load_anims({'idle': config.animations_dir + 'idle_1'})
+        hero_1 = Actor(assets_dir_config.heroes[0])
+        hero_1.load_anims({'idle': assets_dir_config.animations_dir + 'idle_1'})
         hero_1.loop('idle')
         hero_1.reparent_to(self.node)
         hero_1.set_scale(0.25)
@@ -33,8 +33,8 @@ class CharacterMenu3D:
         hero_1.set_h(-60)
         self.characters.append(hero_1)
 
-        hero_2 = Actor(config.heroes[1])
-        hero_2.load_anims({'idle': config.animations_dir + 'idle_2'})
+        hero_2 = Actor(assets_dir_config.heroes[1])
+        hero_2.load_anims({'idle': assets_dir_config.animations_dir + 'idle_2'})
         hero_2.loop('idle')
         hero_2.reparent_to(self.node)
         hero_2.set_scale(0.25)

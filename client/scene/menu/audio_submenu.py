@@ -1,5 +1,5 @@
 from direct.gui.DirectGui import DirectButton, DirectScrollBar, DGG
-import config
+import assets_dir_config
 
 
 class AudioSubmenu:
@@ -14,7 +14,7 @@ class AudioSubmenu:
         self.return_btn = None
 
     def load(self):
-        assets_dir = config.assets_dir
+        assets_dir = assets_dir_config.assets_dir
         self.master_audio_scroll = DirectScrollBar(range=(0, 100),
                                                    value=50,
                                                    pageSize=3,

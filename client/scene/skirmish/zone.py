@@ -1,6 +1,6 @@
 from direct.gui.OnscreenImage import OnscreenImage
 from panda3d.core import GeoMipTerrain
-import config
+import assets_dir_config
 import core
 
 
@@ -36,8 +36,7 @@ class Zone:
         # self.background_image = None
 
     def load(self):
-        models_dir = config.models_dir
-        self.skybox = core.instance.loader.loadModel(models_dir + 'skybox')
+        self.skybox = core.instance.loader.loadModel(assets_dir_config.models_dir + 'skybox')
         self.skybox.set_scale(100)
         self.skybox.reparent_to(core.instance.camera)
         self.skybox.set_compass(self.parent_3d)

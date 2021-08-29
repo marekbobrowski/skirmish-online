@@ -3,6 +3,7 @@ from scene import scene_manager
 from networking import networking_manager
 from scene.scene import Scene
 
+
 def join_skirmish_attempt(player_name, selected_class):
     """
     Attempts to join the skirmish.

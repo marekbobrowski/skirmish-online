@@ -1,7 +1,8 @@
 from direct.gui.OnscreenText import OnscreenText
 from direct.gui.DirectGui import DirectEntry, DirectButton, DGG
-import config
+import assets_dir_config
 import core
+from assets import asset_names
 from scene.character_menu import join_game
 
 
@@ -38,15 +39,14 @@ class CharacterMenu2D:
         """
         Loads the character's menu interface components.
         """
-        assets_dir = config.assets_dir
-        rollover_sound = core.instance.loader.loadSfx(assets_dir + 'sounds/mouse_rollover.wav')
-        click_sound = core.instance.loader.loadSfx(assets_dir + 'sounds/mouse_click.wav')
-        font = core.instance.loader.load_font(assets_dir + 'fonts/GODOFWAR.TTF')
+        rollover_sound = core.instance.loader.loadSfx(asset_names.rollover_sound)
+        click_sound = core.instance.loader.loadSfx(asset_names.click_sound)
+        font = core.instance.loader.load_font(asset_names.font_1)
 
         self.warrior_btn = DirectButton(scale=0.34,
                                         pos=(-1.5, 0, 0.6),
                                         frameColor=(0, 0, 0, 0),
-                                        image=assets_dir+'artwork/warrior-class.png',
+                                        image=asset_names.warrior_icon,
                                         image_scale=0.3,
                                         rolloverSound=rollover_sound,
                                         clickSound=click_sound,
@@ -55,7 +55,7 @@ class CharacterMenu2D:
         self.archer_btn = DirectButton(scale=0.34,
                                        pos=(-1.5, 0, -0.3),
                                        frameColor=(0, 0, 0, 0),
-                                       image=assets_dir+'artwork/archer-class.png',
+                                       image=asset_names.archer_icon,
                                        image_scale=0.3,
                                        rolloverSound=rollover_sound,
                                        clickSound=click_sound,
@@ -84,7 +84,7 @@ class CharacterMenu2D:
                                               text_pos=(0, -0.05),
                                               text_scale=0.18,
                                               text='Join skirmish',
-                                              image=assets_dir+'artwork/button.png',
+                                              image=asset_names.button,
                                               image_scale=(1.1, 1, 0.3),
                                               rolloverSound=rollover_sound,
                                               clickSound=click_sound,

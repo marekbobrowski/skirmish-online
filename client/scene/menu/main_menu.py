@@ -1,6 +1,6 @@
 from direct.gui.DirectGui import DirectEntry, DirectButton, DGG
 import sys
-import config
+import assets_dir_config
 from scene.menu import connect
 
 
@@ -20,7 +20,7 @@ class MainMenu:
         self.notification_text = None
 
     def load(self):
-        assets_dir = config.assets_dir
+        assets_dir = assets_dir_config.assets_dir
 
         # Ip entry
         self.ip_entry = DirectEntry(scale=0.1,

@@ -1,7 +1,7 @@
 from direct.gui.DirectGui import DirectButton
 import sys
 from direct.task.Task import Task
-import config
+import assets_dir_config
 import core
 from networking import networking_manager
 from scene import scene_manager
@@ -29,7 +29,7 @@ class QuickMenu:
         self.enter() if self.visible else self.leave()
 
     def load(self):
-        assets_dir = config.assets_dir
+        assets_dir = assets_dir_config.assets_dir
         font = core.instance.loader.load_font(assets_dir + 'fonts/GODOFWAR.TTF')
         rollover_sound = core.instance.loader.loadSfx(assets_dir + 'sounds/mouse_rollover.wav')
         click_sound = core.instance.loader.loadSfx(assets_dir + 'sounds/mouse_click.wav')

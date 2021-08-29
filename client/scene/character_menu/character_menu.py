@@ -1,6 +1,6 @@
 from scene.character_menu.character_menu_2d import CharacterMenu2D
 from scene.character_menu.character_menu_3d import CharacterMenu3D
-from threading import Thread
+
 import core
 
 
@@ -9,10 +9,8 @@ class CharacterMenu:
     This class represents a scene in which user chooses their class and nickname.
     After choice, they can enter the game by clicking "Join skirmish" button.
     """
-    def __init__(self, scene_manager):
+    def __init__(self):
         self.selected_class = 0
-        self.joining_skirmish = False
-
         # The scene graph nodes. Every visible submodule is attached either to
         # the 3d node (3d models like players, terrain) or the 2d node
         # (usually 2d interface components -- buttons, input fields etc.).

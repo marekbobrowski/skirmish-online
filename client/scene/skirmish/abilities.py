@@ -1,15 +1,16 @@
 from direct.task.Task import Task
-import config
+import assets_dir_config
 import core
+
 
 class Abilities:
     def __init__(self, skirmish):
         self.skirmish = skirmish
         # (time left to cool down, cooldown time)
-        self.icons = [config.artwork_dir + 'warrior_ability_1.png',
-                      config.artwork_dir + 'warrior_ability_2.png',
-                      config.artwork_dir + 'warrior_ability_3.png',
-                      config.artwork_dir + 'warrior_ability_4.png']
+        self.icons = [assets_dir_config.artwork_dir + 'warrior_ability_1.png',
+                      assets_dir_config.artwork_dir + 'warrior_ability_2.png',
+                      assets_dir_config.artwork_dir + 'warrior_ability_3.png',
+                      assets_dir_config.artwork_dir + 'warrior_ability_4.png']
         self.names = ['ability_1', 'ability_2', 'ability_3', 'ability_4']
         self.cooldowns = [
             [0, 2],

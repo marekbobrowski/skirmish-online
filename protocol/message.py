@@ -1,20 +1,20 @@
 class Message:
     # INITIAL TYPES #
-    ASK_FOR_PASS = 1
-    ASK_FOR_INITIAL_DATA = 2
+    ASK_FOR_PASS = 0
+    ASK_FOR_INITIAL_DATA = 1
 
     # SENT BY CLIENT AND SERVER #
-    POS_HPR = 3
-    ANIMATION = 4
-    ACTION = 5
-    DISCONNECTION = 6
-    CHAT_MSG = 7
+    POS_HPR = 50
+    ANIMATION = 51
+    ACTION = 52
+    DISCONNECTION = 53
+    CHAT_MSG = 54
 
     # SENT ONLY BY SERVER
-    CHARACTER_REACTION = 8  # reaction to hit, or spell-casting animation'
-    TELEPORT = 9
-    NEW_PLAYER = 10
-    HEALTH = 11
+    CHARACTER_REACTION = 100  # reaction to hit, or spell-casting animation'
+    TELEPORT = 101
+    NEW_PLAYER = 102
+    HEALTH = 103
 
     # SENT ONLY BY CLIENT
-    READY_FOR_UPDATES = 12
+    READY_FOR_UPDATES = 150

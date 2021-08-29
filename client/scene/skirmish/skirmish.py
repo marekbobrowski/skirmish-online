@@ -7,14 +7,13 @@ from scene.skirmish.abilities import Abilities
 from scene.skirmish.object_picking import ObjectPicking
 from scene.common_modules.characters.player_character import PlayerCharacter
 from panda3d.core import Vec3
-import config
+import assets_dir_config
 import core
 from networking import networking_manager
 
 
 class Skirmish:
-    def __init__(self, scene_manager):
-        self.scene_manager = scene_manager
+    def __init__(self):
 
         self.node_2d = core.instance.aspect2d.attach_new_node("skirmish 2d node")
         self.node_3d = core.instance.render.attach_new_node("skirmish 3d node")
@@ -84,7 +83,7 @@ class Skirmish:
         self.node_3d.hide()
 
     def create_main_player(self, id_, class_number, name, health, x, y, z, h, p, r):
-        player = PlayerCharacter(config.heroes[class_number], id_)
+        player = PlayerCharacter(assets_dir_config.heroes[class_number], id_)
         player.class_number = class_number
         player.name = name
         player.health = health
@@ -93,7 +92,7 @@ class Skirmish:
         self.player.loop('idle')
 
     def create_other_player(self, id_, class_number, name, health, x, y, z, h, p, r):
-        player = PlayerCharacter(config.heroes[class_number], id_)
+        player = PlayerCharacter(assets_dir_config.heroes[class_number], id_)
         player.class_number = class_number
         player.name = name
         player.health = health
