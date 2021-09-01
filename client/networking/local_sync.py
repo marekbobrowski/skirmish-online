@@ -133,5 +133,6 @@ class LocalSync:
         id_ = iterator.get_uint8()
         action_id = iterator.get_uint8()
         cd_time = iterator.get_uint8()
+        print('Player with id ' + str(id_) + ' used action: ' + str(action_id) + 'and dealt x dmg.')
         if id_ == self.skirmish.player.id:
             self.skirmish.abilities.trigger_cooldown(action_id, cd_time)

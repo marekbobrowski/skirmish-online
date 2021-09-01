@@ -4,6 +4,7 @@ from scene.menu.audio_submenu import AudioSubmenu
 from scene.menu.main_menu import MainMenu
 import assets_dir_config
 import core
+from assets import asset_names
 
 
 class Menu:
@@ -28,9 +29,9 @@ class Menu:
 
     def load(self):
         assets_dir = assets_dir_config.assets_dir
-        self.background = OnscreenImage(parent=core.instance.render2d,
-                                        image=assets_dir + 'artwork/menu_background.jpg')
-        self.font = core.instance.loader.load_font(assets_dir + 'fonts/GODOFWAR.TTF')
+        # self.background = OnscreenImage(parent=core.instance.render2d,
+        #                                image=assets_dir + 'artwork/menu_background.jpg')
+        self.font = core.instance.loader.load_font(asset_names.font_1)
         self.font.set_pixels_per_unit(100)
         self.logo_text = OnscreenText(text='Skirmish Online',
                                       font=self.font,
@@ -46,12 +47,12 @@ class Menu:
 
     def enter(self):
         self.node.show()
-        self.background.show()
+        # self.background.show()
         self.change_subscene_to(0)
 
     def leave(self):
         self.node.hide()
-        self.background.hide()
+        # self.background.hide()
 
     def change_subscene_to(self, scene_number):
         if self.current_subscene is not None:

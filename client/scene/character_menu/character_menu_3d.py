@@ -21,7 +21,7 @@ class CharacterMenu3D:
         core.instance.camera.set_pos(-2.9, -4.9, 0.94)
         core.instance.camera.set_h(-50)
 
-        self.zone.load()
+        # self.zone.load()
         core.instance.cam2dp.node().getDisplayRegion(0).setSort(-20)
 
         hero_1 = Actor(assets_dir_config.heroes[0])

@@ -17,7 +17,8 @@ warrior_ability_4 = 'warrior_ability_4.png'
 # models
 
 # fonts
-font_1 = assets_dir_config.fonts_dir + 'GODOFWAR.TTF'
+# font_1 = assets_dir_config.fonts_dir + 'GODOFWAR.TTF'
+font_1 = assets_dir_config.fonts_dir + 'Modeseven-L3n5.TTF'
 
 # sounds
 rollover_sound = assets_dir_config.sounds_dir + 'mouse_rollover.wav'
