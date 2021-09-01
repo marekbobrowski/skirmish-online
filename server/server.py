@@ -9,7 +9,7 @@ from panda3d.core import NetAddress
 from panda3d.core import NetDatagram
 from player import Player
 from direct.distributed.PyDatagram import PyDatagram
-from handler import Handler
+from request_handler import Handler
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join('..')))
@@ -121,5 +121,3 @@ if __name__ == "__main__":
     server = Server()
     server.run()
     quit_server = input('Press any key to turn off the server...\n')
-
-
