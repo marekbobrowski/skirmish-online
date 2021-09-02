@@ -109,7 +109,7 @@ class LocalSync:
         """
         name = iterator.get_string()
         message = iterator.get_string()
-        self.skirmish.interface.submodules[3].add_message(name, message)
+        self.skirmish.ui.submodules[3].add_message(name, message)
 
     def update_animation(self, datagram, iterator):
         """

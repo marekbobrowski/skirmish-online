@@ -57,7 +57,6 @@ class Input:
             'enter': self.enter_handler
         }
 
-
     def enable(self):
         for event, handler in self.event_handler_mapping.items():
             core.instance.accept(event, handler)
@@ -255,10 +254,10 @@ class Input:
             self.interlocutor.instance.server_sync.send_ability_attempt(3, self.world.player.target.id)
 
     def esc_handler(self):
-        self.world.interface.submodules[0].toggle()
+        self.world.ui.submodules[0].toggle()
 
     def enter_handler(self):
-        chat_frame = self.world.interface.submodules[3]
+        chat_frame = self.world.ui.submodules[3]
         if chat_frame.focused:
             message = chat_frame.entry.get()
             if message == '':

@@ -14,3 +14,6 @@ def load_assets_to_cache():
     for sfx in assets.list_sfx:
         if sfx != '':
             core.instance.loader.load_sfx(sfx)
+    for font in assets.list_fonts:
+        if font != '':
+            core.instance.loader.load_font(font)

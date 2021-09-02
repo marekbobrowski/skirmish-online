@@ -1,11 +1,7 @@
 import sys
 
 from communication.interlocutor import Interlocutor
-from local.interface import Interface
-from local.load_assets import load_assets_to_cache
-from local.world import World
-from local.input import Input
-from local.scene import Scene
+
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
@@ -16,15 +12,19 @@ if __name__ == '__main__':
         print("Connecting...")
         if interlocutor.connect(server_ip):
             print("Connected. Loading assets...")
-
             # create singleton ShowBase
             from local import core
+            from local.ui.ui import Ui
+            from local.load_assets import load_assets_to_cache
+            from local.world import World
+            from local.input import Input
+            from local.scene import Scene
 
             load_assets_to_cache()
 
             world = World()
             scene = Scene()
-            # interface = Interface()
+            ui = Ui()
             input_ = Input(world, interlocutor)
 
             # interlocutor.begin_sync(world)

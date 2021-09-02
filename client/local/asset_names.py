@@ -26,8 +26,17 @@ walk = ''
 
 list_sfx = [walk]
 
+# fonts
+terminal_style = 'assets/font.ttf'
+
+list_fonts = [
+    terminal_style
+]
+
 # animations
 night_elf_stand = ''
 night_elf_run = ''
+
+
 
 
