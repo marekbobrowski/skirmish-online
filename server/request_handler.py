@@ -5,6 +5,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join('..')))
 from protocol.message import Message
 from spell_handler import SpellHandler
+import config
 
 
 class Handler:
@@ -19,7 +20,8 @@ class Handler:
             Message.DISCONNECTION: self.handle_disconnection,
             Message.ACTION: self.action_handler.handle_action,
             Message.CHAT_MSG: self.handle_chat_message,
-            Message.ANIMATION: self.handle_animation
+            Message.ANIMATION: self.handle_animation,
+            Message.WELCOME_MSG: self.handle_welcome_msg_request
         }
 
     def handle_data(self, datagram):
@@ -28,6 +30,14 @@ class Handler:
         if packet_type not in self.data_handler_mapping:
             return
         self.data_handler_mapping[packet_type](datagram, iterator)
+
+    def handle_welcome_msg_request(self, datagram, iterator):
+        response = PyDatagram()
+        response.add_uint8(Message.WELCOME_MSG)
+        response.add_uint8(len(config.welcome_msg))
+        for line in config.welcome_msg:
+            response.add_string(line)
+        self.server.writer.send(response, datagram.get_connection())
 
     def handle_ask_for_pass(self, datagram, iterator):
         name = iterator.get_string()

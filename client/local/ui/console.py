@@ -30,6 +30,9 @@ class Console:
         # number of lines displayable in the terminal
         n_lines = 40
 
+        # distance of the '>' symbol from the entry
+        self.input_symbol_offset = 0.0005
+
         # -- set up console components -- #
 
         self.frame = DirectFrame(
@@ -75,7 +78,6 @@ class Console:
         core.instance.accept('enter', self.focus_entry)
 
         self.input_symbol_node = self.entry_node.attach_new_node('input symbol node')
-        self.input_symbol_offset = 0.0005
         self.input_symbol = DirectLabel(text='>',
                                         text_align=TextNode.ALeft,
                                         text_font=font,
@@ -107,11 +109,14 @@ class Console:
         self.node.set_pos(0,
                           0,
                           - (1 - self.height) * core.instance.win.get_y_size())
+
         self.entry_node.set_pos(self.corner_x_offset * core.instance.win.get_x_size(),
                                 0,
                                 - (1 - self.corner_y_offset) * self.height * core.instance.win.get_y_size())
+
         self.entry_node.set_scale((self.text_scale * core.instance.win.get_y_size() +
                                    self.text_scale * core.instance.win.get_x_size()) / 2)
+
         self.input_symbol_node.set_x(- self.input_symbol_offset * core.instance.win.get_x_size())
 
         pos = 0

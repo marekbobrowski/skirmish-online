@@ -12,12 +12,14 @@ if __name__ == '__main__':
         print("Connecting...")
         if interlocutor.connect(server_ip):
             print("Connected. Loading assets...")
+
             # create singleton ShowBase
             from local import core
+
             from local.ui.ui import Ui
             from local.load_assets import load_assets_to_cache
             from local.world import World
-            from local.input import Input
+            from local.control.control import Control
             from local.scene import Scene
 
             load_assets_to_cache()
@@ -25,7 +27,15 @@ if __name__ == '__main__':
             world = World()
             scene = Scene()
             ui = Ui()
-            input_ = Input(world, interlocutor)
+            control = Control(world, interlocutor)
 
-            # interlocutor.begin_sync(world)
+            lines = interlocutor.get_welcome_message()
+            if lines is not None:
+                for line in lines:
+                    ui.console.add_line(line)
+                ui.console.update_view()
+
+            interlocutor.get_world_state()
+            interlocutor.begin_sync(world)
+
             core.instance.run()

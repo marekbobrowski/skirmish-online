@@ -7,10 +7,12 @@ from direct.distributed.PyDatagramIterator import PyDatagramIterator
 from communication.server_sync import ServerSync
 from communication.local_sync import LocalSync
 
+
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join('..')))
 from protocol.message import Message
+from local import core
 
 
 class Interlocutor:
@@ -113,7 +115,28 @@ class Interlocutor:
         self.server_sync = ServerSync(self, skirmish)
         self.local_sync = LocalSync(self, skirmish)
         core.instance.task_mgr.add(self.local_sync.listen_for_updates, 'listen for skirmish updates')
-        core.instance.task_mgr.add(self.server_sync.send_updates, 'send skirmish updates')
+        # core.instance.task_mgr.add(self.server_sync.send_updates, 'send skirmish updates')
+
+    def get_welcome_message(self):
+        data = PyDatagram()
+        data.add_uint8(Message.WELCOME_MSG)
+        self.writer.send(data, self.server_connection)
+        self.manager.wait_for_readers(self.timeout / 1000)
+        if self.reader.data_available():
+            datagram = NetDatagram()
+            if self.reader.get_data(datagram):
+                iterator = PyDatagramIterator(datagram)
+                packet_type = iterator.get_uint8()
+                if packet_type == Message.WELCOME_MSG:
+                    n_lines = iterator.get_uint8()
+                    lines = []
+                    for i in range(n_lines):
+                        lines.append(iterator.get_string())
+                    return lines
+        return None
+
+    def get_world_state(self):
+        pass
 
     def stop_updating_skirmish(self):
         """

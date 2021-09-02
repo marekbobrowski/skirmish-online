@@ -1,16 +1,11 @@
 from direct.task.Task import Task
-from direct.interval.IntervalGlobal import *
-from direct.interval.ActorInterval import ActorInterval
 from panda3d.core import WindowProperties
-from communication.interlocutor import Interlocutor
 from local import core
-from local.character_control import CharacterControl
-from local.camera_control import CameraControl
 
 import datetime
 
 
-class Input:
+class Control:
 
     def __init__(self, world, interlocutor):
         self.world = world
