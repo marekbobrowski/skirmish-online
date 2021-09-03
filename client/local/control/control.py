@@ -1,18 +1,24 @@
+from local import core
+from local.control.camera_control import CameraControl
+from local.control.character_control import CharacterControl
+from local.control.object_picking import ObjectPicking
+
 from direct.task.Task import Task
 from panda3d.core import WindowProperties
-from local import core
 
 import datetime
 
 
 class Control:
 
-    def __init__(self, world, interlocutor):
+    def __init__(self, world, scene, interlocutor):
         self.world = world
+        self.scene = scene
         self.interlocutor = interlocutor
 
         self.char_ctrl = None
         self.cam_ctrl = None
+        self.object_picking = None
 
         self.mouse_sensitivity = 0.5
 
@@ -48,11 +54,17 @@ class Control:
             'e-up': self.e_up_handler,
             'r': self.r_handler,
             'f': self.f_handler,
-            'escape': self.esc_handler,
-            'enter': self.enter_handler
+            'escape': self.esc_handler
         }
 
-    def enable(self):
+    def enable(self, character, camera):
+        if self.char_ctrl is None:
+            self.char_ctrl = CharacterControl(character)
+        if self.cam_ctrl is None:
+            self.cam_ctrl = CameraControl(camera)
+        if self.object_picking is None:
+            self.object_picking = ObjectPicking(self.world, self.scene)
+
         for event, handler in self.event_handler_mapping.items():
             core.instance.accept(event, handler)
 
@@ -136,7 +148,7 @@ class Control:
     def mouse_1_handler(self):
         self.mouse_1_clicked = True
         self.mouse_1_click_time = datetime.datetime.now()
-        self.world.object_picking.find_pickable()
+        self.object_picking.find_pickable()
 
         # run the dragging handler
         core.instance.taskMgr.add(self.handle_m1_dragging_task, "M1Drag")
@@ -157,7 +169,7 @@ class Control:
     def mouse_1_up_handler(self):
         self.mouse_1_clicked = False
         if (datetime.datetime.now() - self.mouse_1_click_time).microseconds < 100000:
-            self.world.object_picking.pick()
+            self.object_picking.pick()
 
         core.instance.win.move_pointer(0, int(self.last_mouse_x), int(self.last_mouse_y))
 
@@ -250,17 +262,6 @@ class Control:
 
     def esc_handler(self):
         self.world.ui.submodules[0].toggle()
-
-    def enter_handler(self):
-        chat_frame = self.world.ui.submodules[3]
-        if chat_frame.focused:
-            message = chat_frame.entry.get()
-            if message == '':
-                return
-            self.interlocutor.instance.server_sync.send_chat_message(message)
-            chat_frame.remove_focus()
-        else:
-            chat_frame.focus()
 
     def handle_m1_dragging_task(self, task):
         # move the camera on the character's "orbit" only if the first button of the mouse is clicked

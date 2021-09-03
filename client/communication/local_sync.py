@@ -15,9 +15,10 @@ class LocalSync:
     The data concerns only the actual skirmish gameplay, such as player positions,
     rotations, health points.
     """
-    def __init__(self,  manager, skirmish):
+    def __init__(self, manager, world):
+        self.console = None
         self.manager = manager
-        self.skirmish = skirmish
+        self.world = world
         self.data_handler_mapping = {
             Message.POS_HPR: self.update_pos_hpr,
             Message.NEW_PLAYER: self.update_new_player,
@@ -61,7 +62,7 @@ class LocalSync:
             h = iterator.get_float64()
             p = iterator.get_float64()
             r = iterator.get_float64()
-            self.skirmish.world.update_player_pos_hpr(id_, x, y, z, h, p, r)
+            self.world.update_player_pos_hpr(id_, x, y, z, h, p, r)
 
     def update_new_player(self, datagram, iterator):
         """
@@ -77,16 +78,16 @@ class LocalSync:
         h = iterator.get_float64()
         p = iterator.get_float64()
         r = iterator.get_float64()
-        self.skirmish.create_other_player(id_, class_number, name, health, x, y, z, h, p, r)
+        self.world.create_other_player(id_, class_number, name, health, x, y, z, h, p, r)
 
     def update_disconnection(self, datagram, iterator):
         """
         Removes the disconnected player from the skirmish.
         """
         id_ = iterator.get_uint8()
-        if self.skirmish.player.target is not None and self.skirmish.player.target.id == id_:
-            self.skirmish.player.target = None
-        self.skirmish.remove_player(id_)
+        if self.world.player.target is not None and self.world.player.target.id == id_:
+            self.world.player.target = None
+        self.world.remove_player(id_)
 
     def update_health(self, datagram, iterator):
         """
@@ -95,12 +96,12 @@ class LocalSync:
         while iterator.get_remaining_size() > 0:
             id_ = iterator.get_uint8()
             health = iterator.get_uint8()
-            player = self.skirmish.get_player_by_id(id_)
+            player = self.world.get_player_by_id(id_)
             if player is not None:
                 player.health = health
             # Check if the message concerns this client's character.
-            if self.skirmish.player.id == id_:
-                self.skirmish.player.health = health
+            if self.world.player.id == id_:
+                self.world.player.health = health
 
     def update_chat(self, datagram, iterator):
         """
@@ -109,7 +110,8 @@ class LocalSync:
         """
         name = iterator.get_string()
         message = iterator.get_string()
-        self.skirmish.ui.submodules[3].add_message(name, message)
+        self.console.add_lines([name + ': ' + message])
+        self.console.update_view()
 
     def update_animation(self, datagram, iterator):
         """
@@ -118,21 +120,23 @@ class LocalSync:
         id_ = iterator.get_uint8()
         animation = iterator.get_string()
         loop = iterator.get_uint8()
-        player = self.skirmish.get_player_by_id(id_)
+        player = self.world.get_player_by_id(id_)
         if player is None:
-            if self.skirmish.player.id != id_:
+            if self.world.player.id != id_:
                 return
             else:
-                player = self.skirmish.player
+                player = self.world.player
         if loop:
-            player.loop(animation)
+            pass
+            # player.loop(animation)
         else:
-            player.play(animation)
+            pass
+            # player.play(animation)
 
     def update_action(self, datagram, iterator):
         id_ = iterator.get_uint8()
         action_id = iterator.get_uint8()
         cd_time = iterator.get_uint8()
         print('Player with id ' + str(id_) + ' used action: ' + str(action_id) + 'and dealt x dmg.')
-        if id_ == self.skirmish.player.id:
-            self.skirmish.abilities.trigger_cooldown(action_id, cd_time)
+        if id_ == self.world.player.id:
+            self.world.abilities.trigger_cooldown(action_id, cd_time)

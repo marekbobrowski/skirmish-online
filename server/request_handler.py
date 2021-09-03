@@ -14,7 +14,7 @@ class Handler:
         self.action_handler = SpellHandler(server)
         self.data_handler_mapping = {
             Message.ASK_FOR_PASS: self.handle_ask_for_pass,
-            Message.ASK_FOR_INITIAL_DATA: self.handle_ask_for_initial_data,
+            Message.WORLD_STATE: self.handle_ask_for_initial_data,
             Message.READY_FOR_UPDATES: self.handle_ready_for_updates,
             Message.POS_HPR: self.handle_pos_hpr,
             Message.DISCONNECTION: self.handle_disconnection,
@@ -71,7 +71,7 @@ class Handler:
             player.health = 50
 
             response = PyDatagram()
-            response.add_uint8(Message.ASK_FOR_INITIAL_DATA)
+            response.add_uint8(Message.WORLD_STATE)
 
             # send player his own id, nickname, class and health
             response.add_uint8(player.id)

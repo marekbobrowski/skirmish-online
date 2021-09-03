@@ -12,9 +12,9 @@ class ServerSync:
     The data concerns only the actual skirmish gameplay, such as this client's character position,
     ability usage.
     """
-    def __init__(self, manager, skirmish):
+    def __init__(self, manager, world):
         self.manager = manager
-        self.skirmish = skirmish
+        self.world = world
 
     def send_updates(self, task):
         """
@@ -29,12 +29,12 @@ class ServerSync:
         """
         datagram = PyDatagram()
         datagram.add_uint8(Message.POS_HPR)
-        datagram.add_float64(self.skirmish.player.get_x())
-        datagram.add_float64(self.skirmish.player.get_y())
-        datagram.add_float64(self.skirmish.player.get_z())
-        datagram.add_float64(self.skirmish.player.get_h())
-        datagram.add_float64(self.skirmish.player.get_p())
-        datagram.add_float64(self.skirmish.player.get_r())
+        datagram.add_float64(self.world.player.get_x())
+        datagram.add_float64(self.world.player.get_y())
+        datagram.add_float64(self.world.player.get_z())
+        datagram.add_float64(self.world.player.get_h())
+        datagram.add_float64(self.world.player.get_p())
+        datagram.add_float64(self.world.player.get_r())
         self.manager.writer.send(datagram, self.manager.server_connection)
 
     def send_ability_attempt(self, ability, target):

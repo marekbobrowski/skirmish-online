@@ -9,7 +9,7 @@ list_2d = [terrain_heightmap,
 
 # 3d
 skybox = 'assets/skybox.egg'
-night_elf = ''
+night_elf = 'assets/nelf/nelf.egg'
 tree_1 = ''
 tree_2 = ''
 tree_3 = ''

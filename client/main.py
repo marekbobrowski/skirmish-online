@@ -1,7 +1,8 @@
-import sys
-
 from communication.interlocutor import Interlocutor
 
+import sys
+
+from panda3d.core import Vec3
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
@@ -25,17 +26,29 @@ if __name__ == '__main__':
             load_assets_to_cache()
 
             world = World()
-            scene = Scene()
-            ui = Ui()
-            control = Control(world, interlocutor)
+            scene = Scene(world)
+
+            ui = Ui(interlocutor)
+            control = Control(world, scene, interlocutor)
 
             lines = interlocutor.get_welcome_message()
-            if lines is not None:
-                for line in lines:
-                    ui.console.add_line(line)
-                ui.console.update_view()
+            ui.console.add_lines(lines)
+            ui.console.update_view()
 
-            interlocutor.get_world_state()
+            iterator, datagram = interlocutor.get_world_state()
+            world.load_world_state(iterator, datagram)
+
+            scene.update()
+            scene.set_up_camera()
+
+            control.enable(world.player.character, core.instance.camera)
+            control.cam_ctrl.attach_to(world.player.character, Vec3(0, 0, 2))
+            control.cam_ctrl.zoom_out(4)
+
+            interlocutor.send_ready_for_updates()
             interlocutor.begin_sync(world)
 
+            interlocutor.plug_console(ui.console)
+
+            core.instance.disable_mouse()
             core.instance.run()

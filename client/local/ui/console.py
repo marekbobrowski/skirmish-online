@@ -5,8 +5,9 @@ from local import asset_names as assets
 
 
 class Console:
-    def __init__(self, node):
+    def __init__(self, node, interlocutor):
         self.node = node.attach_new_node("console node")
+        self.interlocutor = interlocutor
 
         # --- frame params --- #
         self.width = 0.3
@@ -91,11 +92,10 @@ class Console:
     def request_send_message(self, message):
         self.input_symbol_node.hide()
         if message != '':
-            self.add_line(message)
+            # self.add_lines([message])
             self.entry.enterText('')
-            self.update_view()
+            self.interlocutor.server_sync.send_chat_message(message)
             self.entry['focus'] = False
-            core.instance.accept('enter', self.focus_entry)
 
     def focus_entry(self):
         self.input_symbol_node.show()
@@ -128,9 +128,13 @@ class Console:
                               0,
                               - (1 - self.corner_y_offset - pos) * self.height * core.instance.win.get_y_size())
 
-    def add_line(self, text):
-        self.lines_queue.append(text)
-        self.lines_queue.pop(0)
+    def add_lines(self, lines):
+        """
+        :param lines: array of lines to be added
+        """
+        for line in lines:
+            self.lines_queue.append(line)
+            self.lines_queue.pop(0)
 
     def update_view(self):
         for i, direct_label in enumerate(self.direct_labels):

@@ -25,6 +25,8 @@ class Interlocutor:
         self.reader = QueuedConnectionReader(self.manager, 0)
         self.writer = ConnectionWriter(self.manager, 0)
 
+        self.console = None
+
         # Continuous communication submodules.
         self.local_sync = None
         self.server_sync = None
@@ -73,7 +75,7 @@ class Interlocutor:
                         return True
         return False
 
-    def ask_for_initial_data(self):
+    def get_world_state(self):
         """
         Asks the server for initial data, so the client can load all currently active players within the world.
         The initial data consists of player names, classes, health points, positions etc. The function waits for
@@ -82,7 +84,7 @@ class Interlocutor:
         """
         # send datagram asking for initial world data (player's location, other player names, positions)
         data = PyDatagram()
-        data.add_uint8(Message.ASK_FOR_INITIAL_DATA)
+        data.add_uint8(Message.WORLD_STATE)
         self.writer.send(data, self.server_connection)
         # wait for datagram from the server
         self.manager.wait_for_readers(self.timeout/1000)
@@ -91,7 +93,7 @@ class Interlocutor:
             if self.reader.get_data(datagram):
                 iterator = PyDatagramIterator(datagram)
                 packet_type = iterator.get_uint8()
-                if packet_type == Message.ASK_FOR_INITIAL_DATA:
+                if packet_type == Message.WORLD_STATE:
                     return iterator, datagram
         return None
 
@@ -104,7 +106,7 @@ class Interlocutor:
         data.add_uint8(Message.READY_FOR_UPDATES)
         self.writer.send(data, self.server_connection)
 
-    def begin_sync(self, skirmish):
+    def begin_sync(self, world):
         """
         Runs 2 separate tasks to continuously communicate with the server:
         > sender thread -- sends messages from the client (for example: ability usage attempt)
@@ -112,8 +114,8 @@ class Interlocutor:
         This communication concerns only what's happening during the actual gameplay (the skirmish scene).
         There are separate functions responsible for establishing communication and other starter actions.
         """
-        self.server_sync = ServerSync(self, skirmish)
-        self.local_sync = LocalSync(self, skirmish)
+        self.server_sync = ServerSync(self, world)
+        self.local_sync = LocalSync(self, world)
         core.instance.task_mgr.add(self.local_sync.listen_for_updates, 'listen for skirmish updates')
         # core.instance.task_mgr.add(self.server_sync.send_updates, 'send skirmish updates')
 
@@ -134,9 +136,6 @@ class Interlocutor:
                         lines.append(iterator.get_string())
                     return lines
         return None
-
-    def get_world_state(self):
-        pass
 
     def stop_updating_skirmish(self):
         """
@@ -159,3 +158,6 @@ class Interlocutor:
         """
         self.send_disconnect()
         self.manager.close_connection(self.server_connection)
+
+    def plug_console(self, console):
+        self.local_sync.console = console

@@ -1,12 +1,10 @@
 from direct.showbase.ShowBaseGlobal import globalClock
 from direct.task import Task
-from direct.interval.IntervalGlobal import *
 
 
 class CharacterControl:
 
-    def __init__(self, character, core):
-        self.core = core
+    def __init__(self, character):
         self.character = character
         self.movement_speed = 10
 

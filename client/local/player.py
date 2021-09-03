@@ -3,7 +3,7 @@ from direct.actor.Actor import Actor
 
 class Player:
     def __init__(self, model, id_):
-        self.character = Actor.__init__(self, model)
+        self.character = Actor(model)
         self.character.set_tag('id', str(id_))
 
         self.id = id_

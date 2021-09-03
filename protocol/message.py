@@ -1,6 +1,6 @@
 class Message:
     ASK_FOR_PASS = 0
-    ASK_FOR_INITIAL_DATA = 1
+    WORLD_STATE = 1
     REQUEST_MODEL = 2
     WELCOME_MSG = 3
     POS_HPR = 50
