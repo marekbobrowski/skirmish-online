@@ -34,8 +34,8 @@ list_fonts = [
 ]
 
 # animations
-night_elf_stand = ''
-night_elf_run = ''
+night_elf_stand = 'assets/nelf/nelf-Stand.egg'
+night_elf_run = 'assets/nelf/nelf-Run.egg'
 
 
 

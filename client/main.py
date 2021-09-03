@@ -38,11 +38,10 @@ if __name__ == '__main__':
             iterator, datagram = interlocutor.get_world_state()
             world.load_world_state(iterator, datagram)
 
-            scene.update()
             scene.set_up_camera()
 
             control.enable(world.player.character, core.instance.camera)
-            control.cam_ctrl.attach_to(world.player.character, Vec3(0, 0, 2))
+            control.cam_ctrl.attach_to(world.player.character, Vec3(0, 0, 1))
             control.cam_ctrl.zoom_out(4)
 
             interlocutor.send_ready_for_updates()

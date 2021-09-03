@@ -297,18 +297,18 @@ class Control:
     def update_animation(self):
         f = core.instance.task_mgr.hasTaskNamed
         if f("MoveRight"):
-            if self.char_ctrl.character.get_current_anim() != 'strafe_right':
-                self.interlocutor.server_sync.send_animation('strafe_right', 1)
-                self.char_ctrl.character.loop('strafe_right')
+            if self.char_ctrl.character.get_current_anim() != 'run':
+                self.interlocutor.server_sync.send_animation('run', 1)
+                self.char_ctrl.character.loop('run')
         elif f("MoveLeft"):
-            if self.char_ctrl.character.get_current_anim() != 'strafe_left':
-                self.interlocutor.server_sync.send_animation('strafe_left', 1)
-                self.char_ctrl.character.loop('strafe_left')
+            if self.char_ctrl.character.get_current_anim() != 'run':
+                self.interlocutor.server_sync.send_animation('run', 1)
+                self.char_ctrl.character.loop('run')
         elif f("MoveForward") or f("MoveBackward"):
             if self.char_ctrl.character.get_current_anim() != 'run':
                 self.char_ctrl.character.loop('run')
                 self.interlocutor.server_sync.send_animation('run', 1)
         else:
-            if self.char_ctrl.character.get_current_anim() != 'idle':
-                self.char_ctrl.character.loop('idle')
-                self.interlocutor.server_sync.send_animation('idle', 1)
+            if self.char_ctrl.character.get_current_anim() != 'stand':
+                self.char_ctrl.character.loop('stand')
+                self.interlocutor.server_sync.send_animation('stand', 1)

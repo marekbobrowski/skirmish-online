@@ -6,7 +6,7 @@ class CharacterControl:
 
     def __init__(self, character):
         self.character = character
-        self.movement_speed = 10
+        self.movement_speed = 5
 
     def move_forward(self, task):
         self.character.set_y(self.character, -self.movement_speed * globalClock.getDt())

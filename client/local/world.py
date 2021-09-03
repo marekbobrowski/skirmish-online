@@ -1,5 +1,6 @@
 from local.player import Player
 from local import asset_names
+from local import core
 
 class World:
     """
@@ -34,6 +35,7 @@ class World:
             p = iterator.get_float64()
             r = iterator.get_float64()
             self.create_other_player(id_, class_number, name, health, x, y, z, h, p, r)
+        core.instance.messenger.send('player-base-updated')
 
     def create_main_player(self, id_, class_number, name, health, x, y, z, h, p, r):
         player = Player(asset_names.night_elf, id_)

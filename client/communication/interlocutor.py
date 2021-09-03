@@ -117,7 +117,7 @@ class Interlocutor:
         self.server_sync = ServerSync(self, world)
         self.local_sync = LocalSync(self, world)
         core.instance.task_mgr.add(self.local_sync.listen_for_updates, 'listen for skirmish updates')
-        # core.instance.task_mgr.add(self.server_sync.send_updates, 'send skirmish updates')
+        core.instance.task_mgr.add(self.server_sync.send_updates, 'send skirmish updates')
 
     def get_welcome_message(self):
         data = PyDatagram()

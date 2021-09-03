@@ -1,10 +1,13 @@
+from local import core
+
+import sys
+import os
+
 from direct.distributed.PyDatagramIterator import PyDatagramIterator
 from direct.interval.IntervalGlobal import *
 from direct.task import Task
 from panda3d.core import NetDatagram
 
-import sys
-import os
 sys.path.append(os.path.abspath(os.path.join('..')))
 from protocol.message import Message
 
@@ -24,9 +27,10 @@ class LocalSync:
             Message.NEW_PLAYER: self.update_new_player,
             Message.DISCONNECTION: self.update_disconnection,
             Message.HEALTH: self.update_health,
-            Message.CHAT_MSG: self.update_chat,
+            Message.TEXT_MSG: self.update_chat,
             Message.ANIMATION: self.update_animation,
-            Message.ACTION: self.update_action
+            Message.ACTION: self.update_action,
+            Message.SET_NAME: self.update_name
         }
 
     def listen_for_updates(self, task):
@@ -79,6 +83,7 @@ class LocalSync:
         p = iterator.get_float64()
         r = iterator.get_float64()
         self.world.create_other_player(id_, class_number, name, health, x, y, z, h, p, r)
+        core.instance.messenger.send('player-base-updated')
 
     def update_disconnection(self, datagram, iterator):
         """
@@ -109,8 +114,9 @@ class LocalSync:
         for displaying new message.
         """
         name = iterator.get_string()
+        time = iterator.get_string()
         message = iterator.get_string()
-        self.console.add_lines([name + ': ' + message])
+        self.console.add_lines([f"[{time}] {name}: {message}"])
         self.console.update_view()
 
     def update_animation(self, datagram, iterator):
@@ -128,10 +134,10 @@ class LocalSync:
                 player = self.world.player
         if loop:
             pass
-            # player.loop(animation)
+            player.character.loop(animation)
         else:
             pass
-            # player.play(animation)
+            player.character.play(animation)
 
     def update_action(self, datagram, iterator):
         id_ = iterator.get_uint8()
@@ -140,3 +146,10 @@ class LocalSync:
         print('Player with id ' + str(id_) + ' used action: ' + str(action_id) + 'and dealt x dmg.')
         if id_ == self.world.player.id:
             self.world.abilities.trigger_cooldown(action_id, cd_time)
+
+    def update_name(self, datagram, iterator):
+        id_ = iterator.get_uint8()
+        new_name = iterator.get_string()
+        player = self.world.get_player_by_id(id_)
+        if player is not None:
+            player.name = new_name
