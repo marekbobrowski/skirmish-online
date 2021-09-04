@@ -1,4 +1,5 @@
 from local import core
+from event import Event
 
 import sys
 import os
@@ -82,8 +83,9 @@ class LocalSync:
         h = iterator.get_float64()
         p = iterator.get_float64()
         r = iterator.get_float64()
-        self.world.create_other_player(id_, class_number, name, health, x, y, z, h, p, r)
+        player = self.world.create_other_player(id_, class_number, name, health, x, y, z, h, p, r)
         core.instance.messenger.send('player-base-updated')
+        core.instance.messenger.send(event=Event.PLAYER_JOINED, sentArgs=[player])
 
     def update_disconnection(self, datagram, iterator):
         """
@@ -101,12 +103,10 @@ class LocalSync:
         while iterator.get_remaining_size() > 0:
             id_ = iterator.get_uint8()
             health = iterator.get_uint8()
-            player = self.world.get_player_by_id(id_)
+            player = self.world.get_any_player_by_id(id_)
             if player is not None:
                 player.health = health
-            # Check if the message concerns this client's character.
-            if self.world.player.id == id_:
-                self.world.player.health = health
+                core.instance.messenger.send(event=Event.HEALTH_CHANGED, sentArgs=[player])
 
     def update_chat(self, datagram, iterator):
         """
@@ -126,7 +126,7 @@ class LocalSync:
         id_ = iterator.get_uint8()
         animation = iterator.get_string()
         loop = iterator.get_uint8()
-        player = self.world.get_player_by_id(id_)
+        player = self.world.get_other_player_by_id(id_)
         if player is None:
             if self.world.player.id != id_:
                 return
@@ -150,6 +150,7 @@ class LocalSync:
     def update_name(self, datagram, iterator):
         id_ = iterator.get_uint8()
         new_name = iterator.get_string()
-        player = self.world.get_player_by_id(id_)
+        player = self.world.get_any_player_by_id(id_)
         if player is not None:
             player.name = new_name
+            core.instance.messenger.send(event=Event.NAME_CHANGED, sentArgs=[player])

@@ -4,15 +4,13 @@ from panda3d.core import ConnectionWriter
 from panda3d.core import NetDatagram
 from direct.distributed.PyDatagram import PyDatagram
 from direct.distributed.PyDatagramIterator import PyDatagramIterator
-from communication.server_sync import ServerSync
-from communication.local_sync import LocalSync
+
 
 
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join('..')))
 from protocol.message import Message
-from local import core
 
 
 class Interlocutor:
@@ -114,6 +112,9 @@ class Interlocutor:
         This communication concerns only what's happening during the actual gameplay (the skirmish scene).
         There are separate functions responsible for establishing communication and other starter actions.
         """
+        from local import core
+        from communication.server_sync import ServerSync
+        from communication.local_sync import LocalSync
         self.server_sync = ServerSync(self, world)
         self.local_sync = LocalSync(self, world)
         core.instance.task_mgr.add(self.local_sync.listen_for_updates, 'listen for skirmish updates')
@@ -141,6 +142,7 @@ class Interlocutor:
         """
         Stops continuous communication with the server.
         """
+        from local import core
         core.instance.task_mgr.remove('listen for skirmish updates')
         core.instance.task_mgr.remove('send skirmish updates')
 

@@ -28,7 +28,7 @@ if __name__ == '__main__':
             world = World()
             scene = Scene(world)
 
-            ui = Ui(interlocutor)
+            ui = Ui(interlocutor, world)
             control = Control(world, scene, interlocutor)
 
             lines = interlocutor.get_welcome_message()

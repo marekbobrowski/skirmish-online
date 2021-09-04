@@ -2,6 +2,8 @@ from local.player import Player
 from local import asset_names
 from local import core
 
+from event import Event
+
 class World:
     """
     Holds the world state - information about players.
@@ -23,6 +25,7 @@ class World:
         r = iterator.get_float64()
         self.create_main_player(id_, class_number, name, health, x, y, z, h, p, r)
         self.player.health = health
+        core.instance.messenger.send(event=Event.PLAYER_JOINED, sentArgs=[self.player])
         while iterator.get_remaining_size() > 0:
             id_ = iterator.get_uint8()
             name = iterator.get_string()
@@ -34,7 +37,9 @@ class World:
             h = iterator.get_float64()
             p = iterator.get_float64()
             r = iterator.get_float64()
-            self.create_other_player(id_, class_number, name, health, x, y, z, h, p, r)
+            player = self.create_other_player(id_, class_number, name, health, x, y, z, h, p, r)
+            core.instance.messenger.send(event=Event.PLAYER_JOINED, sentArgs=[player])
+
         core.instance.messenger.send('player-base-updated')
 
     def create_main_player(self, id_, class_number, name, health, x, y, z, h, p, r):
@@ -52,14 +57,20 @@ class World:
         player.health = health
         player.character.set_pos_hpr(x, y, z, h, p, r)
         self.other_players.append(player)
+        return player
 
-    def get_player_by_id(self, id_):
+    def get_other_player_by_id(self, id_):
         for other_player in self.other_players:
             if other_player.id == id_:
                 return other_player
         return None
 
+    def get_any_player_by_id(self, id_):
+        if id_ == self.player.id:
+            return self.player
+        return self.get_other_player_by_id(id_)
+
     def update_player_pos_hpr(self, id_, x, y, z, h, p, r):
-        player = self.get_player_by_id(id_)
+        player = self.get_other_player_by_id(id_)
         if player is not None:
             player.character.set_pos_hpr(x, y, z, h, p, r)
