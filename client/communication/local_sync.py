@@ -133,10 +133,8 @@ class LocalSync:
             else:
                 player = self.world.player
         if loop:
-            pass
             player.character.loop(animation)
         else:
-            pass
             player.character.play(animation)
 
     def update_action(self, datagram, iterator):
