@@ -29,10 +29,10 @@ walk = ''
 list_sfx = [walk]
 
 # fonts
-terminal_style = 'assets/font.ttf'
+main_font = 'assets/font.ttf'
 
 list_fonts = [
-    terminal_style
+    main_font
 ]
 
 # animations

@@ -1,3 +1,5 @@
+from panda3d.core import Vec3
+
 class Player:
     def __init__(self, connection):
         self.connection = connection
@@ -24,3 +26,6 @@ class Player:
         self.h = h
         self.p = p
         self.r = r
+
+    def get_vec3_pos(self):
+        return Vec3(self.x, self.y, self.z)

@@ -1,25 +1,20 @@
 from local import core
 from local.control.camera_control import CameraControl
 from local.control.character_control import CharacterControl
-from local.control.object_picking import ObjectPicking
+from event import Event
+from local.model_config.animation import Animation
 
 from direct.task.Task import Task
-from panda3d.core import WindowProperties
+from panda3d.core import WindowProperties, Vec3
 
 import datetime
 
 
 class Control:
 
-    def __init__(self, world, scene, interlocutor):
-        self.world = world
-        self.scene = scene
-        self.interlocutor = interlocutor
-
+    def __init__(self):
         self.char_ctrl = None
         self.cam_ctrl = None
-        self.object_picking = None
-
         self.mouse_sensitivity = 0.5
 
         # input states
@@ -62,11 +57,12 @@ class Control:
             self.char_ctrl = CharacterControl(character)
         if self.cam_ctrl is None:
             self.cam_ctrl = CameraControl(camera)
-        if self.object_picking is None:
-            self.object_picking = ObjectPicking(self.world, self.scene)
-
+            self.cam_ctrl.attach_to(character, Vec3(0, 0, 1))
+            self.cam_ctrl.zoom_out(4)
         for event, handler in self.event_handler_mapping.items():
             core.instance.accept(event, handler)
+
+
 
     def disable(self):
         for event, handler in self.event_handler_mapping.items():
@@ -148,7 +144,6 @@ class Control:
     def mouse_1_handler(self):
         self.mouse_1_clicked = True
         self.mouse_1_click_time = datetime.datetime.now()
-        self.object_picking.find_pickable()
 
         # run the dragging handler
         core.instance.taskMgr.add(self.handle_m1_dragging_task, "M1Drag")
@@ -168,8 +163,6 @@ class Control:
 
     def mouse_1_up_handler(self):
         self.mouse_1_clicked = False
-        if (datetime.datetime.now() - self.mouse_1_click_time).microseconds < 100000:
-            self.object_picking.pick()
 
         core.instance.win.move_pointer(0, int(self.last_mouse_x), int(self.last_mouse_y))
 
@@ -239,29 +232,25 @@ class Control:
         self.cam_ctrl.zoom_out(1)
 
     def q_handler(self):
-        if self.world.player.target is not None:
-            self.interlocutor.send_ability_attempt(0, self.world.player.target.id)
+        core.instance.messenger.send(event=Event.CLIENT_SPELL_ATTEMPT, sentArgs=[0])
 
     def q_up_handler(self):
         pass
 
     def e_handler(self):
-        if self.world.player.target is not None:
-            self.interlocutor.instance.server_sync.send_ability_attempt(1, self.world.player.target.id)
+        core.instance.messenger.send(event=Event.CLIENT_SPELL_ATTEMPT, sentArgs=[0])
 
     def e_up_handler(self):
         pass
 
     def r_handler(self):
-        if self.world.player.target is not None:
-            self.interlocutor.instance.server_sync.send_ability_attempt(2, self.world.player.target.id)
+        core.instance.messenger.send(event=Event.CLIENT_SPELL_ATTEMPT, sentArgs=[0])
 
     def f_handler(self):
-        if self.world.player.target is not None:
-            self.interlocutor.instance.server_sync.send_ability_attempt(3, self.world.player.target.id)
+        core.instance.messenger.send(event=Event.CLIENT_SPELL_ATTEMPT, sentArgs=[0])
 
     def esc_handler(self):
-        self.world.ui.submodules[0].toggle()
+        pass
 
     def handle_m1_dragging_task(self, task):
         # move the camera on the character's "orbit" only if the first button of the mouse is clicked
@@ -297,18 +286,18 @@ class Control:
     def update_animation(self):
         f = core.instance.task_mgr.hasTaskNamed
         if f("MoveRight"):
-            if self.char_ctrl.character.get_current_anim() != 'run':
-                self.interlocutor.server_sync.send_animation('run', 1)
-                self.char_ctrl.character.loop('run')
+            if self.char_ctrl.character.get_current_anim() != Animation.RUN:
+                core.instance.messenger.send(event=Event.CLIENT_SEND_ANIMATION_ATTEMPT, sentArgs=[Animation.RUN, 1])
+                self.char_ctrl.character.loop(Animation.RUN)
         elif f("MoveLeft"):
-            if self.char_ctrl.character.get_current_anim() != 'run':
-                self.interlocutor.server_sync.send_animation('run', 1)
-                self.char_ctrl.character.loop('run')
+            if self.char_ctrl.character.get_current_anim() != Animation.RUN:
+                core.instance.messenger.send(event=Event.CLIENT_SEND_ANIMATION_ATTEMPT, sentArgs=[Animation.RUN, 1])
+                self.char_ctrl.character.loop(Animation.RUN)
         elif f("MoveForward") or f("MoveBackward"):
-            if self.char_ctrl.character.get_current_anim() != 'run':
-                self.char_ctrl.character.loop('run')
-                self.interlocutor.server_sync.send_animation('run', 1)
+            if self.char_ctrl.character.get_current_anim() != Animation.RUN:
+                self.char_ctrl.character.loop(Animation.RUN)
+                core.instance.messenger.send(event=Event.CLIENT_SEND_ANIMATION_ATTEMPT, sentArgs=[Animation.RUN, 1])
         else:
-            if self.char_ctrl.character.get_current_anim() != 'stand':
-                self.char_ctrl.character.loop('stand')
-                self.interlocutor.server_sync.send_animation('stand', 1)
+            if self.char_ctrl.character.get_current_anim() != Animation.STAND:
+                self.char_ctrl.character.loop(Animation.STAND)
+                core.instance.messenger.send(event=Event.CLIENT_SEND_ANIMATION_ATTEMPT, sentArgs=[Animation.STAND, 1])

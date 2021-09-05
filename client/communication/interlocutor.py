@@ -1,11 +1,12 @@
+from event import Event
+from local.player import Player
+
 from panda3d.core import QueuedConnectionManager
 from panda3d.core import QueuedConnectionReader
 from panda3d.core import ConnectionWriter
 from panda3d.core import NetDatagram
 from direct.distributed.PyDatagram import PyDatagram
 from direct.distributed.PyDatagramIterator import PyDatagramIterator
-
-
 
 import sys
 import os
@@ -49,30 +50,6 @@ class Interlocutor:
             return True
         return False
 
-    def ask_for_pass(self, name, class_number):
-        """
-        Asks the server, if the client can join the game with the specified player name and class.
-        Waits for the server's response and returns it.
-        """
-        # send datagram asking if player can join the world
-        data = PyDatagram()
-        data.add_uint8(Message.ASK_FOR_PASS)
-        data.add_string(name)  # player's name
-        data.add_uint8(class_number)  # class number
-        self.writer.send(data, self.server_connection)
-        # wait for datagram from the server
-        self.manager.wait_for_readers(self.timeout/1000)
-        if self.reader.data_available():
-            datagram = NetDatagram()
-            if self.reader.get_data(datagram):
-                iterator = PyDatagramIterator(datagram)
-                packet_type = iterator.get_uint8()
-                if packet_type == Message.ASK_FOR_PASS:
-                    allow_join = iterator.get_uint8()
-                    if allow_join == 1:
-                        return True
-        return False
-
     def get_world_state(self):
         """
         Asks the server for initial data, so the client can load all currently active players within the world.
@@ -92,8 +69,30 @@ class Interlocutor:
                 iterator = PyDatagramIterator(datagram)
                 packet_type = iterator.get_uint8()
                 if packet_type == Message.WORLD_STATE:
-                    return iterator, datagram
-        return None
+                    main_player = Player()
+                    main_player.id = iterator.get_uint8()
+                    main_player.name = iterator.get_string()
+                    main_player.health = iterator.get_uint8()
+                    main_player.x = iterator.get_float64()
+                    main_player.y = iterator.get_float64()
+                    main_player.z = iterator.get_float64()
+                    main_player.h = iterator.get_float64()
+                    main_player.p = iterator.get_float64()
+                    main_player.r = iterator.get_float64()
+                    from local import core
+                    core.instance.messenger.send(event=Event.MAIN_PLAYER_JOINED, sentArgs=[main_player])
+                    while iterator.get_remaining_size() > 0:
+                        player = Player()
+                        player.id = iterator.get_uint8()
+                        player.name = iterator.get_string()
+                        player.health = iterator.get_uint8()
+                        player.x = iterator.get_float64()
+                        player.y = iterator.get_float64()
+                        player.z = iterator.get_float64()
+                        player.h = iterator.get_float64()
+                        player.p = iterator.get_float64()
+                        player.r = iterator.get_float64()
+                        core.instance.messenger.send(event=Event.PLAYER_JOINED, sentArgs=[player])
 
     def send_ready_for_updates(self):
         """
@@ -101,7 +100,7 @@ class Interlocutor:
         The world updates consist of all players' positions, rotations, health points etc.
         """
         data = PyDatagram()
-        data.add_uint8(Message.READY_FOR_UPDATES)
+        data.add_uint8(Message.READY_FOR_SYNC)
         self.writer.send(data, self.server_connection)
 
     def begin_sync(self, world):
@@ -160,6 +159,3 @@ class Interlocutor:
         """
         self.send_disconnect()
         self.manager.close_connection(self.server_connection)
-
-    def plug_console(self, console):
-        self.local_sync.console = console

@@ -15,7 +15,7 @@ class Handler:
         self.action_handler = SpellHandler(server)
         self.data_handler_mapping = {
             Message.WORLD_STATE: self.handle_request_world_state,
-            Message.READY_FOR_UPDATES: self.handle_ready_for_updates,
+            Message.READY_FOR_SYNC: self.handle_ready_for_updates,
             Message.POS_HPR: self.handle_pos_hpr,
             Message.DISCONNECTION: self.handle_disconnection,
             Message.ACTION: self.action_handler.handle_action,
@@ -58,7 +58,6 @@ class Handler:
             # send player his own id, nickname, class and health
             response.add_uint8(player.id)
             response.add_string(player.name)
-            response.add_uint8(player.class_number)
             response.add_uint8(player.health)
 
             # send player his own position and rotation
@@ -76,7 +75,6 @@ class Handler:
                 if other_player is not player and other_player.joined_game and i < active_players:
                     response.add_uint8(other_player.id)
                     response.add_string(other_player.name)
-                    response.add_uint8(other_player.class_number)
                     response.add_uint8(other_player.health)
                     response.add_float64(other_player.x)
                     response.add_float64(other_player.y)

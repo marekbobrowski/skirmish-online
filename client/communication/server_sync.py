@@ -37,7 +37,7 @@ class ServerSync:
         datagram.add_float64(self.world.player.character.get_r())
         self.manager.writer.send(datagram, self.manager.server_connection)
 
-    def send_ability_attempt(self, ability, target):
+    def send_ability_attempt(self, ability):
         """
         Sends message to the server, stating that this client's user attempted to use a certain ability.
         :param ability: The ability's code.
@@ -46,7 +46,6 @@ class ServerSync:
         datagram = PyDatagram()
         datagram.add_uint8(Message.ACTION)
         datagram.add_uint8(ability)
-        datagram.add_uint8(target)
         self.manager.writer.send(datagram, self.manager.server_connection)
 
     def send_chat_message(self, message):

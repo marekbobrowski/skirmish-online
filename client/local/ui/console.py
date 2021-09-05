@@ -2,12 +2,12 @@ from direct.gui.DirectGui import DirectFrame, DirectEntry, DirectLabel, DGG
 from local import core
 from direct.gui.OnscreenText import OnscreenText, TextNode
 from local import asset_names as assets
+from event import Event
 
 
 class Console:
-    def __init__(self, node, interlocutor):
+    def __init__(self, node):
         self.node = node.attach_new_node("console node")
-        self.interlocutor = interlocutor
 
         # --- frame params --- #
         self.width = 0.3
@@ -41,7 +41,7 @@ class Console:
             frameColor=frame_color
         )
 
-        font = core.instance.loader.load_font(assets.terminal_style)
+        font = core.instance.loader.load_font(assets.main_font)
         font.set_pixels_per_unit(100)
 
         self.entry_node = self.node.attach_new_node("entry node")
@@ -73,10 +73,8 @@ class Console:
                                  entryFont=font,
                                  initialText="",
                                  width=50,
-                                 command=self.request_send_message,
+                                 command=self.send_msg_event,
                                  suppressKeys=True)
-        core.instance.accept('aspectRatioChanged', self.aspect_ratio_change_update)
-        core.instance.accept('enter', self.focus_entry)
 
         self.input_symbol_node = self.entry_node.attach_new_node('input symbol node')
         self.input_symbol = DirectLabel(text='>',
@@ -89,13 +87,16 @@ class Console:
                                         )
         self.input_symbol_node.hide()
 
-    def request_send_message(self, message):
+        core.instance.accept('aspectRatioChanged', self.aspect_ratio_change_update)
+        core.instance.accept('enter', self.focus_entry)
+        core.instance.accept(Event.MSG_FROM_SERVER_RECEIVED, self.add_msg)
+
+    def send_msg_event(self, msg):
         self.input_symbol_node.hide()
-        if message != '':
-            # self.add_lines([message])
+        if msg != '':
             self.entry.enterText('')
-            self.interlocutor.server_sync.send_chat_message(message)
             self.entry['focus'] = False
+            core.instance.messenger.send(event=Event.COMMAND_TYPED, sentArgs=[msg])
 
     def focus_entry(self):
         self.input_symbol_node.show()
@@ -119,14 +120,17 @@ class Console:
 
         self.input_symbol_node.set_x(- self.input_symbol_offset * core.instance.win.get_x_size())
 
-        pos = 0
+        line_y = 0
         for text_node in reversed(self.text_nodes):
-            pos += self.between_line_dist
+            line_y += self.between_line_dist
             text_node.set_scale((self.text_scale * core.instance.win.get_y_size() +
                                  self.text_scale * core.instance.win.get_x_size()) / 2)
             text_node.set_pos(self.corner_x_offset * core.instance.win.get_x_size(),
                               0,
-                              - (1 - self.corner_y_offset - pos) * self.height * core.instance.win.get_y_size())
+                              - (1 - self.corner_y_offset - line_y) * self.height * core.instance.win.get_y_size())
+
+    def add_msg(self, msg_info):
+        self.add_lines(msg_info)
 
     def add_lines(self, lines):
         """

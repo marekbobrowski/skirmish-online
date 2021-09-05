@@ -13,4 +13,4 @@ class Message:
     TELEPORT = 101
     NEW_PLAYER = 102
     HEALTH = 103
-    READY_FOR_UPDATES = 150
+    READY_FOR_SYNC = 150
