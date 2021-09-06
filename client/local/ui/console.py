@@ -1,12 +1,15 @@
-from direct.gui.DirectGui import DirectFrame, DirectEntry, DirectLabel, DGG
 from local import core
-from direct.gui.OnscreenText import OnscreenText, TextNode
 from local import asset_names as assets
 from event import Event
 
+from direct.showbase.DirectObject import DirectObject
+from direct.gui.DirectGui import DirectFrame, DirectEntry, DirectLabel
+from panda3d.core import TextNode
 
-class Console:
+
+class Console(DirectObject):
     def __init__(self, node):
+        DirectObject.__init__(self)
         self.node = node.attach_new_node("console node")
 
         # --- frame params --- #
@@ -87,9 +90,9 @@ class Console:
                                         )
         self.input_symbol_node.hide()
 
-        core.instance.accept('aspectRatioChanged', self.aspect_ratio_change_update)
-        core.instance.accept('enter', self.focus_entry)
-        core.instance.accept(Event.MSG_FROM_SERVER_RECEIVED, self.add_msg)
+        self.accept('aspectRatioChanged', self.aspect_ratio_change_update)
+        self.accept('enter', self.focus_entry)
+        self.accept(Event.TXT_MSG_FROM_SERVER_RECEIVED, self.add_msg)
 
     def send_msg_event(self, msg):
         self.input_symbol_node.hide()

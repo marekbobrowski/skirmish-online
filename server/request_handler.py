@@ -49,6 +49,8 @@ class Handler:
             player.name = 'nameless_idiot'
             player.set_pos_hpr(x, y, z, h, p, r)
             player.health = 50
+            player.model = 0
+            player.animation = 'stand'
             player.id = self.server.last_player_id
             self.server.last_player_id += 1
 
@@ -59,6 +61,8 @@ class Handler:
             response.add_uint8(player.id)
             response.add_string(player.name)
             response.add_uint8(player.health)
+            response.add_uint8(player.model)
+            response.add_string(player.animation)
 
             # send player his own position and rotation
             response.add_float64(player.x)
@@ -76,6 +80,8 @@ class Handler:
                     response.add_uint8(other_player.id)
                     response.add_string(other_player.name)
                     response.add_uint8(other_player.health)
+                    response.add_uint8(other_player.model)
+                    response.add_string(other_player.animation)
                     response.add_float64(other_player.x)
                     response.add_float64(other_player.y)
                     response.add_float64(other_player.z)
@@ -98,8 +104,9 @@ class Handler:
         datagram.add_uint8(Message.NEW_PLAYER)
         datagram.add_uint8(player.id)
         datagram.add_string(player.name)
-        datagram.add_uint8(player.class_number)
         datagram.add_uint8(player.health)
+        datagram.add_uint8(player.model)
+        datagram.add_string(player.animation)
         datagram.add_float64(player.x)
         datagram.add_float64(player.y)
         datagram.add_float64(player.z)

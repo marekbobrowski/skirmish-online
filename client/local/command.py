@@ -8,7 +8,7 @@ def parse(command):
 
 
 def send_msg_to_server(msg):
-    core.instance.messenger.send(event=Event.MSG_TO_SERVER_TYPED, sentArgs=[msg])
+    core.instance.messenger.send(event=Event.TXT_MSG_TO_SERVER_TYPED, sentArgs=[msg])
 
 
 def set_volume(amt):

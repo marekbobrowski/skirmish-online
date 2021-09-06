@@ -51,6 +51,7 @@ class Control:
             'f': self.f_handler,
             'escape': self.esc_handler
         }
+        core.instance.disable_mouse()
 
     def enable(self, character, camera):
         if self.char_ctrl is None:
@@ -61,8 +62,6 @@ class Control:
             self.cam_ctrl.zoom_out(4)
         for event, handler in self.event_handler_mapping.items():
             core.instance.accept(event, handler)
-
-
 
     def disable(self):
         for event, handler in self.event_handler_mapping.items():
@@ -284,6 +283,8 @@ class Control:
         core.instance.win.requestProperties(props)
 
     def update_animation(self):
+        # core.instance.messenger.send(event=Event.CLIENT_MAIN_PLAYER_CHANGED_POS_HPR,
+        #                              sentArgs=[self.char_ctrl.character])
         f = core.instance.task_mgr.hasTaskNamed
         if f("MoveRight"):
             if self.char_ctrl.character.get_current_anim() != Animation.RUN:

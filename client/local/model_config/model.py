@@ -12,7 +12,7 @@ class Model:
 
 
 config_mapping = {
-    Model.NIGHT_ELF: nelf_config.load()
+    Model.NIGHT_ELF: nelf_config.load
 }
 
 

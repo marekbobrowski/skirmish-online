@@ -1,5 +1,6 @@
 from event import Event
 from local.player import Player
+from local import core
 
 from panda3d.core import QueuedConnectionManager
 from panda3d.core import QueuedConnectionReader
@@ -14,10 +15,7 @@ sys.path.append(os.path.abspath(os.path.join('..')))
 from protocol.message import Message
 
 
-class Interlocutor:
-    """
-    This class is responsible for communication with the game server.
-    """
+class Networking:
     def __init__(self):
         # Networking modules from panda3d.
         self.manager = QueuedConnectionManager()
@@ -39,9 +37,6 @@ class Interlocutor:
         self.is_connecting = False
 
     def connect(self, server_address):
-        """
-        Establishes TCP connection with the game server.
-        """
         self.server_address = server_address
         self.server_connection = self.manager.open_TCP_client_connection(self.server_address,
                                                                          self.server_port, self.timeout)
@@ -50,13 +45,7 @@ class Interlocutor:
             return True
         return False
 
-    def get_world_state(self):
-        """
-        Asks the server for initial data, so the client can load all currently active players within the world.
-        The initial data consists of player names, classes, health points, positions etc. The function waits for
-        the server to respond. If the server sends the initial data, then the function returns the received datagram
-        and it's iterator.
-        """
+    def load_world_state(self, world, scene):
         # send datagram asking for initial world data (player's location, other player names, positions)
         data = PyDatagram()
         data.add_uint8(Message.WORLD_STATE)
@@ -73,51 +62,46 @@ class Interlocutor:
                     main_player.id = iterator.get_uint8()
                     main_player.name = iterator.get_string()
                     main_player.health = iterator.get_uint8()
+                    main_player.model = iterator.get_uint8()
+                    main_player.animation = iterator.get_string()
                     main_player.x = iterator.get_float64()
                     main_player.y = iterator.get_float64()
                     main_player.z = iterator.get_float64()
                     main_player.h = iterator.get_float64()
                     main_player.p = iterator.get_float64()
                     main_player.r = iterator.get_float64()
-                    from local import core
-                    core.instance.messenger.send(event=Event.MAIN_PLAYER_JOINED, sentArgs=[main_player])
+                    world.set_main_player(main_player)
+                    scene.spawn_player_character(main_player)
+                    scene.floating_bars.create_bar(main_player)
                     while iterator.get_remaining_size() > 0:
                         player = Player()
                         player.id = iterator.get_uint8()
                         player.name = iterator.get_string()
                         player.health = iterator.get_uint8()
+                        player.model = iterator.get_uint8()
+                        player.animation = iterator.get_string()
                         player.x = iterator.get_float64()
                         player.y = iterator.get_float64()
                         player.z = iterator.get_float64()
                         player.h = iterator.get_float64()
                         player.p = iterator.get_float64()
                         player.r = iterator.get_float64()
-                        core.instance.messenger.send(event=Event.PLAYER_JOINED, sentArgs=[player])
+                        world.add_other_player(player)
+                        scene.spawn_player_character(player)
+                        scene.floating_bars.create_bar(player)
 
     def send_ready_for_updates(self):
-        """
-        Sends a message to the server announcing that the client is ready for regular game updates (has loaded the world).
-        The world updates consist of all players' positions, rotations, health points etc.
-        """
         data = PyDatagram()
         data.add_uint8(Message.READY_FOR_SYNC)
         self.writer.send(data, self.server_connection)
 
-    def begin_sync(self, world):
-        """
-        Runs 2 separate tasks to continuously communicate with the server:
-        > sender thread -- sends messages from the client (for example: ability usage attempt)
-        > local_updater thread -- handles the data sent by the server (positions, rotations, health point changes etc.)
-        This communication concerns only what's happening during the actual gameplay (the skirmish scene).
-        There are separate functions responsible for establishing communication and other starter actions.
-        """
+    def begin_sync(self):
         from local import core
         from communication.server_sync import ServerSync
         from communication.local_sync import LocalSync
-        self.server_sync = ServerSync(self, world)
-        self.local_sync = LocalSync(self, world)
+        self.server_sync = ServerSync(self)
+        self.local_sync = LocalSync(self)
         core.instance.task_mgr.add(self.local_sync.listen_for_updates, 'listen for skirmish updates')
-        core.instance.task_mgr.add(self.server_sync.send_updates, 'send skirmish updates')
 
     def get_welcome_message(self):
         data = PyDatagram()
@@ -138,24 +122,15 @@ class Interlocutor:
         return None
 
     def stop_updating_skirmish(self):
-        """
-        Stops continuous communication with the server.
-        """
         from local import core
         core.instance.task_mgr.remove('listen for skirmish updates')
         core.instance.task_mgr.remove('send skirmish updates')
 
     def send_disconnect(self):
-        """
-        Sends a datagram with disconnection announcement.
-        """
         datagram = PyDatagram()
         datagram.add_uint8(Message.DISCONNECTION)
         self.writer.send(datagram, self.server_connection)
 
     def disconnect(self):
-        """
-        Disconnects from the server.
-        """
         self.send_disconnect()
         self.manager.close_connection(self.server_connection)

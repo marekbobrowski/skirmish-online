@@ -62,7 +62,7 @@ class Server:
         while True:
             for player in self.active_connections:
                 if player.joined_game:
-                    self.send_pos_hpr(player.connection)
+                    self.send_pos_hpr(player)
             sleep(0.005)
 
     def get_number_of_active_players(self):
@@ -83,19 +83,19 @@ class Server:
             if player.id == id_:
                 return player
 
-    def send_pos_hpr(self, connection):
+    def send_pos_hpr(self, player):
         datagram = PyDatagram()
-        active_players = self.get_number_of_active_players()
+        connection = player.connection
         datagram.add_uint8(Message.POS_HPR)
-        for i, player in enumerate(self.active_connections):
-            if player.joined_game:
-                datagram.add_uint8(player.id)
-                datagram.add_float64(player.x)
-                datagram.add_float64(player.y)
-                datagram.add_float64(player.z)
-                datagram.add_float64(player.h)
-                datagram.add_float64(player.p)
-                datagram.add_float64(player.r)
+        for i, other_player in enumerate(self.active_connections):
+            if other_player.joined_game and player is not other_player:
+                datagram.add_uint8(other_player.id)
+                datagram.add_float64(other_player.x)
+                datagram.add_float64(other_player.y)
+                datagram.add_float64(other_player.z)
+                datagram.add_float64(other_player.h)
+                datagram.add_float64(other_player.p)
+                datagram.add_float64(other_player.r)
         self.writer.send(datagram, connection)
 
     def regenerate_health_resource(self):

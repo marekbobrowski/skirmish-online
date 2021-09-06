@@ -1,4 +1,10 @@
-from communication.interlocutor import Interlocutor
+from communication.networking import Networking
+from local import core
+from local.ui.ui import Ui
+from local.load_assets import load_assets_to_cache
+from local.world import World
+from local.control.control import Control
+from local.scene.scene import Scene
 
 import sys
 
@@ -7,19 +13,10 @@ if __name__ == '__main__':
         print("Usage: <python> main.py <server_ip>")
     else:
         server_ip = sys.argv[1]
-        interlocutor = Interlocutor()
+        networking = Networking()
         print("Connecting...")
-        if interlocutor.connect(server_ip):
+        if networking.connect(server_ip):
             print("Connected. Loading assets...")
-
-            # create singleton ShowBase
-            from local import core
-
-            from local.ui.ui import Ui
-            from local.load_assets import load_assets_to_cache
-            from local.world import World
-            from local.control.control import Control
-            from local.scene.scene import Scene
 
             load_assets_to_cache()
 
@@ -28,14 +25,9 @@ if __name__ == '__main__':
             ui = Ui()
             control = Control()
 
-            interlocutor.get_welcome_message()
-            interlocutor.get_world_state()
+            networking.load_world_state(world, scene)
+            networking.send_ready_for_updates()
+            networking.begin_sync()
 
-            control.enable(scene.characters[world.player.id],
-                           core.instance.camera)
-
-            interlocutor.send_ready_for_updates()
-            interlocutor.begin_sync()
-
-            core.instance.disable_mouse()
+            control.enable(scene.characters[world.player.id], core.instance.camera)
             core.instance.run()
