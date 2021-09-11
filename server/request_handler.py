@@ -118,6 +118,13 @@ class Handler:
             if other_player.joined_game and other_player is not player:
                 self.server.writer.send(datagram, other_player.connection)
 
+        welcome_msg_datagram = PyDatagram()
+        welcome_msg_datagram.add_uint8(Message.TEXT_MSG)
+        welcome_msg_datagram.add_string('')
+        welcome_msg_datagram.add_string('')
+        welcome_msg_datagram.add_string(config.welcome_msg)
+        self.server.writer.send(welcome_msg_datagram, connection)
+
     def handle_pos_hpr(self, datagram, iterator):
         player = self.server.find_player_by_connection(datagram.get_connection())
         if player is not None:
