@@ -7,6 +7,8 @@ sys.path.append(os.path.abspath(os.path.join('..')))
 from protocol.message import Message
 from spell_handler import SpellHandler
 import config
+import random
+import string
 
 
 class Handler:
@@ -46,10 +48,10 @@ class Handler:
             return
         else:
             x, y, z, h, p, r = -3, -5, 1, 120, 0, 0
-            player.name = 'nameless_idiot'
+            player.name = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
             player.set_pos_hpr(x, y, z, h, p, r)
             player.health = 50
-            player.model = 0
+            player.model = random.randrange(4)
             player.animation = 'stand'
             player.id = self.server.last_player_id
             self.server.last_player_id += 1

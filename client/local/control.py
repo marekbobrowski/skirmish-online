@@ -1,7 +1,8 @@
 from local import core
 from local.camera_control import CameraControl
-from local.character_control import CharacterControl
+from local.actor_control import CharacterControl
 from event import Event
+from event_args import EventArgs
 from local.animation import Animation
 from local.subpart import Subpart
 
@@ -13,10 +14,13 @@ import datetime
 
 class Control:
 
-    def __init__(self):
-        self.char_ctrl = None
-        self.cam_ctrl = None
+    def __init__(self, unit, camera):
+        self.actor_control = None
+        self.camera_control = None
         self.mouse_sensitivity = 0.5
+
+        self.unit = unit
+        self.camera = camera
 
         # input states
         self.mouse_1_clicked = False
@@ -54,13 +58,13 @@ class Control:
         }
         core.instance.disable_mouse()
 
-    def enable(self, character, camera):
-        if self.char_ctrl is None:
-            self.char_ctrl = CharacterControl(character)
-        if self.cam_ctrl is None:
-            self.cam_ctrl = CameraControl(camera)
-            self.cam_ctrl.attach_to(character, Vec3(0, 0, 0.5))
-            self.cam_ctrl.zoom_out(4)
+    def enable(self):
+        if self.actor_control is None:
+            self.actor_control = CharacterControl(self.unit.actor)
+        if self.camera_control is None:
+            self.camera_control = CameraControl(self.camera)
+            self.camera_control.attach_to(self.unit.actor, Vec3(0, 0, 0.5))
+            self.camera_control.zoom_out(4)
         for event, handler in self.event_handler_mapping.items():
             core.instance.accept(event, handler)
 
@@ -73,7 +77,7 @@ class Control:
         core.instance.taskMgr.remove("MoveBackward")
         # Start moving if the character is not moving yet (mouse buttons allow to move, so we have to check).
         if not core.instance.taskMgr.hasTaskNamed("MoveForward"):
-            core.instance.taskMgr.add(self.char_ctrl.move_forward, "MoveForward")
+            core.instance.taskMgr.add(self.actor_control.move_forward, "MoveForward")
         self.update_animation()
 
     def w_up_handler(self):
@@ -87,7 +91,7 @@ class Control:
         # stop moving forward
         core.instance.taskMgr.remove("MoveForward")
         # start moving backward
-        core.instance.taskMgr.add(self.char_ctrl.move_backward, "MoveBackward")
+        core.instance.taskMgr.add(self.actor_control.move_backward, "MoveBackward")
         self.update_animation()
 
     def s_up_handler(self):
@@ -103,10 +107,10 @@ class Control:
 
         # if the mouse3 button is clicked, start moving(!) to the left
         if self.mouse_3_clicked:
-            core.instance.taskMgr.add(self.char_ctrl.move_left, "MoveLeft")
+            core.instance.taskMgr.add(self.actor_control.move_left, "MoveLeft")
         # else, start rotating(!) to the left
         else:
-            core.instance.taskMgr.add(self.char_ctrl.rotate_left, "RotateLeft")
+            core.instance.taskMgr.add(self.actor_control.rotate_left, "RotateLeft")
 
         self.update_animation()
 
@@ -127,10 +131,10 @@ class Control:
 
         # if the mouse3 button is clicked, start moving(!) to the right
         if self.mouse_3_clicked:
-            core.instance.taskMgr.add(self.char_ctrl.move_right, "MoveRight")
+            core.instance.taskMgr.add(self.actor_control.move_right, "MoveRight")
         # else, start rotating(!) to the right
         else:
-            core.instance.taskMgr.add(self.char_ctrl.rotate_right, "RotateRight")
+            core.instance.taskMgr.add(self.actor_control.rotate_right, "RotateRight")
         self.update_animation()
 
     def d_up_handler(self):
@@ -150,7 +154,7 @@ class Control:
 
         # start moving forward if both mouse buttons are clicked and 'w' wasn't already pressed
         if self.mouse_3_clicked and not self.w_pressed:
-            core.instance.taskMgr.add(self.char_ctrl.move_forward, "MoveForward")
+            core.instance.taskMgr.add(self.actor_control.move_forward, "MoveForward")
 
         # hide the cursor
         self.set_cursor_hidden(True)
@@ -180,20 +184,20 @@ class Control:
         core.instance.taskMgr.add(self.handle_m3_dragging_task, "M3Drag")
 
         # adjust the controlled character's rotation to the camera
-        self.char_ctrl.adjust_rotation_to_camera(self.cam_ctrl)
+        self.actor_control.adjust_rotation_to_camera(self.camera_control)
 
         # move forward if both mouse buttons are clicked
         if self.mouse_1_clicked:
             if not core.instance.taskMgr.hasTaskNamed("MoveForward"):
-                core.instance.taskMgr.add(self.char_ctrl.move_forward, "MoveForward")
+                core.instance.taskMgr.add(self.actor_control.move_forward, "MoveForward")
 
         # switch to moving from rotating
         if self.d_pressed:
             core.instance.taskMgr.remove("RotateRight")
-            core.instance.taskMgr.add(self.char_ctrl.move_right, "MoveRight")
+            core.instance.taskMgr.add(self.actor_control.move_right, "MoveRight")
         if self.a_pressed:
             core.instance.taskMgr.remove("RotateLeft")
-            core.instance.taskMgr.add(self.char_ctrl.move_left, "MoveLeft")
+            core.instance.taskMgr.add(self.actor_control.move_left, "MoveLeft")
 
         # hide the mouse
         self.set_cursor_hidden(True)
@@ -210,10 +214,10 @@ class Control:
         # switch from moving to rotating
         if self.d_pressed:
             core.instance.taskMgr.remove("MoveRight")
-            core.instance.taskMgr.add(self.char_ctrl.rotate_right, "RotateRight")
+            core.instance.taskMgr.add(self.actor_control.rotate_right, "RotateRight")
         if self.a_pressed:
             core.instance.taskMgr.remove("MoveLeft")
-            core.instance.taskMgr.add(self.char_ctrl.rotate_left, "RotateLeft")
+            core.instance.taskMgr.add(self.actor_control.rotate_left, "RotateLeft")
 
         core.instance.win.move_pointer(0, int(self.last_mouse_x), int(self.last_mouse_y))
         # show the cursor if neither of mouse buttons are clicked
@@ -226,10 +230,10 @@ class Control:
         self.update_animation()
 
     def wheel_up_handler(self):
-        self.cam_ctrl.zoom_in(1)
+        self.camera_control.zoom_in(1)
 
     def wheel_down_handler(self):
-        self.cam_ctrl.zoom_out(1)
+        self.camera_control.zoom_out(1)
 
     def q_handler(self):
         core.instance.messenger.send(event=Event.CLIENT_SPELL_ATTEMPT, sentArgs=[0])
@@ -255,15 +259,15 @@ class Control:
     def handle_m1_dragging_task(self, task):
         # move the camera on the character's "orbit" only if the first button of the mouse is clicked
         if core.instance.mouseWatcherNode.hasMouse() and self.mouse_1_clicked and not self.mouse_3_clicked:
-            self.cam_ctrl.rotate_with_character = False
+            self.camera_control.rotate_with_character = False
             md = core.instance.win.getPointer(0)
             delta_x = md.get_x() - self.last_mouse_x
             delta_y = md.get_y() - self.last_mouse_y
             core.instance.win.movePointer(0, int(self.last_mouse_x), int(self.last_mouse_y))
-            self.cam_ctrl.move_on_horizontal_orbit(- delta_x * 0.3 * self.mouse_sensitivity)
-            self.cam_ctrl.move_on_vertical_orbit(delta_y * 0.3 * self.mouse_sensitivity)
+            self.camera_control.move_on_horizontal_orbit(- delta_x * 0.3 * self.mouse_sensitivity)
+            self.camera_control.move_on_vertical_orbit(delta_y * 0.3 * self.mouse_sensitivity)
         elif not self.mouse_1_clicked:
-            self.cam_ctrl.rotate_with_character = True
+            self.camera_control.rotate_with_character = True
             return Task.done
         return Task.cont
 
@@ -273,7 +277,7 @@ class Control:
             md = core.instance.win.getPointer(0)
             delta_x = md.get_x() - self.last_mouse_x
             core.instance.win.movePointer(0, int(self.last_mouse_x), int(self.last_mouse_y))
-            self.char_ctrl.rotate_by_angle(-0.3 * self.mouse_sensitivity * delta_x)
+            self.actor_control.rotate_by_angle(-0.3 * self.mouse_sensitivity * delta_x)
         elif not self.mouse_3_clicked:
             return Task.done
         return Task.cont
@@ -286,38 +290,34 @@ class Control:
     def update_animation(self):
         f = core.instance.task_mgr.hasTaskNamed
         if f("MoveRight"):
-            if self.char_ctrl.character.get_current_anim(partName=Subpart.LEGS) != Animation.RUN:
-                core.instance.messenger.send(event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[
-                    self.char_ctrl.character,
-                    None,
-                    Animation.RUN,
-                    True
-                ])
+            if self.actor_control.character.get_current_anim() != Animation.RUN:
+                args = EventArgs()
+                args.id_ = self.unit.id
+                args.animation = Animation.RUN
+                args.loop = 1
+                core.instance.messenger.send(event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args])
                 core.instance.messenger.send(event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.RUN, 1])
         elif f("MoveLeft"):
-            if self.char_ctrl.character.get_current_anim(partName=Subpart.LEGS) != Animation.RUN:
-                core.instance.messenger.send(event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[
-                    self.char_ctrl.character,
-                    None,
-                    Animation.RUN,
-                    True
-                ])
+            if self.actor_control.character.get_current_anim() != Animation.RUN:
+                args = EventArgs()
+                args.id_ = self.unit.id
+                args.animation = Animation.RUN
+                args.loop = 1
+                core.instance.messenger.send(event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args])
                 core.instance.messenger.send(event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.RUN, 1])
         elif f("MoveForward") or f("MoveBackward"):
-            if self.char_ctrl.character.get_current_anim(partName=Subpart.LEGS) != Animation.RUN:
-                core.instance.messenger.send(event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[
-                    self.char_ctrl.character,
-                    None,
-                    Animation.RUN,
-                    True
-                ])
+            if self.actor_control.character.get_current_anim() != Animation.RUN:
+                args = EventArgs()
+                args.id_ = self.unit.id
+                args.animation = Animation.RUN
+                args.loop = 1
+                core.instance.messenger.send(event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args])
                 core.instance.messenger.send(event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.RUN, 1])
         else:
-            if self.char_ctrl.character.get_current_anim(partName=Subpart.LEGS) != Animation.STAND:
-                core.instance.messenger.send(event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[
-                    self.char_ctrl.character,
-                    None,
-                    Animation.STAND,
-                    True
-                ])
+            if self.actor_control.character.get_current_anim() != Animation.STAND:
+                args = EventArgs()
+                args.id_ = self.unit.id
+                args.animation = Animation.STAND
+                args.loop = 1
+                core.instance.messenger.send(event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args])
                 core.instance.messenger.send(event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.STAND, 1])

@@ -7,14 +7,19 @@ from direct.showbase.DirectObject import DirectObject
 
 
 class FloatingBars(DirectObject):
-    def __init__(self, characters):
+    def __init__(self, units):
         DirectObject.__init__(self)
-        self.characters = characters
+        self.units = units
         self.bars = {}
         self.labels = {}
-        self.accept(Event.PLAYER_JOINED, self.create_bar)
+        self.accept(Event.PLAYER_JOINED, self.handle_player_joined)
         self.accept(Event.HEALTH_CHANGED, self.update_health)
         self.accept(Event.NAME_CHANGED, self.update_name)
+
+    def handle_player_joined(self, args):
+        unit = self.units.get(args.unit.id, None)
+        if unit is not None:
+            self.create_bar(unit)
 
     def update_health(self, id_, health):
         bar = self.bars.get(id_, None)
@@ -26,28 +31,28 @@ class FloatingBars(DirectObject):
         if label is not None:
             label['text'] = name
 
-    def create_bar(self, player):
-        character = self.characters[player.id]
+    def create_bar(self, unit):
+        actor = self.units[unit.id].actor
         new_bar = DirectWaitBar(
-            value=player.health,
+            value=unit.health,
             pos=(0, 0, 0.5),
             frameColor=(1, 0, 0, 0.3),
             barColor=(0, 1, 0, 1))
-        new_bar.reparent_to(character)
+        new_bar.reparent_to(actor)
         new_bar.set_scale(0.13)
         new_bar.set_compass(core.instance.camera)
-        self.bars[player.id] = new_bar
+        self.bars[unit.id] = new_bar
 
         font = core.instance.loader.load_font(asset_names.main_font)
         new_label = DirectLabel(
-            text=player.name,
+            text=unit.name,
             pos=(0, 0, 0.53),
             scale=0.04,
-            parent=character,
+            parent=actor,
             text_bg=(0, 0, 0, 0),
             text_fg=(1, 1, 1, 1),
             frameColor=(0, 0, 0, 0),
             text_font=font
         )
         new_label.set_compass(core.instance.camera)
-        self.labels[player.id] = new_label
+        self.labels[unit.id] = new_label
