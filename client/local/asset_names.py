@@ -1,27 +1,17 @@
 # 2d
-terrain_heightmap = ''
-terrain_texture = ''
-skybox_texture = 'assets/tex/skybox3.jpg'
+skybox_texture = 'assets/skybox/tex/skybox3.jpg'
 
-list_2d = [terrain_heightmap,
-           terrain_heightmap,
-           skybox_texture]
+list_2d = [skybox_texture]
 
 # 3d
-skybox = 'assets/skybox.egg'
-night_elf = 'assets/nelf/nelf.egg'
-terrain = 'assets/terrain/terrain.gltf'
-tree_1 = ''
-tree_2 = ''
-tree_3 = ''
-building = ''
+skybox = 'assets/skybox/skybox.egg'
+dark_elf = 'assets/characters/dark-elf.gltf'
+arena = 'assets/arena/arena.gltf'
+weapon_1 = 'assets/weapons/antaras.gltf'
 
 list_3d = [skybox,
-           night_elf,
-           terrain,
-           tree_1,
-           tree_2,
-           tree_3]
+           dark_elf,
+           arena]
 
 # sound
 walk = ''
@@ -29,15 +19,11 @@ walk = ''
 list_sfx = [walk]
 
 # fonts
-main_font = 'assets/font.ttf'
+main_font = 'assets/font/font.ttf'
 
 list_fonts = [
     main_font
 ]
-
-# animations
-night_elf_stand = 'assets/nelf/nelf-Stand.egg'
-night_elf_run = 'assets/nelf/nelf-Run.egg'
 
 
 

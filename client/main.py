@@ -1,10 +1,10 @@
 from communication.networking import Networking
 from local import core
-from local.ui.ui import Ui
+from local.ui import Ui
 from local.load_assets import load_assets_to_cache
 from local.world import World
-from local.control.control import Control
-from local.scene.scene import Scene
+from local.control import Control
+from local.scene import Scene
 
 import sys
 
@@ -27,7 +27,9 @@ if __name__ == '__main__':
 
             networking.load_world_state(world, scene)
             networking.send_ready_for_updates()
-            networking.begin_sync()
 
-            control.enable(scene.characters[world.player.id], core.instance.camera)
+            main_player_char = scene.characters[world.player.id]
+            networking.begin_sync(main_player_char)
+
+            control.enable(main_player_char, core.instance.camera)
             core.instance.run()

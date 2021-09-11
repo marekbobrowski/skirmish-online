@@ -4,10 +4,10 @@ from event import Event
 
 def parse(command):
     words = command.split()
-    command_mapping.get(words[0], Command.MESSAGE_TO_SERVER)(command, words)
+    command_mapping.get(words[0], send_msg_to_server)(command, words)
 
 
-def send_msg_to_server(msg):
+def send_msg_to_server(msg, words):
     core.instance.messenger.send(event=Event.TXT_MSG_TO_SERVER_TYPED, sentArgs=[msg])
 
 

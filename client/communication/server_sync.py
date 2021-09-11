@@ -1,7 +1,9 @@
 from event import Event
+from local import core
 
 from direct.distributed.PyDatagram import PyDatagram
 from direct.showbase.DirectObject import DirectObject
+from direct.task.Task import Task
 
 import sys
 import os
@@ -13,8 +15,9 @@ from protocol.message import Message
 class ServerSync(DirectObject):
     def __init__(self, manager):
         DirectObject.__init__(self)
-        self.accept(Event.CLIENT_MAIN_PLAYER_CHANGED_POS_HPR, self.send_pos_hpr)
         self.manager = manager
+        self.accept(Event.CLIENT_STARTED_ANIMATION, self.send_animation)
+        self.accept(Event.TXT_MSG_TO_SERVER_TYPED, self.send_chat_message)
 
     def send_pos_hpr(self, character):
         datagram = PyDatagram()
@@ -26,6 +29,7 @@ class ServerSync(DirectObject):
         datagram.add_float64(character.get_p())
         datagram.add_float64(character.get_r())
         self.manager.writer.send(datagram, self.manager.server_connection)
+        return Task.cont
 
     def send_ability_attempt(self, ability):
         datagram = PyDatagram()

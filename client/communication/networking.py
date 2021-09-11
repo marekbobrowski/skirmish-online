@@ -8,6 +8,7 @@ from panda3d.core import ConnectionWriter
 from panda3d.core import NetDatagram
 from direct.distributed.PyDatagram import PyDatagram
 from direct.distributed.PyDatagramIterator import PyDatagramIterator
+from direct.task.Task import Task
 
 import sys
 import os
@@ -95,13 +96,15 @@ class Networking:
         data.add_uint8(Message.READY_FOR_SYNC)
         self.writer.send(data, self.server_connection)
 
-    def begin_sync(self):
+    def begin_sync(self, character):
         from local import core
         from communication.server_sync import ServerSync
         from communication.local_sync import LocalSync
         self.server_sync = ServerSync(self)
         self.local_sync = LocalSync(self)
-        core.instance.task_mgr.add(self.local_sync.listen_for_updates, 'listen for skirmish updates')
+        task = Task(self.server_sync.send_pos_hpr)
+        core.instance.task_mgr.add(self.local_sync.listen_for_updates, 'listen for updates')
+        core.instance.task_mgr.add(funcOrTask=task, name='send pos hpr', extraArgs=[character])
 
     def get_welcome_message(self):
         data = PyDatagram()
@@ -123,8 +126,8 @@ class Networking:
 
     def stop_updating_skirmish(self):
         from local import core
-        core.instance.task_mgr.remove('listen for skirmish updates')
-        core.instance.task_mgr.remove('send skirmish updates')
+        core.instance.task_mgr.remove('listen for updates')
+        core.instance.task_mgr.remove('send pos hpr')
 
     def send_disconnect(self):
         datagram = PyDatagram()

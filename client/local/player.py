@@ -1,5 +1,5 @@
 from direct.actor.Actor import Actor
-from local import asset_names
+
 
 
 class Player:

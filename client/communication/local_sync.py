@@ -83,20 +83,10 @@ class LocalSync:
         core.instance.messenger.send(event=Event.TXT_MSG_FROM_SERVER_RECEIVED, sentArgs=[name, time, message])
 
     def update_animation(self, datagram, iterator):
-        return
         id_ = iterator.get_uint8()
         animation = iterator.get_string()
         loop = iterator.get_uint8()
-        player = self.world.get_other_player_by_id(id_)
-        if player is None:
-            if self.world.player.id != id_:
-                return
-            else:
-                player = self.world.player
-        if loop:
-            player.character.loop(animation)
-        else:
-            player.character.play(animation)
+        core.instance.messenger.send(event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[None, id_, animation, loop])
 
     def update_action(self, datagram, iterator):
         return
@@ -108,10 +98,6 @@ class LocalSync:
             self.world.abilities.trigger_cooldown(action_id, cd_time)
 
     def update_name(self, datagram, iterator):
-        return
         id_ = iterator.get_uint8()
         new_name = iterator.get_string()
-        player = self.world.get_any_player_by_id(id_)
-        if player is not None:
-            player.name = new_name
-            core.instance.messenger.send(event=Event.NAME_CHANGED, sentArgs=[player])
+        core.instance.messenger.send(event=Event.NAME_CHANGED, sentArgs=[id_, new_name])

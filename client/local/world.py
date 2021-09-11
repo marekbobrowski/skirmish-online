@@ -15,6 +15,7 @@ class World(DirectObject):
         self.player = None
         self.other_players = []
         self.accept(Event.PLAYER_JOINED, self.add_other_player)
+        self.accept(Event.NAME_CHANGED, self.set_name)
 
     def get_other_player_by_id(self, id_):
         for other_player in self.other_players:
@@ -32,4 +33,9 @@ class World(DirectObject):
 
     def add_other_player(self, player):
         self.other_players.append(player)
+
+    def set_name(self, id_, name):
+        player = self.get_any_player_by_id(id_)
+        if player is not None:
+            player.name = name
 
