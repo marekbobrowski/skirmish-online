@@ -97,7 +97,7 @@ class NetClient:
         data.add_uint8(Message.READY_FOR_SYNC)
         self.writer.send(data, self.server_connection)
 
-    def begin_sync(self, node):
+    def begin_sync(self, node, ref_node):
         from local import core
         from communication.send_requests import SendRequests
         from communication.fetch_events import FetchEvents
@@ -105,7 +105,7 @@ class NetClient:
         self.local_sync = FetchEvents(self)
         task = Task(self.server_sync.send_pos_hpr)
         core.instance.task_mgr.add(self.local_sync.listen_for_updates, 'listen for updates')
-        core.instance.task_mgr.add(funcOrTask=task, name='send pos hpr', extraArgs=[node])
+        core.instance.task_mgr.add(funcOrTask=task, name='send pos hpr', extraArgs=[node, ref_node])
 
     def get_welcome_message(self):
         data = PyDatagram()
