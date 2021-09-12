@@ -59,12 +59,12 @@ class Control:
         }
         core.instance.disable_mouse()
 
-    def enable(self):
+    def enable(self, world_node):
         if self.actor_control is None:
-            self.actor_control = CharacterControl(self.unit.actor)
+            self.actor_control = CharacterControl(self.unit.actor, world_node)
         if self.camera_control is None:
             self.camera_control = CameraControl(self.camera)
-            self.camera_control.attach_to(self.unit.actor, Vec3(0, 0, 0.5))
+            self.camera_control.attach_to(self.actor_control.control_node, Vec3(0, 0, 0.5))
             self.camera_control.zoom_out(10)
         for event, handler in self.event_handler_mapping.items():
             core.instance.accept(event, handler)
@@ -291,7 +291,7 @@ class Control:
     def update_animation(self):
         f = core.instance.task_mgr.hasTaskNamed
         if f("MoveRight"):
-            if self.actor_control.character.get_current_anim() != actor_config.get_anim_name(self.unit.model, Animation.RUN):
+            if self.actor_control.actor.get_current_anim() != actor_config.get_anim_name(self.unit.model, Animation.RUN):
                 args = EventArgs()
                 args.id_ = self.unit.id
                 args.animation = Animation.RUN
@@ -299,7 +299,7 @@ class Control:
                 core.instance.messenger.send(event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args])
                 core.instance.messenger.send(event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.RUN, 1])
         elif f("MoveLeft"):
-            if self.actor_control.character.get_current_anim() != actor_config.get_anim_name(self.unit.model, Animation.RUN):
+            if self.actor_control.actor.get_current_anim() != actor_config.get_anim_name(self.unit.model, Animation.RUN):
                 args = EventArgs()
                 args.id_ = self.unit.id
                 args.animation = Animation.RUN
@@ -307,7 +307,7 @@ class Control:
                 core.instance.messenger.send(event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args])
                 core.instance.messenger.send(event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.RUN, 1])
         elif f("MoveForward") or f("MoveBackward"):
-            if self.actor_control.character.get_current_anim() != actor_config.get_anim_name(self.unit.model, Animation.RUN):
+            if self.actor_control.actor.get_current_anim() != actor_config.get_anim_name(self.unit.model, Animation.RUN):
                 args = EventArgs()
                 args.id_ = self.unit.id
                 args.animation = Animation.RUN
@@ -315,7 +315,7 @@ class Control:
                 core.instance.messenger.send(event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args])
                 core.instance.messenger.send(event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.RUN, 1])
         else:
-            if self.actor_control.character.get_current_anim() != actor_config.get_anim_name(self.unit.model, Animation.STAND):
+            if self.actor_control.actor.get_current_anim() != actor_config.get_anim_name(self.unit.model, Animation.STAND):
                 args = EventArgs()
                 args.id_ = self.unit.id
                 args.animation = Animation.STAND

@@ -51,7 +51,7 @@ class Handler:
             player.name = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
             player.set_pos_hpr(x, y, z, h, p, r)
             player.health = 50
-            player.model = 1 # random.randrange(4)
+            player.model = random.randrange(4)
             player.animation = 'stand'
             player.weapon = random.randrange(4)
             player.id = self.server.last_player_id

@@ -19,15 +19,15 @@ class SendRequests(DirectObject):
         self.accept(Event.CLIENT_STARTED_ANIMATION, self.send_animation)
         self.accept(Event.TXT_MSG_TO_SERVER_TYPED, self.send_chat_message)
 
-    def send_pos_hpr(self, unit):
+    def send_pos_hpr(self, node):
         datagram = PyDatagram()
         datagram.add_uint8(Message.POS_HPR)
-        datagram.add_float64(unit.actor.get_x())
-        datagram.add_float64(unit.actor.get_y())
-        datagram.add_float64(unit.actor.get_z())
-        datagram.add_float64(unit.actor.get_h())
-        datagram.add_float64(unit.actor.get_p())
-        datagram.add_float64(unit.actor.get_r())
+        datagram.add_float64(node.get_x())
+        datagram.add_float64(node.get_y())
+        datagram.add_float64(node.get_z())
+        datagram.add_float64(node.get_h())
+        datagram.add_float64(node.get_p())
+        datagram.add_float64(node.get_r())
         self.manager.writer.send(datagram, self.manager.server_connection)
         return Task.cont
 

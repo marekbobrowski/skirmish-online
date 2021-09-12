@@ -27,7 +27,6 @@ if __name__ == '__main__':
 
             main_player = world.units[world.main_player_id]
             control = Control(main_player, core.instance.camera)
-            net_client.begin_sync(main_player)
-
-            control.enable()
+            control.enable(world.node)
+            net_client.begin_sync(control.actor_control.control_node)
             core.instance.run()
