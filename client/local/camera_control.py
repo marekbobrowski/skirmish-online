@@ -6,8 +6,9 @@ class CameraControl:
     def __init__(self, camera):
         self.camera = camera
         self.hook = None
-        self.zoom_speed = 1
-        self.max_distance = 400
+        self.zoom_speed = 0.2
+        self.max_distance = 10
+        self.min_distance = 1.5
         self.low_vert_limit = -10
         self.upp_vert_limit = 90
         self.rotate_with_character = True
@@ -23,10 +24,11 @@ class CameraControl:
     def zoom_in(self, amount):
         camera_direction = self.camera.get_parent().get_relative_vector(self.camera, Vec3.forward())
         new_pos = self.camera.get_pos() + camera_direction * self.zoom_speed * amount
-        if new_pos.length() >= 0 and new_pos.get_y() >= 0:
+
+        if new_pos.length() < self.min_distance:
+            self.camera.set_pos(-camera_direction * self.min_distance)
+        elif new_pos.length() >= 0 and new_pos.get_y() >= 0:
             self.camera.set_pos(new_pos)
-        elif new_pos.length() < 0:
-            self.camera.set_pos(Vec3(0, 0, 0))
 
     def zoom_out(self, amount):
         camera_direction = self.camera.get_parent().get_relative_vector(self.camera, Vec3.forward())

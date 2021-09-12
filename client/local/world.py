@@ -78,7 +78,6 @@ class World(DirectObject):
                                unit.r)
         unit.actor.reparent_to(self.node)
         unit.actor.set_blend(frameBlend=True)
-        unit.actor.set_light_off(1)
         self.units[unit.id] = unit
 
     def move_rotate_character(self, unit, x, y, z, h, p, r):
