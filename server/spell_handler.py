@@ -30,7 +30,7 @@ class SpellHandler:
     def perform_test_action(self, source, targets, action_id):
         if source.cooldowns[action_id] != 0:
             return
-
+        print('halo')
         temp_cooldown = 5
 
         # # trigger cooldown count down first

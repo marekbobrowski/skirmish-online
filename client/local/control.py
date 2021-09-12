@@ -238,21 +238,27 @@ class Control:
 
     def q_handler(self):
         core.instance.messenger.send(event=Event.CLIENT_SPELL_ATTEMPT, sentArgs=[0])
+        core.instance.messenger.send(event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.MELEE_ATTACK_1, 0])
+        args = EventArgs()
+        args.id_ = self.unit.id
+        args.animation = Animation.MELEE_ATTACK_1
+        args.loop = 0
+        core.instance.messenger.send(event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args])
 
     def q_up_handler(self):
         pass
 
     def e_handler(self):
-        core.instance.messenger.send(event=Event.CLIENT_SPELL_ATTEMPT, sentArgs=[0])
+        core.instance.messenger.send(event=Event.CLIENT_SPELL_ATTEMPT, sentArgs=[1])
 
     def e_up_handler(self):
         pass
 
     def r_handler(self):
-        core.instance.messenger.send(event=Event.CLIENT_SPELL_ATTEMPT, sentArgs=[0])
+        core.instance.messenger.send(event=Event.CLIENT_SPELL_ATTEMPT, sentArgs=[2])
 
     def f_handler(self):
-        core.instance.messenger.send(event=Event.CLIENT_SPELL_ATTEMPT, sentArgs=[0])
+        core.instance.messenger.send(event=Event.CLIENT_SPELL_ATTEMPT, sentArgs=[3])
 
     def esc_handler(self):
         pass

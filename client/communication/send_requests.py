@@ -18,6 +18,7 @@ class SendRequests(DirectObject):
         self.manager = manager
         self.accept(Event.CLIENT_STARTED_ANIMATION, self.send_animation)
         self.accept(Event.TXT_MSG_TO_SERVER_TYPED, self.send_chat_message)
+        self.accept(Event.CLIENT_SPELL_ATTEMPT, self.send_ability_attempt)
 
     def send_pos_hpr(self, node, ref_node):
         datagram = PyDatagram()
