@@ -53,6 +53,7 @@ class Handler:
             player.health = 50
             player.model = random.randrange(4)
             player.animation = 'stand'
+            player.weapon = random.randrange(4)
             player.id = self.server.last_player_id
             self.server.last_player_id += 1
 
@@ -65,6 +66,7 @@ class Handler:
             response.add_uint8(player.health)
             response.add_uint8(player.model)
             response.add_string(player.animation)
+            response.add_uint8(player.weapon)
 
             # send player his own position and rotation
             response.add_float64(player.x)
@@ -84,6 +86,7 @@ class Handler:
                     response.add_uint8(other_player.health)
                     response.add_uint8(other_player.model)
                     response.add_string(other_player.animation)
+                    response.add_uint8(other_player.weapon)
                     response.add_float64(other_player.x)
                     response.add_float64(other_player.y)
                     response.add_float64(other_player.z)
@@ -109,6 +112,7 @@ class Handler:
         datagram.add_uint8(player.health)
         datagram.add_uint8(player.model)
         datagram.add_string(player.animation)
+        datagram.add_uint8(player.weapon)
         datagram.add_float64(player.x)
         datagram.add_float64(player.y)
         datagram.add_float64(player.z)
@@ -162,6 +166,8 @@ class Handler:
         words = message.split()
 
         if words[0] == '/setname':
+            if len(words) < 1:
+                return
             new_name = words[1]
             player.name = new_name
             datagram = PyDatagram()

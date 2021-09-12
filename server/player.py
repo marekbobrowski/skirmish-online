@@ -11,6 +11,7 @@ class Player:
         self.name = 'unknown'
         self.model = 0
         self.animation = 'stand'
+        self.weapon = 0
         self.health_regen = 5
         self.resource_regen = 5
         self.cooldowns = [0, 0, 0, 0]  # cooldown left for each of 4 abilities

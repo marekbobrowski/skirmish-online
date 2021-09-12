@@ -8,4 +8,5 @@ class Unit:
         self.health = 0
         self.model = None
         self.animation = None
+        self.weapon = None
         self.actor = None

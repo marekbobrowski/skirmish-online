@@ -61,6 +61,7 @@ class FetchEvents:
         unit.health = iterator.get_uint8()
         unit.model = iterator.get_uint8()
         unit.animation = iterator.get_string()
+        unit.weapon = iterator.get_uint8()
         unit.x = iterator.get_float64()
         unit.y = iterator.get_float64()
         unit.z = iterator.get_float64()

@@ -10,10 +10,10 @@ elf = 'assets/characters/elf.gltf'
 kamael = 'assets/characters/kamael.gltf'
 dwarf_f = 'assets/characters/dwarf-f.gltf'
 arena = 'assets/arena/arena.gltf'
-weapon_1 = 'assets/weapons/antaras.gltf'
-weapon_2 = 'assets/weapons/fiera.gltf'
-weapon_3 = 'assets/weapons/flugel.gltf'
-weapon_4 = 'assets/weapons/igus-blade.gltf'
+antaras = 'assets/weapons/antaras.gltf'
+fiera = 'assets/weapons/fiera.gltf'
+flugel = 'assets/weapons/flugel.gltf'
+igus_blade = 'assets/weapons/igus-blade.gltf'
 
 list_3d = [skybox,
            dark_elf,
@@ -21,10 +21,10 @@ list_3d = [skybox,
            kamael,
            dwarf_f,
            arena,
-           weapon_1,
-           weapon_2,
-           weapon_3,
-           weapon_4]
+           antaras,
+           fiera,
+           flugel,
+           igus_blade]
 
 
 # sound

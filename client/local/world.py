@@ -1,4 +1,4 @@
-from local import core, actor_config
+from local import core, actor_config, weapon_config
 from local import asset_names as assets
 from event import Event
 from local.subpart import Subpart
@@ -67,7 +67,7 @@ class World(DirectObject):
 
     def spawn_unit(self, unit):
         unit.actor = actor_config.load(unit.model)
-        weapon = core.instance.loader.loadModel(assets.weapon_1)
+        weapon = weapon_config.load(unit.weapon)
         self.equip_weapon(unit, weapon)
         self.change_animation(unit, unit.animation, 1)
         unit.actor.set_pos_hpr(unit.x,
