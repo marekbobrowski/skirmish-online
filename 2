@@ -1,17 +1,17 @@
 from . import core
 from . import asset_names as assets
 from ..event import Event
+import .command
 
 from direct.showbase.DirectObject import DirectObject
-from direct.gui.DirectGui import DirectFrame, DirectLabel
+from direct.gui.DirectGui import DirectFrame, DirectEntry, DirectLabel
 from panda3d.core import TextNode
 
 
-class CombatLog(DirectObject):
-    def __init__(self, node, units):
+class Console(DirectObject):
+    def __init__(self, node):
         DirectObject.__init__(self)
-        self.node = node.attach_new_node("combat log node")
-        self.units = units
+        self.node = node.attach_new_node("console node")
 
         # --- frame params --- #
         self.width = 0.3
@@ -21,7 +21,7 @@ class CombatLog(DirectObject):
         # --- entry & output text params --- #
 
         # offset from the corner
-        self.corner_x_offset = 0.8
+        self.corner_x_offset = 0.04
         self.corner_y_offset = 0.04
 
         self.between_line_dist = 0.045
@@ -35,13 +35,17 @@ class CombatLog(DirectObject):
         # number of lines displayable in the terminal
         n_lines = 40
 
+        # distance of the '>' symbol from the entry
+        self.input_symbol_offset = 0.0005
+
         # -- set up console components -- #
 
         self.frame = DirectFrame(parent=self.node, frameColor=frame_color)
 
         font = core.instance.loader.load_font(assets.main_font)
-        # font.set_pixels_per_unit(100)
+        font.set_pixels_per_unit(100)
 
+        self.entry_node = self.node.attach_new_node("entry node")
         self.text_nodes = []
 
         # create node for each line of text, so it can be displaced when resizing the window
@@ -65,8 +69,43 @@ class CombatLog(DirectObject):
                 )
             )
 
+        self.entry = DirectEntry(
+            frameColor=background_color,
+            text_fg=foreground_color,
+            parent=self.entry_node,
+            entryFont=font,
+            initialText="",
+            width=50,
+            command=self.send_msg_event,
+            suppressKeys=True,
+        )
+
+        self.input_symbol_node = self.entry_node.attach_new_node("input symbol node")
+        self.input_symbol = DirectLabel(
+            text=">",
+            text_align=TextNode.ALeft,
+            text_font=font,
+            text_fg=foreground_color,
+            text_bg=background_color,
+            frameColor=background_color,
+            parent=self.input_symbol_node,
+        )
+        self.input_symbol_node.hide()
+
         self.accept("aspectRatioChanged", self.aspect_ratio_change_update)
-        self.accept(Event.RECEIVED_COMBAT_DATA, self.handle_received_combat_data)
+        self.accept("enter", self.focus_entry)
+        self.accept(Event.TXT_MSG_FROM_SERVER_RECEIVED, self.add_msg)
+
+    def send_msg_event(self, msg):
+        self.input_symbol_node.hide()
+        if msg != "":
+            self.entry.enterText("")
+            self.entry["focus"] = False
+            core.instance.messenger.send(event=Event.COMMAND_TYPED, sentArgs=[msg])
+
+    def focus_entry(self):
+        self.input_symbol_node.show()
+        self.entry["focus"] = True
 
     def aspect_ratio_change_update(self):
         self.frame["frameSize"] = (
@@ -76,6 +115,25 @@ class CombatLog(DirectObject):
             0,
         )
         self.node.set_pos(0, 0, -(1 - self.height) * core.instance.win.get_y_size())
+
+        self.entry_node.set_pos(
+            self.corner_x_offset * core.instance.win.get_x_size(),
+            0,
+            -(1 - self.corner_y_offset) * self.height * core.instance.win.get_y_size(),
+        )
+
+        self.entry_node.set_scale(
+            (
+                self.text_scale * core.instance.win.get_y_size()
+                + self.text_scale * core.instance.win.get_x_size()
+            )
+            / 2
+        )
+
+        self.input_symbol_node.set_x(
+            -self.input_symbol_offset * core.instance.win.get_x_size()
+        )
+
         line_y = 0
         for text_node in reversed(self.text_nodes):
             line_y += self.between_line_dist
@@ -94,14 +152,11 @@ class CombatLog(DirectObject):
                 * core.instance.win.get_y_size(),
             )
 
-    def handle_received_combat_data(self, args):
-        lines = []
-        target_ids = args.target_ids
-        for target_id in target_ids:
-            lines.append(
-                f"{self.units.get(args.source_id).name} -> {self.units.get(target_id).name} {args.hp_change}"
-            )
-        self.add_lines(lines)
+    def add_msg(self, name, time, msg):
+        if name == "":
+            self.add_lines(msg.splitlines())
+        else:
+            self.add_lines([f"{time} {name}: {msg}"])
         self.update_view()
 
     def add_lines(self, lines):

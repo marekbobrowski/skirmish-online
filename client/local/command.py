@@ -1,5 +1,5 @@
-from local import core
-from event import Event
+from . import core
+from ..event import Event
 
 
 def parse(command):

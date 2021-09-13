@@ -1,6 +1,5 @@
-from local import core
-from event import Event
-from local import asset_names
+from . import core, asset_names
+from ..event import Event
 
 from direct.gui.DirectGui import DirectWaitBar, DirectLabel
 from direct.showbase.DirectObject import DirectObject

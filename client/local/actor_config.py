@@ -1,7 +1,7 @@
-from local import dark_elf_config
-from local import elf_config
-from local import kamael_config
-from local import dwarf_f_config
+from . import dark_elf_config
+from . import elf_config
+from . import kamael_config
+from . import dwarf_f_config
 
 
 def load(model):

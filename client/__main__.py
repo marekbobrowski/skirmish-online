@@ -1,9 +1,9 @@
-from communication.net_client import NetClient
-from local import core
-from local.ui import Ui
-from local.load_assets import load_assets_to_cache
-from local.control import Control
-from local.world import World
+from .communication.net_client import NetClient
+from .local import core
+from .local.ui import Ui
+from .local.load_assets import load_assets_to_cache
+from .local.control import Control
+from .local.world import World
 
 import sys
 

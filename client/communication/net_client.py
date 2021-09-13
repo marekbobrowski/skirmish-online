@@ -1,6 +1,6 @@
-from event import Event
-from local.unit import Unit
-from local import core
+from ..event import Event
+from ..local.unit import Unit
+from ..local import core
 
 from panda3d.core import QueuedConnectionManager
 from panda3d.core import QueuedConnectionReader
@@ -10,10 +10,6 @@ from direct.distributed.PyDatagram import PyDatagram
 from direct.distributed.PyDatagramIterator import PyDatagramIterator
 from direct.task.Task import Task
 
-import sys
-import os
-
-sys.path.append(os.path.abspath(os.path.join("..")))
 from protocol.message import Message
 
 

@@ -1,9 +1,9 @@
-from local import core, actor_config, weapon_config
-from local import asset_names as assets
-from event import Event
-from local.subpart import Subpart
-from local.animation import Animation
-from local.floating_bars import FloatingBars
+from . import core, actor_config, weapon_config
+from . import asset_names as assets
+from ..event import Event
+from .subpart import Subpart
+from .animation import Animation
+from .floating_bars import FloatingBars
 
 from panda3d.core import PointLight, AmbientLight
 from direct.showbase.DirectObject import DirectObject

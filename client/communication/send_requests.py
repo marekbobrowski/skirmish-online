@@ -1,14 +1,10 @@
-from event import Event
-from local import core
+from ..event import Event
+from ..local import core
 
 from direct.distributed.PyDatagram import PyDatagram
 from direct.showbase.DirectObject import DirectObject
 from direct.task.Task import Task
 
-import sys
-import os
-
-sys.path.append(os.path.abspath(os.path.join("..")))
 from protocol.message import Message
 
 

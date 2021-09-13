@@ -1,7 +1,7 @@
-from local import core
-from local.console import Console
-from local.combat_log import CombatLog
-from local.dmg_text import DmgText
+from . import core
+from .console import Console
+from .combat_log import CombatLog
+from .dmg_text import DmgText
 
 
 class Ui:

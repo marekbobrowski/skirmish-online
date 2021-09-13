@@ -1,16 +1,12 @@
-from local import core
-from event import Event
-from local.unit import Unit
-from event_args import EventArgs
-
-import sys
-import os
+from ..local import core
+from ..event import Event
+from ..local.unit import Unit
+from ..event_args import EventArgs
 
 from direct.distributed.PyDatagramIterator import PyDatagramIterator
 from direct.task import Task
 from panda3d.core import NetDatagram
 
-sys.path.append(os.path.abspath(os.path.join("..")))
 from protocol.message import Message
 
 

@@ -1,7 +1,7 @@
-from local import igus_blade_config
-from local import flugel_config
-from local import antaras_config
-from local import fiera_config
+from . import igus_blade_config
+from . import flugel_config
+from . import antaras_config
+from . import fiera_config
 
 
 def load(weapon_id):
