@@ -11,6 +11,7 @@ from .player import Player
 from direct.distributed.PyDatagram import PyDatagram
 from .request_handler import Handler
 from protocol.message import Message
+from utils.unspammer import RequestUnspammer
 
 
 class Server:
@@ -27,8 +28,11 @@ class Server:
         self.last_player_id = 0
 
         # Socket
-        self.tcp_socket = self.manager.open_TCP_server_rendezvous(5000, 1000)
+        self.tcp_socket = self.manager.open_TCP_server_rendezvous(15000, 1000)
         self.listener.add_connection(self.tcp_socket)
+
+        # Guardian
+        self.guardian = RequestUnspammer()
 
     def run(self):
         Thread(target=self.listen_for_new_connections, daemon=True).start()
@@ -59,10 +63,10 @@ class Server:
 
     def send_updates_to_active_players(self):
         while True:
-            for player in self.active_connections:
-                if player.joined_game:
-                    self.send_pos_hpr(player)
-            sleep(0.005)
+            if self.guardian.clean():
+                for player in self.active_connections:
+                    if player.joined_game:
+                        self.send_pos_hpr(player)
 
     def get_number_of_active_players(self):
         count = 0

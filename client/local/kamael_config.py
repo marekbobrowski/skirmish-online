@@ -6,7 +6,6 @@ from direct.actor.Actor import Actor
 
 
 def load():
-
     character = Actor(asset_names.kamael)
     character.make_subpart(
         Subpart.LEGS, ["Bip01_L_Thigh", "Bip01_R_Thigh", "Sheath_L_Bone"]

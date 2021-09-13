@@ -27,7 +27,7 @@ class NetClient:
         self.server_sync = None
 
         # Network manager state.
-        self.server_port = 5000
+        self.server_port = 15000
         self.server_address = None
         self.timeout = 4000
         self.server_connection = None
