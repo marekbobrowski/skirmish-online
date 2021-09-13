@@ -26,7 +26,7 @@ class DmgText(DirectObject):
     def create_randomly_placed_text(self, actor, value):
         font = core.instance.loader.load_font(assets.main_font)
         text_node = actor.attach_new_node("text node")
-        text_node.set_pos(uniform(-0.5, 0.5), 0, uniform(0.6, 0.65))
+        text_node.set_pos(uniform(-0.3, 0.3), 0, uniform(0.6, 0.65))
         text = DirectLabel(
             text=str(value),
             scale=0.2 * value / 10000,
@@ -51,7 +51,7 @@ class DmgText(DirectObject):
                                    0,
                                    uniform(-0.01 * strength, 0.01 * strength)))
             text['text_fg'] = (204, 204, 0, 1 - task.time/time)
-            text_node.set_z(text_node, 0.001)
+            text_node.set_z(text_node, 0.006)
             return Task.cont
         else:
             self.destroy_text(text_node)
