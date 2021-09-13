@@ -2,7 +2,6 @@ from direct.distributed.PyDatagram import PyDatagram
 import sys
 import os
 
-sys.path.append(os.path.abspath(os.path.join("..")))
 from protocol.message import Message
 from threading import Thread
 from . import cooldown_countdown

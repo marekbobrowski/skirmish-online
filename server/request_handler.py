@@ -4,7 +4,6 @@ import sys
 import os
 from datetime import datetime
 
-sys.path.append(os.path.abspath(os.path.join("..")))
 from protocol.message import Message
 from .spell_handler import SpellHandler
 from . import config

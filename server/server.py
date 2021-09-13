@@ -12,7 +12,6 @@ from direct.distributed.PyDatagram import PyDatagram
 from .request_handler import Handler
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join("..")))
 from protocol.message import Message
 
 
