@@ -24,14 +24,8 @@ core.instance.accept(Event.COMMAND_TYPED, parse)
 
 class Command:
     MESSAGE_TO_SERVER = 0
-    SET_VOLUME = '/setvolume'
-    TOGGLE_COMBAT_LOG = '/cltoggle'
+    SET_VOLUME = "/setvolume"
+    TOGGLE_COMBAT_LOG = "/cltoggle"
 
 
-command_mapping = {
-    Command.MESSAGE_TO_SERVER: send_msg_to_server
-}
-
-
-
-
+command_mapping = {Command.MESSAGE_TO_SERVER: send_msg_to_server}

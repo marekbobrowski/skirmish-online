@@ -10,7 +10,7 @@ from direct.distributed.PyDatagramIterator import PyDatagramIterator
 from direct.task import Task
 from panda3d.core import NetDatagram
 
-sys.path.append(os.path.abspath(os.path.join('..')))
+sys.path.append(os.path.abspath(os.path.join("..")))
 from protocol.message import Message
 
 
@@ -25,7 +25,7 @@ class FetchEvents:
             Message.TEXT_MSG: self.update_chat,
             Message.ANIMATION: self.update_animation,
             Message.SET_NAME: self.update_name,
-            Message.COMBAT_DATA: self.read_combat_data
+            Message.COMBAT_DATA: self.read_combat_data,
         }
 
     def listen_for_updates(self, task):
@@ -52,7 +52,9 @@ class FetchEvents:
             args.h = iterator.get_float64()
             args.p = iterator.get_float64()
             args.r = iterator.get_float64()
-            core.instance.messenger.send(event=Event.PLAYER_CHANGED_POS_HPR, sentArgs=[args])
+            core.instance.messenger.send(
+                event=Event.PLAYER_CHANGED_POS_HPR, sentArgs=[args]
+            )
 
     def update_new_player(self, datagram, iterator):
         unit = Unit()
@@ -81,20 +83,26 @@ class FetchEvents:
         while iterator.get_remaining_size() > 0:
             id_ = iterator.get_uint8()
             health = iterator.get_uint8()
-            core.instance.messenger.send(event=Event.HEALTH_CHANGED, sentArgs=[id_, health])
+            core.instance.messenger.send(
+                event=Event.HEALTH_CHANGED, sentArgs=[id_, health]
+            )
 
     def update_chat(self, datagram, iterator):
         name = iterator.get_string()
         time = iterator.get_string()
         message = iterator.get_string()
-        core.instance.messenger.send(event=Event.TXT_MSG_FROM_SERVER_RECEIVED, sentArgs=[name, time, message])
+        core.instance.messenger.send(
+            event=Event.TXT_MSG_FROM_SERVER_RECEIVED, sentArgs=[name, time, message]
+        )
 
     def update_animation(self, datagram, iterator):
         args = EventArgs()
         args.id_ = iterator.get_uint8()
         args.animation = iterator.get_string()
         args.loop = iterator.get_uint8()
-        core.instance.messenger.send(event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args])
+        core.instance.messenger.send(
+            event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args]
+        )
 
     def update_name(self, datagram, iterator):
         id_ = iterator.get_uint8()
@@ -111,4 +119,3 @@ class FetchEvents:
         while iterator.get_remaining_size() > 0:
             args.target_ids.append(iterator.get_uint8())
         core.instance.messenger.send(event=Event.RECEIVED_COMBAT_DATA, sentArgs=[args])
-

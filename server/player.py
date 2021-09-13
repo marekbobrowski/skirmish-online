@@ -8,9 +8,9 @@ class Player:
         self.health = 0
         self.resource = 0
         self.id = 0
-        self.name = 'unknown'
+        self.name = "unknown"
         self.model = 0
-        self.animation = 'stand'
+        self.animation = "stand"
         self.weapon = 0
         self.health_regen = 5
         self.resource_regen = 5

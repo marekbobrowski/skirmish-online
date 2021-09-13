@@ -12,7 +12,8 @@ from direct.task.Task import Task
 
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join('..')))
+
+sys.path.append(os.path.abspath(os.path.join("..")))
 from protocol.message import Message
 
 
@@ -39,8 +40,9 @@ class NetClient:
 
     def connect(self, server_address):
         self.server_address = server_address
-        self.server_connection = self.manager.open_TCP_client_connection(self.server_address,
-                                                                         self.server_port, self.timeout)
+        self.server_connection = self.manager.open_TCP_client_connection(
+            self.server_address, self.server_port, self.timeout
+        )
         if self.server_connection:
             self.reader.add_connection(self.server_connection)
             return True
@@ -52,7 +54,7 @@ class NetClient:
         data.add_uint8(Message.WORLD_STATE)
         self.writer.send(data, self.server_connection)
         # wait for datagram from the server
-        self.manager.wait_for_readers(self.timeout/1000)
+        self.manager.wait_for_readers(self.timeout / 1000)
         if self.reader.data_available():
             datagram = NetDatagram()
             if self.reader.get_data(datagram):
@@ -101,11 +103,16 @@ class NetClient:
         from local import core
         from communication.send_requests import SendRequests
         from communication.fetch_events import FetchEvents
+
         self.server_sync = SendRequests(self)
         self.local_sync = FetchEvents(self)
         task = Task(self.server_sync.send_pos_hpr)
-        core.instance.task_mgr.add(self.local_sync.listen_for_updates, 'listen for updates')
-        core.instance.task_mgr.add(funcOrTask=task, name='send pos hpr', extraArgs=[node, ref_node])
+        core.instance.task_mgr.add(
+            self.local_sync.listen_for_updates, "listen for updates"
+        )
+        core.instance.task_mgr.add(
+            funcOrTask=task, name="send pos hpr", extraArgs=[node, ref_node]
+        )
 
     def get_welcome_message(self):
         data = PyDatagram()
@@ -127,8 +134,9 @@ class NetClient:
 
     def stop_updating_skirmish(self):
         from local import core
-        core.instance.task_mgr.remove('listen for updates')
-        core.instance.task_mgr.remove('send pos hpr')
+
+        core.instance.task_mgr.remove("listen for updates")
+        core.instance.task_mgr.remove("send pos hpr")
 
     def send_disconnect(self):
         datagram = PyDatagram()

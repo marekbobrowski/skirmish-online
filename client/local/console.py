@@ -40,10 +40,7 @@ class Console(DirectObject):
 
         # -- set up console components -- #
 
-        self.frame = DirectFrame(
-            parent=self.node,
-            frameColor=frame_color
-        )
+        self.frame = DirectFrame(parent=self.node, frameColor=frame_color)
 
         font = core.instance.loader.load_font(assets.main_font)
         font.set_pixels_per_unit(100)
@@ -56,85 +53,107 @@ class Console(DirectObject):
             self.text_nodes.append(self.node.attach_new_node(f"text node {i}"))
 
         # lines of text that are going to be displayed in the terminal
-        self.lines_queue = ['' for i in range(n_lines)]
+        self.lines_queue = ["" for i in range(n_lines)]
 
         self.direct_labels = []
         for i in range(n_lines):
             self.direct_labels.append(
-                DirectLabel(text=self.lines_queue[i],
-                            text_align=TextNode.ALeft,
-                            text_font=font,
-                            text_fg=foreground_color,
-                            text_bg=background_color,
-                            frameColor=background_color,
-                            parent=self.text_nodes[i]
-                            )
+                DirectLabel(
+                    text=self.lines_queue[i],
+                    text_align=TextNode.ALeft,
+                    text_font=font,
+                    text_fg=foreground_color,
+                    text_bg=background_color,
+                    frameColor=background_color,
+                    parent=self.text_nodes[i],
+                )
             )
 
-        self.entry = DirectEntry(frameColor=background_color,
-                                 text_fg=foreground_color,
-                                 parent=self.entry_node,
-                                 entryFont=font,
-                                 initialText="",
-                                 width=50,
-                                 command=self.send_msg_event,
-                                 suppressKeys=True)
+        self.entry = DirectEntry(
+            frameColor=background_color,
+            text_fg=foreground_color,
+            parent=self.entry_node,
+            entryFont=font,
+            initialText="",
+            width=50,
+            command=self.send_msg_event,
+            suppressKeys=True,
+        )
 
-        self.input_symbol_node = self.entry_node.attach_new_node('input symbol node')
-        self.input_symbol = DirectLabel(text='>',
-                                        text_align=TextNode.ALeft,
-                                        text_font=font,
-                                        text_fg=foreground_color,
-                                        text_bg=background_color,
-                                        frameColor=background_color,
-                                        parent=self.input_symbol_node
-                                        )
+        self.input_symbol_node = self.entry_node.attach_new_node("input symbol node")
+        self.input_symbol = DirectLabel(
+            text=">",
+            text_align=TextNode.ALeft,
+            text_font=font,
+            text_fg=foreground_color,
+            text_bg=background_color,
+            frameColor=background_color,
+            parent=self.input_symbol_node,
+        )
         self.input_symbol_node.hide()
 
-        self.accept('aspectRatioChanged', self.aspect_ratio_change_update)
-        self.accept('enter', self.focus_entry)
+        self.accept("aspectRatioChanged", self.aspect_ratio_change_update)
+        self.accept("enter", self.focus_entry)
         self.accept(Event.TXT_MSG_FROM_SERVER_RECEIVED, self.add_msg)
 
     def send_msg_event(self, msg):
         self.input_symbol_node.hide()
-        if msg != '':
-            self.entry.enterText('')
-            self.entry['focus'] = False
+        if msg != "":
+            self.entry.enterText("")
+            self.entry["focus"] = False
             core.instance.messenger.send(event=Event.COMMAND_TYPED, sentArgs=[msg])
 
     def focus_entry(self):
         self.input_symbol_node.show()
-        self.entry['focus'] = True
+        self.entry["focus"] = True
 
     def aspect_ratio_change_update(self):
-        self.frame['frameSize'] = (0,
-                                   core.instance.win.get_x_size() * self.width,
-                                   core.instance.win.get_y_size() * -self.height,
-                                   0)
-        self.node.set_pos(0,
-                          0,
-                          - (1 - self.height) * core.instance.win.get_y_size())
+        self.frame["frameSize"] = (
+            0,
+            core.instance.win.get_x_size() * self.width,
+            core.instance.win.get_y_size() * -self.height,
+            0,
+        )
+        self.node.set_pos(0, 0, -(1 - self.height) * core.instance.win.get_y_size())
 
-        self.entry_node.set_pos(self.corner_x_offset * core.instance.win.get_x_size(),
-                                0,
-                                - (1 - self.corner_y_offset) * self.height * core.instance.win.get_y_size())
+        self.entry_node.set_pos(
+            self.corner_x_offset * core.instance.win.get_x_size(),
+            0,
+            -(1 - self.corner_y_offset) * self.height * core.instance.win.get_y_size(),
+        )
 
-        self.entry_node.set_scale((self.text_scale * core.instance.win.get_y_size() +
-                                   self.text_scale * core.instance.win.get_x_size()) / 2)
+        self.entry_node.set_scale(
+            (
+                self.text_scale * core.instance.win.get_y_size()
+                + self.text_scale * core.instance.win.get_x_size()
+            )
+            / 2
+        )
 
-        self.input_symbol_node.set_x(- self.input_symbol_offset * core.instance.win.get_x_size())
+        self.input_symbol_node.set_x(
+            -self.input_symbol_offset * core.instance.win.get_x_size()
+        )
 
         line_y = 0
         for text_node in reversed(self.text_nodes):
             line_y += self.between_line_dist
-            text_node.set_scale((self.text_scale * core.instance.win.get_y_size() +
-                                 self.text_scale * core.instance.win.get_x_size()) / 2)
-            text_node.set_pos(self.corner_x_offset * core.instance.win.get_x_size(),
-                              0,
-                              - (1 - self.corner_y_offset - line_y) * self.height * core.instance.win.get_y_size())
+            text_node.set_scale(
+                (
+                    self.text_scale * core.instance.win.get_y_size()
+                    + self.text_scale * core.instance.win.get_x_size()
+                )
+                / 2
+            )
+            text_node.set_pos(
+                self.corner_x_offset * core.instance.win.get_x_size(),
+                0,
+                -(1 - self.corner_y_offset - line_y)
+                * self.height
+                * core.instance.win.get_y_size(),
+            )
 
     def add_msg(self, name, time, msg):
-        if name == '':
+        if name == "":
             self.add_lines(msg.splitlines())
         else:
             self.add_lines([f"{time} {name}: {msg}"])
@@ -150,4 +169,4 @@ class Console(DirectObject):
 
     def update_view(self):
         for i, direct_label in enumerate(self.direct_labels):
-            direct_label['text'] = self.lines_queue[i]
+            direct_label["text"] = self.lines_queue[i]

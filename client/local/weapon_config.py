@@ -19,10 +19,5 @@ config_mapping = {
     Weapon.ANTARAS: antaras_config.load,
     Weapon.FIERA: fiera_config.load,
     Weapon.FLUGEL: flugel_config.load,
-    Weapon.IGUS_BLADE: igus_blade_config.load
+    Weapon.IGUS_BLADE: igus_blade_config.load,
 }
-
-
-
-
-

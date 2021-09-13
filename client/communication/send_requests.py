@@ -8,7 +8,7 @@ from direct.task.Task import Task
 import sys
 import os
 
-sys.path.append(os.path.abspath(os.path.join('..')))
+sys.path.append(os.path.abspath(os.path.join("..")))
 from protocol.message import Message
 
 

@@ -7,12 +7,12 @@ from threading import Thread
 from panda3d.core import PointerToConnection
 from panda3d.core import NetAddress
 from panda3d.core import NetDatagram
-from player import Player
+from .player import Player
 from direct.distributed.PyDatagram import PyDatagram
-from request_handler import Handler
+from .request_handler import Handler
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join('..')))
+sys.path.append(os.path.abspath(os.path.join("..")))
 from protocol.message import Message
 
 
@@ -45,10 +45,12 @@ class Server:
                 rendezvous = PointerToConnection()
                 net_address = NetAddress()
                 new_connection = PointerToConnection()
-                if self.listener.get_new_connection(rendezvous, net_address, new_connection):
+                if self.listener.get_new_connection(
+                    rendezvous, net_address, new_connection
+                ):
                     new_connection = new_connection.p()
                     self.active_connections.append(Player(new_connection))
-                    print(str(new_connection.get_address()) + ' connected')
+                    print(str(new_connection.get_address()) + " connected")
                     self.reader.add_connection(new_connection)
 
     def listen_for_new_data(self):
@@ -115,9 +117,3 @@ class Server:
                 if player.joined_game:
                     self.writer.send(datagram, player.connection)
             sleep(1)
-
-
-if __name__ == "__main__":
-    server = Server()
-    server.run()
-    quit_server = input('Press any key to turn off the server...\n')

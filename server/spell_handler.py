@@ -1,10 +1,11 @@
 from direct.distributed.PyDatagram import PyDatagram
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join('..')))
+
+sys.path.append(os.path.abspath(os.path.join("..")))
 from protocol.message import Message
 from threading import Thread
-import cooldown_countdown
+from . import cooldown_countdown
 from panda3d.core import Vec3
 from random import randint
 
@@ -23,8 +24,11 @@ class SpellHandler:
     def get_near_targets(self, player):
         targets = []
         for other_player in self.server.active_connections:
-            if other_player.joined_game and other_player is not player and \
-                    (other_player.get_vec3_pos() - player.get_vec3_pos()).length() < 0.5:
+            if (
+                other_player.joined_game
+                and other_player is not player
+                and (other_player.get_vec3_pos() - player.get_vec3_pos()).length() < 0.5
+            ):
                 targets.append(other_player)
         return targets
 
@@ -79,6 +83,3 @@ class SpellHandler:
                 self.server.writer.send(health_datagram, player.connection)
                 self.server.writer.send(combat_data, player.connection)
                 # self.server.writer.send(animation_datagram, player.connection)
-
-
-
