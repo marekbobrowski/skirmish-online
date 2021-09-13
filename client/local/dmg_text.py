@@ -48,11 +48,15 @@ class DmgText(DirectObject):
 
     def shake_and_fade_out_text(self, task, text, text_node, time, strength):
         if task.time < time:
-            text_node.set_pos(text_node,
-                              Vec3(uniform(-0.01 * strength, 0.01 * strength),
-                                   0,
-                                   uniform(-0.01 * strength, 0.01 * strength)))
-            text['text_fg'] = (204, 204, 0, 1 - task.time/time)
+            text_node.set_pos(
+                text_node,
+                Vec3(
+                    uniform(-0.01 * strength, 0.01 * strength),
+                    0,
+                    uniform(-0.01 * strength, 0.01 * strength),
+                ),
+            )
+            text["text_fg"] = (204, 204, 0, 1 - task.time / time)
             text_node.set_z(text_node, 0.006)
             text_node.set_pos(
                 text_node,

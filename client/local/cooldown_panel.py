@@ -3,7 +3,7 @@ from local import asset_names as assets
 from event import Event
 
 from direct.showbase.DirectObject import DirectObject
-from direct.gui.DirectGui import DirectFrame,DirectLabel
+from direct.gui.DirectGui import DirectFrame, DirectLabel
 from panda3d.core import TextNode
 
 
@@ -37,10 +37,7 @@ class CooldownPanel(DirectObject):
 
         # -- set up console components -- #
 
-        self.frame = DirectFrame(
-            parent=self.node,
-            frameColor=frame_color
-        )
+        self.frame = DirectFrame(parent=self.node, frameColor=frame_color)
 
         font = core.instance.loader.load_font(assets.main_font)
         # font.set_pixels_per_unit(100)
@@ -52,46 +49,58 @@ class CooldownPanel(DirectObject):
             self.text_nodes.append(self.node.attach_new_node(f"text node {i}"))
 
         # lines of text that are going to be displayed in the terminal
-        self.lines_queue = ['' for i in range(n_lines)]
+        self.lines_queue = ["" for i in range(n_lines)]
 
         self.direct_labels = []
         for i in range(n_lines):
             self.direct_labels.append(
-                DirectLabel(text=self.lines_queue[i],
-                            text_align=TextNode.ALeft,
-                            text_font=font,
-                            text_fg=foreground_color,
-                            text_bg=background_color,
-                            frameColor=background_color,
-                            parent=self.text_nodes[i]
-                            )
+                DirectLabel(
+                    text=self.lines_queue[i],
+                    text_align=TextNode.ALeft,
+                    text_font=font,
+                    text_fg=foreground_color,
+                    text_bg=background_color,
+                    frameColor=background_color,
+                    parent=self.text_nodes[i],
+                )
             )
 
-        self.accept('aspectRatioChanged', self.aspect_ratio_change_update)
+        self.accept("aspectRatioChanged", self.aspect_ratio_change_update)
         self.accept(Event.RECEIVED_COMBAT_DATA, self.handle_received_combat_data)
 
     def aspect_ratio_change_update(self):
-        self.frame['frameSize'] = (0,
-                                   core.instance.win.get_x_size() * self.width,
-                                   core.instance.win.get_y_size() * -self.height,
-                                   0)
-        self.node.set_pos(0,
-                          0,
-                          - (1 - self.height) * core.instance.win.get_y_size())
+        self.frame["frameSize"] = (
+            0,
+            core.instance.win.get_x_size() * self.width,
+            core.instance.win.get_y_size() * -self.height,
+            0,
+        )
+        self.node.set_pos(0, 0, -(1 - self.height) * core.instance.win.get_y_size())
         line_y = 0
         for text_node in reversed(self.text_nodes):
             line_y += self.between_line_dist
-            text_node.set_scale((self.text_scale * core.instance.win.get_y_size() +
-                                 self.text_scale * core.instance.win.get_x_size()) / 2)
-            text_node.set_pos(self.corner_x_offset * core.instance.win.get_x_size(),
-                              0,
-                              - (1 - self.corner_y_offset - line_y) * self.height * core.instance.win.get_y_size())
+            text_node.set_scale(
+                (
+                    self.text_scale * core.instance.win.get_y_size()
+                    + self.text_scale * core.instance.win.get_x_size()
+                )
+                / 2
+            )
+            text_node.set_pos(
+                self.corner_x_offset * core.instance.win.get_x_size(),
+                0,
+                -(1 - self.corner_y_offset - line_y)
+                * self.height
+                * core.instance.win.get_y_size(),
+            )
 
     def handle_received_combat_data(self, args):
         lines = []
         target_ids = args.target_ids
         for target_id in target_ids:
-            lines.append(f"{self.units.get(args.source_id).name} -> {self.units.get(target_id).name} {args.hp_change}")
+            lines.append(
+                f"{self.units.get(args.source_id).name} -> {self.units.get(target_id).name} {args.hp_change}"
+            )
         self.add_lines(lines)
         self.update_view()
 
@@ -105,4 +114,4 @@ class CooldownPanel(DirectObject):
 
     def update_view(self):
         for i, direct_label in enumerate(self.direct_labels):
-            direct_label['text'] = self.lines_queue[i]
+            direct_label["text"] = self.lines_queue[i]
