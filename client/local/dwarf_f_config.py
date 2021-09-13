@@ -1,6 +1,6 @@
-from local import asset_names
-from local.animation import Animation
-from local.subpart import Subpart
+from . import asset_names
+from .animation import Animation
+from .subpart import Subpart
 
 from direct.actor.Actor import Actor
 

@@ -1,5 +1,5 @@
-from local import asset_names as assets
-from local import core
+from . import asset_names as assets
+from . import core
 
 
 def load():

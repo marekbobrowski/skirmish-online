@@ -1,11 +1,10 @@
-from local import core
-from local.camera_control import CameraControl
-from local.actor_control import CharacterControl
-from event import Event
-from event_args import EventArgs
-from local.animation import Animation
-from local.subpart import Subpart
-from local import actor_config
+from . import core, actor_config
+from .camera_control import CameraControl
+from .actor_control import CharacterControl
+from ..event import Event
+from ..event_args import EventArgs
+from .animation import Animation
+from .subpart import Subpart
 
 from direct.task.Task import Task
 from panda3d.core import WindowProperties, Vec3

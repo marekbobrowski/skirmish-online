@@ -1,15 +1,13 @@
-from event import Event
-from local import core
+from ..event import Event
+from ..local import core
 
 from direct.distributed.PyDatagram import PyDatagram
 from direct.showbase.DirectObject import DirectObject
 from direct.task.Task import Task
 
-import sys
-import os
-
-sys.path.append(os.path.abspath(os.path.join("..")))
 from protocol.message import Message
+
+from utils.unspammer import RequestUnspammer
 
 
 class SendRequests(DirectObject):
@@ -20,6 +18,12 @@ class SendRequests(DirectObject):
         self.accept(Event.TXT_MSG_TO_SERVER_TYPED, self.send_chat_message)
         self.accept(Event.CLIENT_SPELL_ATTEMPT, self.send_ability_attempt)
 
+        self.guardian = RequestUnspammer()
+
+    def write(self, datagram, safe=False):
+        if self.guardian.clean() or safe:
+            self.manager.writer.send(datagram, self.manager.server_connection)
+
     def send_pos_hpr(self, node, ref_node):
         datagram = PyDatagram()
         datagram.add_uint8(Message.POS_HPR)
@@ -29,24 +33,24 @@ class SendRequests(DirectObject):
         datagram.add_float64(node.get_h(ref_node))
         datagram.add_float64(node.get_p(ref_node))
         datagram.add_float64(node.get_r(ref_node))
-        self.manager.writer.send(datagram, self.manager.server_connection)
+        self.write(datagram)
         return Task.cont
 
     def send_ability_attempt(self, ability):
         datagram = PyDatagram()
         datagram.add_uint8(Message.ACTION)
         datagram.add_uint8(ability)
-        self.manager.writer.send(datagram, self.manager.server_connection)
+        self.write(datagram, True)
 
     def send_chat_message(self, message):
         datagram = PyDatagram()
         datagram.add_uint8(Message.TEXT_MSG)
         datagram.add_string(message)
-        self.manager.writer.send(datagram, self.manager.server_connection)
+        self.write(datagram, True)
 
     def send_animation(self, animation, loop):
         datagram = PyDatagram()
         datagram.add_uint8(Message.ANIMATION)
         datagram.add_string(animation)
         datagram.add_uint8(loop)
-        self.manager.writer.send(datagram, self.manager.server_connection)
+        self.write(datagram, True)

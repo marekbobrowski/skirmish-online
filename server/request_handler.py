@@ -1,9 +1,6 @@
 from direct.distributed.PyDatagramIterator import PyDatagramIterator
 from direct.distributed.PyDatagram import PyDatagram
-import sys
-import os
 from datetime import datetime
-
 from protocol.message import Message
 from .spell_handler import SpellHandler
 from . import config

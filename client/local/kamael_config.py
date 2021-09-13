@@ -1,12 +1,11 @@
-from local import asset_names
-from local.animation import Animation
-from local.subpart import Subpart
+from . import asset_names
+from .animation import Animation
+from .subpart import Subpart
 
 from direct.actor.Actor import Actor
 
 
 def load():
-
     character = Actor(asset_names.kamael)
     character.make_subpart(
         Subpart.LEGS, ["Bip01_L_Thigh", "Bip01_R_Thigh", "Sheath_L_Bone"]

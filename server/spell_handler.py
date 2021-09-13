@@ -1,7 +1,4 @@
 from direct.distributed.PyDatagram import PyDatagram
-import sys
-import os
-
 from protocol.message import Message
 from threading import Thread
 from . import cooldown_countdown

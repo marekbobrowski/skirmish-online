@@ -1,6 +1,6 @@
-from event import Event
-from local.unit import Unit
-from local import core
+from ..event import Event
+from ..local.unit import Unit
+from ..local import core
 
 from panda3d.core import QueuedConnectionManager
 from panda3d.core import QueuedConnectionReader
@@ -10,10 +10,6 @@ from direct.distributed.PyDatagram import PyDatagram
 from direct.distributed.PyDatagramIterator import PyDatagramIterator
 from direct.task.Task import Task
 
-import sys
-import os
-
-sys.path.append(os.path.abspath(os.path.join("..")))
 from protocol.message import Message
 
 
@@ -31,7 +27,7 @@ class NetClient:
         self.server_sync = None
 
         # Network manager state.
-        self.server_port = 5000
+        self.server_port = 15000
         self.server_address = None
         self.timeout = 4000
         self.server_connection = None
@@ -100,9 +96,9 @@ class NetClient:
         self.writer.send(data, self.server_connection)
 
     def begin_sync(self, node, ref_node):
-        from local import core
-        from communication.send_requests import SendRequests
-        from communication.fetch_events import FetchEvents
+        from ..local import core
+        from .send_requests import SendRequests
+        from .fetch_events import FetchEvents
 
         self.server_sync = SendRequests(self)
         self.local_sync = FetchEvents(self)
