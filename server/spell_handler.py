@@ -24,7 +24,7 @@ class SpellHandler:
         targets = []
         for other_player in self.server.active_connections:
             if other_player.joined_game and other_player is not player and \
-                    (other_player.get_vec3_pos() - player.get_vec3_pos()).length() < 1:
+                    (other_player.get_vec3_pos() - player.get_vec3_pos()).length() < 0.5:
                 targets.append(other_player)
         return targets
 

@@ -105,6 +105,7 @@ class FetchEvents:
         args = EventArgs()
         args.action_id = iterator.get_uint8()
         args.hp_change = iterator.get_int8()
+        args.hp_change *= 1234  # for cooler effect :-)
         args.source_id = iterator.get_uint8()
         args.target_ids = []
         while iterator.get_remaining_size() > 0:

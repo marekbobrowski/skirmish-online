@@ -1,10 +1,9 @@
 from local import core
 from local import asset_names as assets
 from event import Event
-import local.command
 
 from direct.showbase.DirectObject import DirectObject
-from direct.gui.DirectGui import DirectFrame, DirectEntry, DirectLabel
+from direct.gui.DirectGui import DirectFrame,DirectLabel
 from panda3d.core import TextNode
 
 
