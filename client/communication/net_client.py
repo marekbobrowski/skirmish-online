@@ -96,9 +96,9 @@ class NetClient:
         self.writer.send(data, self.server_connection)
 
     def begin_sync(self, node, ref_node):
-        from local import core
-        from communication.send_requests import SendRequests
-        from communication.fetch_events import FetchEvents
+        from ..local import core
+        from .send_requests import SendRequests
+        from .fetch_events import FetchEvents
 
         self.server_sync = SendRequests(self)
         self.local_sync = FetchEvents(self)
