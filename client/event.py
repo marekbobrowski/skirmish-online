@@ -6,6 +6,7 @@ class Event:
     NAME_CHANGED = 'name-changed'
     TXT_MSG_FROM_SERVER_RECEIVED = 'msg-from-server-received'
     PLAYER_CHANGED_POS_HPR = 'player-changed-pos'
+    RECEIVED_COMBAT_DATA = 'received-combat-data'
 
     # caused by event from the client
     COMMAND_TYPED = 'message-typed'

@@ -20,7 +20,7 @@ if __name__ == '__main__':
             load_assets_to_cache()
 
             world = World()
-            ui = Ui()
+            ui = Ui(world.units)
 
             net_client.load_world_state(world)
             net_client.send_ready_for_updates()

@@ -9,7 +9,7 @@ class Message:
     ACTION = 52
     DISCONNECTION = 53
     TEXT_MSG = 54
-    CHARACTER_REACTION = 100
+    COMBAT_DATA = 55
     TELEPORT = 101
     NEW_PLAYER = 102
     HEALTH = 103

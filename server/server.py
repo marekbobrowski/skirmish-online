@@ -114,7 +114,7 @@ class Server:
             for player in self.active_connections:
                 if player.joined_game:
                     self.writer.send(datagram, player.connection)
-            sleep(5)
+            sleep(1)
 
 
 if __name__ == "__main__":

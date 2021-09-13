@@ -24,8 +24,8 @@ class FetchEvents:
             Message.HEALTH: self.update_health,
             Message.TEXT_MSG: self.update_chat,
             Message.ANIMATION: self.update_animation,
-            Message.ACTION: self.update_action,
-            Message.SET_NAME: self.update_name
+            Message.SET_NAME: self.update_name,
+            Message.COMBAT_DATA: self.read_combat_data
         }
 
     def listen_for_updates(self, task):
@@ -96,16 +96,18 @@ class FetchEvents:
         args.loop = iterator.get_uint8()
         core.instance.messenger.send(event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args])
 
-    def update_action(self, datagram, iterator):
-        return
-        id_ = iterator.get_uint8()
-        action_id = iterator.get_uint8()
-        cd_time = iterator.get_uint8()
-        print('Player with id ' + str(id_) + ' used action: ' + str(action_id) + 'and dealt x dmg.')
-        if id_ == self.world.player.id:
-            self.world.abilities.trigger_cooldown(action_id, cd_time)
-
     def update_name(self, datagram, iterator):
         id_ = iterator.get_uint8()
         new_name = iterator.get_string()
         core.instance.messenger.send(event=Event.NAME_CHANGED, sentArgs=[id_, new_name])
+
+    def read_combat_data(self, datagram, iterator):
+        args = EventArgs()
+        args.action_id = iterator.get_uint8()
+        args.hp_change = iterator.get_int8()
+        args.source_id = iterator.get_uint8()
+        args.target_ids = []
+        while iterator.get_remaining_size() > 0:
+            args.target_ids.append(iterator.get_uint8())
+        core.instance.messenger.send(event=Event.RECEIVED_COMBAT_DATA, sentArgs=[args])
+

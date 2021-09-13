@@ -21,6 +21,7 @@ class World(DirectObject):
         self.accept(Event.PLAYER_JOINED, self.handle_player_joined)
         self.accept(Event.PLAYER_CHANGED_POS_HPR, self.handle_player_changed_pos_hpr)
         self.accept(Event.PLAYER_CHANGED_ANIMATION, self.handle_player_changed_animation)
+        self.accept(Event.NAME_CHANGED, self.handle_name_changed)
 
         self.floating_bars = FloatingBars(self.units)
 
@@ -64,6 +65,9 @@ class World(DirectObject):
     def handle_player_changed_animation(self, args):
         unit = self.units.get(args.id_, None)
         self.change_animation(unit, args.animation, args.loop)
+
+    def handle_name_changed(self, id_, name):
+        self.units.get(id_).name = name
 
     def spawn_unit(self, unit):
         unit.actor = actor_config.load(unit.model)

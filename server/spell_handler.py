@@ -6,6 +6,7 @@ from protocol.message import Message
 from threading import Thread
 import cooldown_countdown
 from panda3d.core import Vec3
+from random import randint
 
 
 class SpellHandler:
@@ -30,7 +31,6 @@ class SpellHandler:
     def perform_test_action(self, source, targets, action_id):
         if source.cooldowns[action_id] != 0:
             return
-        print('halo')
         temp_cooldown = 5
 
         # # trigger cooldown count down first
@@ -38,8 +38,10 @@ class SpellHandler:
         #        daemon=True,
         #        args=(source, action_id, temp_cooldown)).start()
 
+        hp_change = -1 * randint(1, 10)
+
         for target in targets:
-            target.health -= 1
+            target.health += hp_change
             if target.health <= 0:
                 target.health = 0
 
@@ -49,8 +51,18 @@ class SpellHandler:
         # action_datagram.add_uint8(action_id)
         # action_datagram.add_uint8(temp_cooldown)  # temporarily hard-coded 5 sec cooldown
 
+        combat_data = PyDatagram()
+        combat_data.add_uint8(Message.COMBAT_DATA)
+        combat_data.add_uint8(action_id)
+        combat_data.add_int8(hp_change)
+        combat_data.add_uint8(source.id)
+
+        for target in targets:
+            combat_data.add_uint8(target.id)
+
         health_datagram = PyDatagram()
         health_datagram.add_uint8(Message.HEALTH)
+
         for target in targets:
             health_datagram.add_uint8(target.id)
             health_datagram.add_uint8(target.health)
@@ -65,6 +77,7 @@ class SpellHandler:
             if player.joined_game:
                 # self.server.writer.send(action_datagram, player.connection)
                 self.server.writer.send(health_datagram, player.connection)
+                self.server.writer.send(combat_data, player.connection)
                 # self.server.writer.send(animation_datagram, player.connection)
 
 
