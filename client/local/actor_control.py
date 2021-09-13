@@ -3,7 +3,6 @@ from direct.task import Task
 
 
 class CharacterControl:
-
     def __init__(self, actor, parent_node):
         self.actor = actor
         self.control_node = parent_node.attach_new_node("actor control node")
@@ -15,31 +14,43 @@ class CharacterControl:
         self.movement_speed = 2.8
 
     def move_forward(self, task):
-        self.control_node.set_y(self.control_node, -self.movement_speed * globalClock.getDt())
+        self.control_node.set_y(
+            self.control_node, -self.movement_speed * globalClock.getDt()
+        )
         self.actor.set_h(0)
         return Task.cont
 
     def move_backward(self, task):
-        self.control_node.set_y(self.control_node, self.movement_speed * globalClock.getDt())
+        self.control_node.set_y(
+            self.control_node, self.movement_speed * globalClock.getDt()
+        )
         self.actor.set_h(180)
         return Task.cont
 
     def move_left(self, task):
-        self.control_node.set_x(self.control_node, self.movement_speed * 0.7 * globalClock.getDt())
+        self.control_node.set_x(
+            self.control_node, self.movement_speed * 0.7 * globalClock.getDt()
+        )
         self.actor.set_h(90)
         return Task.cont
 
     def move_right(self, task):
-        self.control_node.set_x(self.control_node, -self.movement_speed * 0.7 * globalClock.getDt())
+        self.control_node.set_x(
+            self.control_node, -self.movement_speed * 0.7 * globalClock.getDt()
+        )
         self.actor.set_h(-90)
         return Task.cont
 
     def rotate_left(self, task):
-        self.control_node.set_h(self.control_node, self.movement_speed * 80 * globalClock.getDt())
+        self.control_node.set_h(
+            self.control_node, self.movement_speed * 80 * globalClock.getDt()
+        )
         return Task.cont
 
     def rotate_right(self, task):
-        self.control_node.set_h(self.control_node, -self.movement_speed * 80 * globalClock.getDt())
+        self.control_node.set_h(
+            self.control_node, -self.movement_speed * 80 * globalClock.getDt()
+        )
         return Task.cont
 
     def rotate_by_angle(self, angle):

@@ -14,7 +14,6 @@ import datetime
 
 
 class Control:
-
     def __init__(self, unit, camera):
         self.actor_control = None
         self.camera_control = None
@@ -35,27 +34,27 @@ class Control:
 
         # assignment of handling functions
         self.event_handler_mapping = {
-            'w': self.w_handler,
-            'w-up': self.w_up_handler,
-            's': self.s_handler,
-            's-up': self.s_up_handler,
-            'a': self.a_handler,
-            'a-up': self.a_up_handler,
-            'd': self.d_handler,
-            'd-up': self.d_up_handler,
-            'mouse1': self.mouse_1_handler,
-            'mouse1-up': self.mouse_1_up_handler,
-            'mouse3': self.mouse_3_handler,
-            'mouse3-up': self.mouse_3_up_handler,
-            'wheel_up': self.wheel_up_handler,
-            'wheel_down': self.wheel_down_handler,
-            'q': self.q_handler,
-            'q-up': self.q_up_handler,
-            'e': self.e_handler,
-            'e-up': self.e_up_handler,
-            'r': self.r_handler,
-            'f': self.f_handler,
-            'escape': self.esc_handler
+            "w": self.w_handler,
+            "w-up": self.w_up_handler,
+            "s": self.s_handler,
+            "s-up": self.s_up_handler,
+            "a": self.a_handler,
+            "a-up": self.a_up_handler,
+            "d": self.d_handler,
+            "d-up": self.d_up_handler,
+            "mouse1": self.mouse_1_handler,
+            "mouse1-up": self.mouse_1_up_handler,
+            "mouse3": self.mouse_3_handler,
+            "mouse3-up": self.mouse_3_up_handler,
+            "wheel_up": self.wheel_up_handler,
+            "wheel_down": self.wheel_down_handler,
+            "q": self.q_handler,
+            "q-up": self.q_up_handler,
+            "e": self.e_handler,
+            "e-up": self.e_up_handler,
+            "r": self.r_handler,
+            "f": self.f_handler,
+            "escape": self.esc_handler,
         }
         core.instance.disable_mouse()
 
@@ -64,7 +63,9 @@ class Control:
             self.actor_control = CharacterControl(self.unit.actor, world_node)
         if self.camera_control is None:
             self.camera_control = CameraControl(self.camera)
-            self.camera_control.attach_to(self.actor_control.control_node, Vec3(0, 0, 0.5))
+            self.camera_control.attach_to(
+                self.actor_control.control_node, Vec3(0, 0, 0.5)
+            )
             self.camera_control.zoom_out(10)
         for event, handler in self.event_handler_mapping.items():
             core.instance.accept(event, handler)
@@ -169,7 +170,9 @@ class Control:
     def mouse_1_up_handler(self):
         self.mouse_1_clicked = False
 
-        core.instance.win.move_pointer(0, int(self.last_mouse_x), int(self.last_mouse_y))
+        core.instance.win.move_pointer(
+            0, int(self.last_mouse_x), int(self.last_mouse_y)
+        )
 
         # show the cursor if neither of mouse buttons are clicked
         if not self.mouse_3_clicked:
@@ -190,7 +193,9 @@ class Control:
         # move forward if both mouse buttons are clicked
         if self.mouse_1_clicked:
             if not core.instance.taskMgr.hasTaskNamed("MoveForward"):
-                core.instance.taskMgr.add(self.actor_control.move_forward, "MoveForward")
+                core.instance.taskMgr.add(
+                    self.actor_control.move_forward, "MoveForward"
+                )
 
         # switch to moving from rotating
         if self.d_pressed:
@@ -220,7 +225,9 @@ class Control:
             core.instance.taskMgr.remove("MoveLeft")
             core.instance.taskMgr.add(self.actor_control.rotate_left, "RotateLeft")
 
-        core.instance.win.move_pointer(0, int(self.last_mouse_x), int(self.last_mouse_y))
+        core.instance.win.move_pointer(
+            0, int(self.last_mouse_x), int(self.last_mouse_y)
+        )
         # show the cursor if neither of mouse buttons are clicked
         if not self.mouse_1_clicked:
             self.set_cursor_hidden(False)
@@ -238,12 +245,16 @@ class Control:
 
     def q_handler(self):
         core.instance.messenger.send(event=Event.CLIENT_SPELL_ATTEMPT, sentArgs=[0])
-        core.instance.messenger.send(event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.MELEE_ATTACK_1, 0])
+        core.instance.messenger.send(
+            event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.MELEE_ATTACK_1, 0]
+        )
         args = EventArgs()
         args.id_ = self.unit.id
         args.animation = Animation.MELEE_ATTACK_1
         args.loop = 0
-        core.instance.messenger.send(event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args])
+        core.instance.messenger.send(
+            event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args]
+        )
 
     def q_up_handler(self):
         pass
@@ -265,14 +276,24 @@ class Control:
 
     def handle_m1_dragging_task(self, task):
         # move the camera on the character's "orbit" only if the first button of the mouse is clicked
-        if core.instance.mouseWatcherNode.hasMouse() and self.mouse_1_clicked and not self.mouse_3_clicked:
+        if (
+            core.instance.mouseWatcherNode.hasMouse()
+            and self.mouse_1_clicked
+            and not self.mouse_3_clicked
+        ):
             self.camera_control.rotate_with_character = False
             md = core.instance.win.getPointer(0)
             delta_x = md.get_x() - self.last_mouse_x
             delta_y = md.get_y() - self.last_mouse_y
-            core.instance.win.movePointer(0, int(self.last_mouse_x), int(self.last_mouse_y))
-            self.camera_control.move_on_horizontal_orbit(- delta_x * 0.3 * self.mouse_sensitivity)
-            self.camera_control.move_on_vertical_orbit(delta_y * 0.3 * self.mouse_sensitivity)
+            core.instance.win.movePointer(
+                0, int(self.last_mouse_x), int(self.last_mouse_y)
+            )
+            self.camera_control.move_on_horizontal_orbit(
+                -delta_x * 0.3 * self.mouse_sensitivity
+            )
+            self.camera_control.move_on_vertical_orbit(
+                delta_y * 0.3 * self.mouse_sensitivity
+            )
         elif not self.mouse_1_clicked:
             self.camera_control.rotate_with_character = True
             return Task.done
@@ -283,7 +304,9 @@ class Control:
         if core.instance.mouseWatcherNode.hasMouse() and self.mouse_3_clicked:
             md = core.instance.win.getPointer(0)
             delta_x = md.get_x() - self.last_mouse_x
-            core.instance.win.movePointer(0, int(self.last_mouse_x), int(self.last_mouse_y))
+            core.instance.win.movePointer(
+                0, int(self.last_mouse_x), int(self.last_mouse_y)
+            )
             self.actor_control.rotate_by_angle(-0.3 * self.mouse_sensitivity * delta_x)
         elif not self.mouse_3_clicked:
             return Task.done
@@ -297,34 +320,62 @@ class Control:
     def update_animation(self):
         f = core.instance.task_mgr.hasTaskNamed
         if f("MoveRight"):
-            if self.actor_control.actor.get_current_anim() != actor_config.get_anim_name(self.unit.model, Animation.RUN):
+            if (
+                self.actor_control.actor.get_current_anim()
+                != actor_config.get_anim_name(self.unit.model, Animation.RUN)
+            ):
                 args = EventArgs()
                 args.id_ = self.unit.id
                 args.animation = Animation.RUN
                 args.loop = 1
-                core.instance.messenger.send(event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args])
-                core.instance.messenger.send(event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.RUN, 1])
+                core.instance.messenger.send(
+                    event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args]
+                )
+                core.instance.messenger.send(
+                    event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.RUN, 1]
+                )
         elif f("MoveLeft"):
-            if self.actor_control.actor.get_current_anim() != actor_config.get_anim_name(self.unit.model, Animation.RUN):
+            if (
+                self.actor_control.actor.get_current_anim()
+                != actor_config.get_anim_name(self.unit.model, Animation.RUN)
+            ):
                 args = EventArgs()
                 args.id_ = self.unit.id
                 args.animation = Animation.RUN
                 args.loop = 1
-                core.instance.messenger.send(event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args])
-                core.instance.messenger.send(event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.RUN, 1])
+                core.instance.messenger.send(
+                    event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args]
+                )
+                core.instance.messenger.send(
+                    event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.RUN, 1]
+                )
         elif f("MoveForward") or f("MoveBackward"):
-            if self.actor_control.actor.get_current_anim() != actor_config.get_anim_name(self.unit.model, Animation.RUN):
+            if (
+                self.actor_control.actor.get_current_anim()
+                != actor_config.get_anim_name(self.unit.model, Animation.RUN)
+            ):
                 args = EventArgs()
                 args.id_ = self.unit.id
                 args.animation = Animation.RUN
                 args.loop = 1
-                core.instance.messenger.send(event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args])
-                core.instance.messenger.send(event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.RUN, 1])
+                core.instance.messenger.send(
+                    event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args]
+                )
+                core.instance.messenger.send(
+                    event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.RUN, 1]
+                )
         else:
-            if self.actor_control.actor.get_current_anim() != actor_config.get_anim_name(self.unit.model, Animation.STAND):
+            if (
+                self.actor_control.actor.get_current_anim()
+                != actor_config.get_anim_name(self.unit.model, Animation.STAND)
+            ):
                 args = EventArgs()
                 args.id_ = self.unit.id
                 args.animation = Animation.STAND
                 args.loop = 1
-                core.instance.messenger.send(event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args])
-                core.instance.messenger.send(event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.STAND, 1])
+                core.instance.messenger.send(
+                    event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args]
+                )
+                core.instance.messenger.send(
+                    event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.STAND, 1]
+                )

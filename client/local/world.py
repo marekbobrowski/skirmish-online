@@ -20,7 +20,9 @@ class World(DirectObject):
         # scene has to handle the event first, before the floating bars
         self.accept(Event.PLAYER_JOINED, self.handle_player_joined)
         self.accept(Event.PLAYER_CHANGED_POS_HPR, self.handle_player_changed_pos_hpr)
-        self.accept(Event.PLAYER_CHANGED_ANIMATION, self.handle_player_changed_animation)
+        self.accept(
+            Event.PLAYER_CHANGED_ANIMATION, self.handle_player_changed_animation
+        )
         self.accept(Event.NAME_CHANGED, self.handle_name_changed)
 
         self.floating_bars = FloatingBars(self.units)
@@ -36,13 +38,13 @@ class World(DirectObject):
         terrain.set_scale(10)
         terrain.set_z(0.82)
 
-        plight = PointLight('plight')
+        plight = PointLight("plight")
         plight.setColor((5, 5, 5, 0))
         plight_node_path = self.node.attachNewNode(plight)
         plight_node_path.setPos(20, 0, 0)
         core.instance.render.setLight(plight_node_path)
 
-        alight = AmbientLight('alight')
+        alight = AmbientLight("alight")
         alight.setColor((1, 1, 1, 0))
         alight_node_path = self.node.attachNewNode(alight)
         alight_node_path.setPos(20, 0, 0)
@@ -54,13 +56,9 @@ class World(DirectObject):
     def handle_player_changed_pos_hpr(self, args):
         unit = self.units.get(args.id_, None)
         if unit is not None:
-            self.move_rotate_character(unit,
-                                       args.x,
-                                       args.y,
-                                       args.z,
-                                       args.h,
-                                       args.p,
-                                       args.r)
+            self.move_rotate_character(
+                unit, args.x, args.y, args.z, args.h, args.p, args.r
+            )
 
     def handle_player_changed_animation(self, args):
         unit = self.units.get(args.id_, None)
@@ -74,12 +72,7 @@ class World(DirectObject):
         weapon = weapon_config.load(unit.weapon)
         self.equip_weapon(unit, weapon)
         self.change_animation(unit, unit.animation, 1)
-        unit.actor.set_pos_hpr(unit.x,
-                               unit.y,
-                               unit.z,
-                               unit.h,
-                               unit.p,
-                               unit.r)
+        unit.actor.set_pos_hpr(unit.x, unit.y, unit.z, unit.h, unit.p, unit.r)
         unit.actor.reparent_to(self.node)
         unit.actor.set_blend(frameBlend=True)
         self.units[unit.id] = unit
@@ -126,4 +119,3 @@ class World(DirectObject):
 
     def test_loop(self, char, animation, xd, part):
         char.loop(animation, xd, part)
-

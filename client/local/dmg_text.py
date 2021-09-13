@@ -34,13 +34,15 @@ class DmgText(DirectObject):
             text_bg=(0, 0, 0, 0),
             text_fg=(204, 204, 0, 1),
             frameColor=(0, 0, 0, 0),
-            text_font=font
+            text_font=font,
         )
         text.set_compass(core.instance.camera)
-        task = Task(self.shake_and_fade_out_text, 'fade out text')
-        time = 5 * value/10000
+        task = Task(self.shake_and_fade_out_text, "fade out text")
+        time = 5 * value / 10000
         strength = 0.4 * value / 10000
-        core.instance.task_mgr.add(task, extraArgs=[task, text, text_node, time, strength])
+        core.instance.task_mgr.add(
+            task, extraArgs=[task, text, text_node, time, strength]
+        )
         # core.instance.add_task(self.destroy_text)
         # core.instance.task_mgr.do_method_later(0.5, self.destroy_text, 'destroy text', extraArgs=[text])
 
@@ -52,6 +54,16 @@ class DmgText(DirectObject):
                                    uniform(-0.01 * strength, 0.01 * strength)))
             text['text_fg'] = (204, 204, 0, 1 - task.time/time)
             text_node.set_z(text_node, 0.006)
+            text_node.set_pos(
+                text_node,
+                Vec3(
+                    uniform(-0.01 * strength, 0.01 * strength),
+                    0,
+                    uniform(-0.01 * strength, 0.01 * strength),
+                ),
+            )
+            text["text_fg"] = (204, 204, 0, 1 - task.time / time)
+            text_node.set_z(text_node, 0.001)
             return Task.cont
         else:
             self.destroy_text(text_node)

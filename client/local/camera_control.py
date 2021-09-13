@@ -2,7 +2,6 @@ from panda3d.core import Vec3
 
 
 class CameraControl:
-
     def __init__(self, camera):
         self.camera = camera
         self.hook = None
@@ -22,7 +21,9 @@ class CameraControl:
         self.camera.set_hpr(-180, 0, 0)
 
     def zoom_in(self, amount):
-        camera_direction = self.camera.get_parent().get_relative_vector(self.camera, Vec3.forward())
+        camera_direction = self.camera.get_parent().get_relative_vector(
+            self.camera, Vec3.forward()
+        )
         new_pos = self.camera.get_pos() + camera_direction * self.zoom_speed * amount
 
         if new_pos.length() < self.min_distance:
@@ -31,7 +32,9 @@ class CameraControl:
             self.camera.set_pos(new_pos)
 
     def zoom_out(self, amount):
-        camera_direction = self.camera.get_parent().get_relative_vector(self.camera, Vec3.forward())
+        camera_direction = self.camera.get_parent().get_relative_vector(
+            self.camera, Vec3.forward()
+        )
         new_pos = self.camera.get_pos() - camera_direction * self.zoom_speed * amount
         if new_pos.length() < self.max_distance:
             self.camera.set_pos(new_pos)

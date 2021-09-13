@@ -3,10 +3,10 @@ from direct.distributed.PyDatagram import PyDatagram
 import sys
 import os
 from datetime import datetime
-sys.path.append(os.path.abspath(os.path.join('..')))
+
 from protocol.message import Message
-from spell_handler import SpellHandler
-import config
+from .spell_handler import SpellHandler
+from . import config
 import random
 import string
 
@@ -23,7 +23,7 @@ class Handler:
             Message.ACTION: self.action_handler.handle_action,
             Message.TEXT_MSG: self.handle_text_msg,
             Message.ANIMATION: self.handle_animation,
-            Message.WELCOME_MSG: self.handle_welcome_msg_request
+            Message.WELCOME_MSG: self.handle_welcome_msg_request,
         }
 
     def handle_data(self, datagram):
@@ -48,11 +48,13 @@ class Handler:
             return
         else:
             x, y, z, h, p, r = -3, -5, 1, 120, 0, 0
-            player.name = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+            player.name = "".join(
+                random.choices(string.ascii_uppercase + string.digits, k=10)
+            )
             player.set_pos_hpr(x, y, z, h, p, r)
             player.health = 50
             player.model = random.randrange(4)
-            player.animation = 'stand'
+            player.animation = "stand"
             player.weapon = random.randrange(4)
             player.id = self.server.last_player_id
             self.server.last_player_id += 1
@@ -80,7 +82,11 @@ class Handler:
 
             # send players' id's, names and positions & rotations
             for i, other_player in enumerate(self.server.active_connections):
-                if other_player is not player and other_player.joined_game and i < active_players:
+                if (
+                    other_player is not player
+                    and other_player.joined_game
+                    and i < active_players
+                ):
                     response.add_uint8(other_player.id)
                     response.add_string(other_player.name)
                     response.add_uint8(other_player.health)
@@ -126,8 +132,8 @@ class Handler:
 
         welcome_msg_datagram = PyDatagram()
         welcome_msg_datagram.add_uint8(Message.TEXT_MSG)
-        welcome_msg_datagram.add_string('')
-        welcome_msg_datagram.add_string('')
+        welcome_msg_datagram.add_string("")
+        welcome_msg_datagram.add_string("")
         welcome_msg_datagram.add_string(config.welcome_msg)
         self.server.writer.send(welcome_msg_datagram, connection)
 
@@ -147,7 +153,7 @@ class Handler:
         player = self.server.find_player_by_connection(connection)
         if player is not None:
             self.server.active_connections.remove(player)
-            print(str(connection.get_address()) + ' disconnected.')
+            print(str(connection.get_address()) + " disconnected.")
             self.server.manager.close_connection(connection)
             id_ = player.id
             del player
@@ -165,7 +171,7 @@ class Handler:
         message = iterator.get_string()
         words = message.split()
 
-        if words[0] == '/setname':
+        if words[0] == "/setname":
             if len(words) < 1:
                 return
             new_name = words[1]

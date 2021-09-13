@@ -23,18 +23,12 @@ config_mapping = {
     Model.DARK_ELF: dark_elf_config.load,
     Model.ELF: elf_config.load,
     Model.KAMAEL: kamael_config.load,
-    Model.DWARF_F: dwarf_f_config.load
+    Model.DWARF_F: dwarf_f_config.load,
 }
 
 anim_name_mapping = {
     Model.DARK_ELF: dark_elf_config.get_anim_name,
     Model.ELF: elf_config.get_anim_name,
     Model.KAMAEL: kamael_config.get_anim_name,
-    Model.DWARF_F: dwarf_f_config.get_anim_name
+    Model.DWARF_F: dwarf_f_config.get_anim_name,
 }
-
-
-
-
-
-

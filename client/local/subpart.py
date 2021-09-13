@@ -1,3 +1,3 @@
 class Subpart:
-    TORSO = 'torso'
-    LEGS = 'legs'
+    TORSO = "torso"
+    LEGS = "legs"
