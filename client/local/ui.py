@@ -2,6 +2,7 @@ from . import core
 from .console import Console
 from .combat_log import CombatLog
 from .dmg_text import DmgText
+from .cooldown_panel import CooldownPanel
 
 
 class Ui:
@@ -10,3 +11,4 @@ class Ui:
         self.console = Console(self.node)
         self.dmg_text = DmgText(units)
         self.combat_log = CombatLog(self.node, units)
+        self.cooldown_panel = CooldownPanel(self.node, units)

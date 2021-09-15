@@ -1,9 +1,10 @@
-from local import core
-from local import asset_names as assets
-from event import Event
+from . import core
+from . import asset_names as assets
+from ..event import Event
 
 from direct.showbase.DirectObject import DirectObject
 from direct.gui.DirectGui import DirectFrame, DirectLabel
+from direct.task.Task import Task
 from panda3d.core import TextNode
 
 
@@ -21,7 +22,7 @@ class CooldownPanel(DirectObject):
         # --- entry & output text params --- #
 
         # offset from the corner
-        self.corner_x_offset = 0.4
+        self.corner_x_offset = 0.35
         self.corner_y_offset = 0.04
 
         self.between_line_dist = 0.045
@@ -33,7 +34,7 @@ class CooldownPanel(DirectObject):
         foreground_color = (1, 1, 1, 1)
 
         # number of lines displayable in the terminal
-        n_lines = 40
+        n_lines = 5
 
         # -- set up console components -- #
 
@@ -49,13 +50,18 @@ class CooldownPanel(DirectObject):
             self.text_nodes.append(self.node.attach_new_node(f"text node {i}"))
 
         # lines of text that are going to be displayed in the terminal
-        self.lines_queue = ["" for i in range(n_lines)]
+        self.lines = ["" for i in range(n_lines)]
+
+        # (cooldown_time, remaining_time)
+        self.cooldowns = [[0, 0] for i in range(n_lines)]
+
+        self.spell_names = ["" for i in range (n_lines)]
 
         self.direct_labels = []
         for i in range(n_lines):
             self.direct_labels.append(
                 DirectLabel(
-                    text=self.lines_queue[i],
+                    text=self.lines[i],
                     text_align=TextNode.ALeft,
                     text_font=font,
                     text_fg=foreground_color,
@@ -66,7 +72,37 @@ class CooldownPanel(DirectObject):
             )
 
         self.accept("aspectRatioChanged", self.aspect_ratio_change_update)
-        self.accept(Event.RECEIVED_COMBAT_DATA, self.handle_received_combat_data)
+        self.accept(Event.SET_SPELL, self.handle_set_spell)
+        self.accept(Event.TRIGGER_COOLDOWN, self.handle_trigger_cooldown)
+
+        self.update_view()
+
+    def set_cooldown_tracking(self, slot_number, spell_name, spell_cooldown):
+        self.spell_names[slot_number] = spell_name
+        self.cooldowns[slot_number] = [spell_cooldown, spell_cooldown]
+        task = Task(self.update_cooldown_view, 'update cooldown view')
+        core.instance.task_mgr.add(task, extraArgs=[task, slot_number])
+
+    def handle_set_spell(self, args):
+        self.set_cooldown_tracking(args.spell_number, args.spell_name, args.spell_cooldown)
+
+    def handle_trigger_cooldown(self, args):
+        task = Task(self.update_cooldown_view, 'update cooldown view')
+        core.instance.task_mgr.add(task, extraArgs=[task, args.slot_number])
+
+    def update_cooldown_view(self, task, slot_number):
+        diff = self.cooldowns[slot_number][0] - task.time
+        if diff > 0:
+            self.cooldowns[slot_number][1] = diff
+            self.gowno(slot_number)
+            self.update_view()
+            return Task.cont
+        return Task.done
+
+    def gowno(self, slot_number):
+        self.lines[slot_number] = self.spell_names[slot_number] + ' ' + '|' * int(
+            (1 - self.cooldowns[slot_number][1] / self.cooldowns[slot_number][0]) * 80
+        )
 
     def aspect_ratio_change_update(self):
         self.frame["frameSize"] = (
@@ -94,24 +130,6 @@ class CooldownPanel(DirectObject):
                 * core.instance.win.get_y_size(),
             )
 
-    def handle_received_combat_data(self, args):
-        lines = []
-        target_ids = args.target_ids
-        for target_id in target_ids:
-            lines.append(
-                f"{self.units.get(args.source_id).name} -> {self.units.get(target_id).name} {args.hp_change}"
-            )
-        self.add_lines(lines)
-        self.update_view()
-
-    def add_lines(self, lines):
-        """
-        :param lines: array of lines to be added
-        """
-        for line in lines:
-            self.lines_queue.append(line)
-            self.lines_queue.pop(0)
-
     def update_view(self):
         for i, direct_label in enumerate(self.direct_labels):
-            direct_label["text"] = self.lines_queue[i]
+            direct_label["text"] = self.lines[i]

@@ -10,6 +10,8 @@ class Message:
     DISCONNECTION = 53
     TEXT_MSG = 54
     COMBAT_DATA = 55
+    SET_SPELL = 56
+    TRIGGER_COOLDOWN = 57
     TELEPORT = 101
     NEW_PLAYER = 102
     HEALTH = 103

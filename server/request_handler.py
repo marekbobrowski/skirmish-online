@@ -169,7 +169,7 @@ class Handler:
         words = message.split()
 
         if words[0] == "/setname":
-            if len(words) < 1:
+            if len(words) < 2:
                 return
             new_name = words[1]
             player.name = new_name
@@ -181,6 +181,27 @@ class Handler:
             for player in self.server.active_connections:
                 if player.joined_game:
                     self.server.writer.send(datagram, player.connection)
+            return
+        elif words[0] == "/setspell":
+            if len(words) < 3:
+                return
+
+            spell_number = int(words[1])
+            if spell_number >= config.n_spell_slots or spell_number < 0:
+                return
+
+            spell_id = int(words[2])
+            if spell_id < 0 or spell_id >= config.n_spells:
+                return
+
+            player.spell_ids[spell_number] = spell_id
+
+            datagram = PyDatagram()
+            datagram.add_uint8(Message.SET_SPELL)
+            datagram.add_uint8(spell_number)
+            datagram.add_uint8(config.spell_cooldowns[spell_id])
+            datagram.add_string(config.spell_names[spell_id])
+            self.server.writer.send(datagram, player.connection)
             return
 
         datagram = PyDatagram()

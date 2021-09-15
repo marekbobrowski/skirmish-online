@@ -22,6 +22,8 @@ class FetchEvents:
             Message.ANIMATION: self.update_animation,
             Message.SET_NAME: self.update_name,
             Message.COMBAT_DATA: self.read_combat_data,
+            Message.SET_SPELL: self.read_set_spell,
+            Message.TRIGGER_COOLDOWN: self.read_trigger_cooldown
         }
 
     def listen_for_updates(self, task):
@@ -115,3 +117,15 @@ class FetchEvents:
         while iterator.get_remaining_size() > 0:
             args.target_ids.append(iterator.get_uint8())
         core.instance.messenger.send(event=Event.RECEIVED_COMBAT_DATA, sentArgs=[args])
+
+    def read_set_spell(self, datagram, iterator):
+        args = EventArgs()
+        args.spell_number = iterator.get_uint8()
+        args.spell_cooldown = iterator.get_uint8()
+        args.spell_name = iterator.get_string()
+        core.instance.messenger.send(event=Event.SET_SPELL, sentArgs=[args])
+
+    def read_trigger_cooldown(self, datagram, iterator):
+        args = EventArgs()
+        args.slot_number = iterator.get_uint8()
+        core.instance.messenger.send(event=Event.TRIGGER_COOLDOWN, sentArgs=[args])

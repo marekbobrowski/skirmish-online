@@ -53,6 +53,7 @@ class Control:
             "e-up": self.e_up_handler,
             "r": self.r_handler,
             "f": self.f_handler,
+            "c": self.c_handler,
             "escape": self.esc_handler,
         }
         core.instance.disable_mouse()
@@ -244,16 +245,16 @@ class Control:
 
     def q_handler(self):
         core.instance.messenger.send(event=Event.CLIENT_SPELL_ATTEMPT, sentArgs=[0])
-        core.instance.messenger.send(
-            event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.MELEE_ATTACK_1, 0]
-        )
+        # core.instance.messenger.send(
+        #     event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.MELEE_ATTACK_1, 0]
+        # )
         args = EventArgs()
         args.id_ = self.unit.id
         args.animation = Animation.MELEE_ATTACK_1
         args.loop = 0
-        core.instance.messenger.send(
-            event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args]
-        )
+        # core.instance.messenger.send(
+        #     event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args]
+        # )
 
     def q_up_handler(self):
         pass
@@ -269,6 +270,9 @@ class Control:
 
     def f_handler(self):
         core.instance.messenger.send(event=Event.CLIENT_SPELL_ATTEMPT, sentArgs=[3])
+
+    def c_handler(self):
+        core.instance.messenger.send(event=Event.CLIENT_SPELL_ATTEMPT, sentArgs=[4])
 
     def esc_handler(self):
         pass
