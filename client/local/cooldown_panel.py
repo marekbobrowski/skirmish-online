@@ -25,13 +25,19 @@ class CooldownPanel(DirectObject):
         self.corner_x_offset = 0.35
         self.corner_y_offset = 0.04
 
-        self.between_line_dist = 0.045
+        self.between_line_dist = 0.06
 
         self.text_scale = 0.02
 
         # text color/background
-        background_color = (1, 1, 1, 0)
-        foreground_color = (1, 1, 1, 1)
+        background_color = (0, 0, 0, 1)
+        foreground_colors = [
+            (0.972, 0.772, 0.745, 1),
+            (0.945, 0.972, 0.745, 1),
+            (0.8, 0.972, 0.745, 1),
+            (0.745, 0.945, 0.972, 1),
+            (0.929, 0.745, 0.972, 1)
+        ]
 
         # number of lines displayable in the terminal
         n_lines = 5
@@ -64,7 +70,7 @@ class CooldownPanel(DirectObject):
                     text=self.lines[i],
                     text_align=TextNode.ALeft,
                     text_font=font,
-                    text_fg=foreground_color,
+                    text_fg=foreground_colors[i],
                     text_bg=background_color,
                     frameColor=background_color,
                     parent=self.text_nodes[i],

@@ -41,7 +41,7 @@ class SpellHandler:
                daemon=True,
                args=(source, slot_number, config.spell_cooldowns[source.spell_ids[slot_number]])).start()
 
-        hp_change = -1 * randint(1, 10)
+        hp_change = -1 * randint(5, 10)
 
         for target in targets:
             target.health += hp_change
