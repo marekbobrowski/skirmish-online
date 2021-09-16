@@ -66,4 +66,3 @@ class MultilineString(String):
         datagram.add_uint8(len(lines))
         for line in lines:
             datagram.add_string(line)
-

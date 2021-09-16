@@ -1,6 +1,6 @@
 from .base import Message, UInt8
 
 
-class Animation:
+class Animation(Message):
     ID = UInt8(51)
     SCHEMA = []

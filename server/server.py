@@ -10,7 +10,6 @@ from panda3d.core import NetDatagram
 from .player import Player
 from direct.distributed.PyDatagram import PyDatagram
 from .request_handler import Handler
-from protocol.message import Message
 from utils.unspammer import RequestUnspammer
 
 
@@ -89,7 +88,7 @@ class Server:
     def send_pos_hpr(self, player):
         datagram = PyDatagram()
         connection = player.connection
-        datagram.add_uint8(Message.POS_HPR)
+        # datagram.add_uint8(Message.POS_HPR)
         for i, other_player in enumerate(self.active_connections):
             if other_player.joined_game and player is not other_player:
                 datagram.add_uint8(other_player.id)
@@ -104,7 +103,7 @@ class Server:
     def regenerate_health_resource(self):
         while True:
             datagram = PyDatagram()
-            datagram.add_uint8(Message.HEALTH)
+            # datagram.add_uint8(Message.HEALTH)
             for player in self.active_connections:
                 if player.joined_game:
                     new_health = player.health + player.health_regen

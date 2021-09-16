@@ -13,3 +13,4 @@ from .Teleport import Teleport
 from .TextMessage import TextMessage
 from .WelcomeMessage import WelcomeMessage
 from .WorldState import WorldState
+from .base import MessagesBank

@@ -1,6 +1,6 @@
 from .base import Message, UInt8
 
 
-class Teleport:
+class Teleport(Message):
     ID = UInt8(101)
     SCHEMA = []

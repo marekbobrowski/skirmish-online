@@ -1,6 +1,6 @@
 from .base import Message, UInt8
 
 
-class ReadyForSync:
+class ReadyForSync(Message):
     ID = UInt8(150)
     SCHEMA = []
