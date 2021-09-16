@@ -7,6 +7,8 @@ from . import config
 import random
 import string
 
+from protocol import messages, domain
+
 
 class Handler:
     def __init__(self, server):
@@ -32,10 +34,12 @@ class Handler:
 
     def handle_welcome_msg_request(self, datagram, iterator):
         response = PyDatagram()
-        response.add_uint8(Message.WELCOME_MSG)
-        response.add_uint8(len(config.welcome_msg))
-        for line in config.welcome_msg:
-            response.add_string(line)
+        message = messages.WelcomeMessage(
+            [
+                domain.WelcomeMessage(config.welcome_msg),
+            ]
+        )
+        message.dump(response)
         self.server.writer.send(response, datagram.get_connection())
 
     def handle_request_world_state(self, datagram, iterator):
