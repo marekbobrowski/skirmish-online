@@ -1,6 +1,3 @@
-n_spells = 10
-n_spell_slots = 5
-
 spell_names = [
     "SPELL A",
     "SPELL B",
@@ -28,11 +25,16 @@ spell_cooldowns = [
     15
 ]
 
+n_spells = len(spell_names)
+n_spell_slots = 5
+n_models = 5
+
 welcome_msg = "Welcome to Skirmish Online!\n"
 
 help = (
     "Available commands:\n "
     "/setname <name>\n"
+    f"/setmodel 0-{n_models-1}\n"
     "/setspell <slot_number> <spell_id>\n"
     f"   - slot numbers are 0-{n_spell_slots-1}\n"
     f"   - spell ids are 0-{n_spells-1}\n"

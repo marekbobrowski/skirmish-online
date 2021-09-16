@@ -20,12 +20,11 @@ class DmgText(DirectObject):
         for target_id in args.target_ids:
             unit = self.units.get(target_id, None)
             if unit is not None:
-                actor = unit.actor
-                self.create_randomly_placed_text(actor, -args.hp_change)
+                self.create_randomly_placed_text(unit.base_node, -args.hp_change)
 
-    def create_randomly_placed_text(self, actor, value):
+    def create_randomly_placed_text(self, node, value):
         font = core.instance.loader.load_font(assets.main_font)
-        text_node = actor.attach_new_node("text node")
+        text_node = node.attach_new_node("text node")
         text_node.set_pos(uniform(-0.3, 0.3), 0, uniform(0.6, 0.65))
         text = DirectLabel(
             text=str(value),

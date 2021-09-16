@@ -1,6 +1,6 @@
 from . import core, actor_config
 from .camera_control import CameraControl
-from .actor_control import CharacterControl
+from .node_control import NodeControl
 from ..event import Event
 from ..event_args import EventArgs
 from .animation import Animation
@@ -60,11 +60,11 @@ class Control:
 
     def enable(self, world_node):
         if self.actor_control is None:
-            self.actor_control = CharacterControl(self.unit.actor, world_node)
+            self.actor_control = NodeControl(self.unit.base_node, world_node)
         if self.camera_control is None:
             self.camera_control = CameraControl(self.camera)
             self.camera_control.attach_to(
-                self.actor_control.control_node, Vec3(0, 0, 0.5)
+                self.actor_control.controlling_node, Vec3(0, 0, 0.5)
             )
             self.camera_control.zoom_out(10)
         for event, handler in self.event_handler_mapping.items():
@@ -324,7 +324,7 @@ class Control:
         f = core.instance.task_mgr.hasTaskNamed
         if f("MoveRight"):
             if (
-                self.actor_control.actor.get_current_anim()
+                self.unit.actor.get_current_anim()
                 != actor_config.get_anim_name(self.unit.model, Animation.RUN)
             ):
                 args = EventArgs()
@@ -339,7 +339,7 @@ class Control:
                 )
         elif f("MoveLeft"):
             if (
-                self.actor_control.actor.get_current_anim()
+                self.unit.actor.get_current_anim()
                 != actor_config.get_anim_name(self.unit.model, Animation.RUN)
             ):
                 args = EventArgs()
@@ -354,7 +354,7 @@ class Control:
                 )
         elif f("MoveForward") or f("MoveBackward"):
             if (
-                self.actor_control.actor.get_current_anim()
+                self.unit.actor.get_current_anim()
                 != actor_config.get_anim_name(self.unit.model, Animation.RUN)
             ):
                 args = EventArgs()
@@ -369,7 +369,7 @@ class Control:
                 )
         else:
             if (
-                self.actor_control.actor.get_current_anim()
+                self.unit.actor.get_current_anim()
                 != actor_config.get_anim_name(self.unit.model, Animation.STAND)
             ):
                 args = EventArgs()

@@ -32,13 +32,14 @@ class FloatingBars(DirectObject):
 
     def create_bar(self, unit):
         actor = self.units[unit.id].actor
+        unit = self.units[unit.id]
         new_bar = DirectWaitBar(
             value=unit.health,
             pos=(0, 0, 0.5),
             frameColor=(1, 0, 0, 0.3),
             barColor=(0, 1, 0, 1),
         )
-        new_bar.reparent_to(actor)
+        new_bar.reparent_to(unit.base_node)
         new_bar.set_scale(0.13)
         new_bar.set_compass(core.instance.camera)
         self.bars[unit.id] = new_bar
@@ -48,7 +49,7 @@ class FloatingBars(DirectObject):
             text=unit.name,
             pos=(0, 0, 0.53),
             scale=0.04,
-            parent=actor,
+            parent=unit.base_node,
             text_bg=(0, 0, 0, 0),
             text_fg=(1, 1, 1, 1),
             frameColor=(0, 0, 0, 0),

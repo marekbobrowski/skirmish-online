@@ -24,6 +24,7 @@ class World(DirectObject):
             Event.PLAYER_CHANGED_ANIMATION, self.handle_player_changed_animation
         )
         self.accept(Event.NAME_CHANGED, self.handle_name_changed)
+        self.accept(Event.MODEL_CHANGED, self.handle_model_changed)
 
         self.floating_bars = FloatingBars(self.units)
 
@@ -72,13 +73,14 @@ class World(DirectObject):
         weapon = weapon_config.load(unit.weapon)
         self.equip_weapon(unit, weapon)
         self.change_animation(unit, unit.animation, 1)
-        unit.actor.set_pos_hpr(unit.x, unit.y, unit.z, unit.h, unit.p, unit.r)
-        unit.actor.reparent_to(self.node)
+        unit.base_node = self.node.attach_new_node("actor base node")
+        unit.base_node.set_pos_hpr(unit.x, unit.y, unit.z, unit.h, unit.p, unit.r)
+        unit.actor.reparent_to(unit.base_node)
         unit.actor.set_blend(frameBlend=True)
         self.units[unit.id] = unit
 
     def move_rotate_character(self, unit, x, y, z, h, p, r):
-        unit.actor.set_pos_hpr(x, y, z, h, p, r)
+        unit.base_node.set_pos_hpr(x, y, z, h, p, r)
 
     def change_animation(self, unit, animation, loop):
         animation = actor_config.get_anim_name(unit.model, animation)
@@ -119,3 +121,14 @@ class World(DirectObject):
 
     def test_loop(self, char, animation, xd, part):
         char.loop(animation, xd, part)
+
+    def handle_model_changed(self, args):
+        unit = self.units.get(args.player_id, None)
+        unit.model = args.model_id
+        unit.actor.removePart('modelRoot')
+        unit.actor = actor_config.load(unit.model)
+        unit.actor.reparent_to(unit.base_node)
+        self.change_animation(unit, Animation.STAND, 1)
+        weapon = weapon_config.load(unit.weapon)
+        self.equip_weapon(unit, weapon)
+

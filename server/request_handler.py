@@ -204,6 +204,24 @@ class Handler:
             self.server.writer.send(datagram, player.connection)
             return
 
+        elif words[0] == "/setmodel":
+            if len(words) < 2:
+                return
+
+            model_id = int(words[1])
+            if model_id < 0 or model_id >= config.n_models - 1:
+                return
+
+            player.model = model_id
+            datagram = PyDatagram()
+            datagram.add_uint8(Message.SET_MODEL)
+            datagram.add_uint8(player.id)
+            datagram.add_uint8(model_id)
+            for player in self.server.active_connections:
+                if player.joined_game:
+                    self.server.writer.send(datagram, player.connection)
+            return
+
         datagram = PyDatagram()
         datagram.add_uint8(Message.TEXT_MSG)
         datagram.add_string(player.name)

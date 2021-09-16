@@ -9,4 +9,5 @@ class Unit:
         self.model = None
         self.animation = None
         self.weapon = None
+        self.base_node = None
         self.actor = None

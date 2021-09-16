@@ -23,7 +23,8 @@ class FetchEvents:
             Message.SET_NAME: self.update_name,
             Message.COMBAT_DATA: self.read_combat_data,
             Message.SET_SPELL: self.read_set_spell,
-            Message.TRIGGER_COOLDOWN: self.read_trigger_cooldown
+            Message.TRIGGER_COOLDOWN: self.read_trigger_cooldown,
+            Message.SET_MODEL: self.read_set_model
         }
 
     def listen_for_updates(self, task):
@@ -129,3 +130,9 @@ class FetchEvents:
         args = EventArgs()
         args.slot_number = iterator.get_uint8()
         core.instance.messenger.send(event=Event.TRIGGER_COOLDOWN, sentArgs=[args])
+
+    def read_set_model(self, datagram, iterator):
+        args = EventArgs()
+        args.player_id = iterator.get_uint8()
+        args.model_id = iterator.get_uint8()
+        core.instance.messenger.send(event=Event.MODEL_CHANGED, sentArgs=[args])

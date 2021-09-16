@@ -9,6 +9,7 @@ class Event:
     RECEIVED_COMBAT_DATA = "received-combat-data"
     TRIGGER_COOLDOWN = 'trigger-cooldown'
     SET_SPELL = 'set-spell'
+    MODEL_CHANGED = 'set-model'
 
     # caused by event from the client
     COMMAND_TYPED = "message-typed"
