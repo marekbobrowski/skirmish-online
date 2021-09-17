@@ -1,6 +1,7 @@
-from .base import Message, UInt8
+from .base import Message, MessageType, UInt8
 
 
-class ReadyForSync(Message):
+class ReadyForSyncRequest(Message):
     ID = UInt8(150)
     SCHEMA = []
+    TYPE = MessageType.request

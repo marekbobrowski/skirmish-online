@@ -1,5 +1,5 @@
 from .base import MultilineString
 
 
-class WelcomeMessage(MultilineString):
+class LongMessage(MultilineString):
     pass

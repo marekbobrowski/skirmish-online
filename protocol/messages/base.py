@@ -1,27 +1,43 @@
 from typing import List
+from enum import Enum
 from ..domain.base import ObjectBase, UInt8
 
 
 class MessagesBank:
-    messages = []
-    messages_by_id = {}
+    class RequestMessagesBank:
+        messages = []
+        messages_by_id = {}
+
+    class ResponseMessagesBank:
+        messages = []
+        messages_by_id = {}
 
     @classmethod
     def register(cls, message_cls: "Message") -> None:
-        if message_cls.ID is None:
+        if message_cls.TYPE is None:
             return
 
-        if message_cls.ID in cls.messages_by_id:
+        bank = cls.bank_for_type(message_cls.TYPE)
+
+        if message_cls.ID in bank.messages_by_id:
             raise Exception(
-                f"message_cls {cls.messages_by_id[message_cls.ID]} and {message_cls} share the same ID!"
+                f"message_cls {bank.messages_by_id[message_cls.ID]} and {message_cls} share the same ID!"
             )
 
-        cls.messages.append(message_cls)
-        cls.messages_by_id[message_cls.ID] = message_cls
+        bank.messages.append(message_cls)
+        bank.messages_by_id[message_cls.ID] = message_cls
 
     @classmethod
-    def by_id(cls, _id: int) -> "Message":
-        return cls.messages_by_id[_id]
+    def bank_for_type(cls, type_: "MessageType") -> type:
+        return {
+            MessageType.request: cls.RequestMessagesBank,
+            MessageType.response: cls.ResponseMessagesBank,
+        }[type_]
+
+    @classmethod
+    def by_id(cls, _id: int, type_: "MessageType") -> "Message":
+        bank = cls.bank_for_type(type_)
+        return bank.messages_by_id[_id]
 
 
 class MetaClass(type):
@@ -31,12 +47,25 @@ class MetaClass(type):
         return newclass
 
 
+class MessageType(Enum):
+    request = "Request"
+    response = "Response"
+
+
 class Message(metaclass=MetaClass):
-    ID: UInt8 = None
+    ID: UInt8
     SCHEMA: List[ObjectBase]
+    TYPE: MessageType = None
 
     def __init__(self, data: List[ObjectBase]):
         self.data = data
+
+    @classmethod
+    def build(cls, values) -> "Message":
+        data = []
+        for model, value in zip(cls.SCHEMA, values):
+            data.append(model.build(*value))
+        return cls(data)
 
     @classmethod
     def parse(cls, iterator) -> "Message":

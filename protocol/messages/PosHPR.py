@@ -1,6 +1,8 @@
-from .base import Message, UInt8
+from .base import Message, MessageType, UInt8
+from ..domain import PlayerPosHPR
 
 
-class PostHPR(Message):
+class PosHPRRequest(Message):
     ID = UInt8(50)
-    SCHEMA = []
+    SCHEMA = [PlayerPosHPR]
+    TYPE = MessageType.request

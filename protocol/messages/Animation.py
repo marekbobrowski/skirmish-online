@@ -1,6 +1,8 @@
-from .base import Message, UInt8
+from .base import Message, MessageType, UInt8
+from ..domain import Animation
 
 
-class Animation(Message):
+class AnimationRequest(Message):
     ID = UInt8(51)
-    SCHEMA = []
+    SCHEMA = [Animation]
+    TYPE = MessageType.request

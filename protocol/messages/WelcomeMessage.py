@@ -1,7 +1,14 @@
-from .base import Message, UInt8
-from ..domain import WelcomeMessage
+from .base import Message, MessageType, UInt8
+from ..domain import LongMessage
 
 
-class WelcomeMessage(Message):
+class WelcomeMessageRequest(Message):
     ID = UInt8(3)
-    SCHEMA = [WelcomeMessage]
+    SCHEMA = []
+    TYPE = MessageType.request
+
+
+class WelcomeMessageResponse(Message):
+    ID = UInt8(3)
+    SCHEMA = [LongMessage]
+    TYPE = MessageType.response

@@ -1,6 +1,14 @@
-from .base import Message, UInt8
+from .base import Message, MessageType, UInt8
+from ..domain import TextMessage
 
 
-class TextMessage(Message):
+class TextMessageRequest(Message):
     ID = UInt8(54)
-    SCHEMA = []
+    SCHEMA = [TextMessage]
+    TYPE = MessageType.request
+
+
+class TextMessageResponse(Message):
+    ID = UInt8(54)
+    SCHEMA = [TextMessage]
+    TYPE = MessageType.response
