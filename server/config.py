@@ -1,28 +1,14 @@
 spell_names = [
     "SPELL A",
     "SPELL B",
-    "SPELL C",
-    "SPELL D",
-    "SPELL E",
-    "SPELL F",
-    "SPELL G",
-    "SPELL H",
-    "SPELL I",
-    "SPELL J"
+    "SPELL C"
 ]
 
 
 spell_cooldowns = [
     1,
-    1,
-    3,
-    3,
-    5,
-    5,
-    10,
-    10,
-    15,
-    15
+    2,
+    3
 ]
 
 n_spells = len(spell_names)

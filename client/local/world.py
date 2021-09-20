@@ -89,26 +89,6 @@ class World(DirectObject):
             unit.actor.loop(animation)
         else:
             unit.actor.play(animation)
-        #
-        # return
-        # play_only_torso = False
-        # if unit.actor.get_current_anim(partName=Subpart.LEGS) == Animation.RUN:
-        #     play_only_torso = True
-        # if loop:
-        #     play_func = self.test_loop
-        # else:
-        #     play_func = self.test_play
-        # if play_only_torso:
-        #     Sequence(
-        #         Func(play_func, unit.actor, animation, 1, Subpart.TORSO),
-        #         Func(self.resume_stand_run, [unit.actor])
-        #     ).start()
-        # else:
-        #     Sequence(
-        #         Func(play_func, unit.actor, animation, 1, Subpart.TORSO),
-        #         Func(play_func, unit.actor, animation, 1, Subpart.LEGS),
-        #         Func(self.resume_stand_run, [unit.actor])
-        #     ).start()
 
     def equip_weapon(self, unit, weapon):
         unit.hand_node = unit.actor.expose_joint(None, "modelRoot", "Weapon_R_Bone")

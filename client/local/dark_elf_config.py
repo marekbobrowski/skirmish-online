@@ -12,8 +12,8 @@ def load():
     )
     character.make_subpart(Subpart.TORSO, ["Bip01_Spine1"])
     character.set_play_rate(3, anim_names[Animation.MELEE_ATTACK_1])
-    # character.list_joints()
-    # print(character.get_anim_names())
+    character.set_play_rate(3, anim_names[Animation.MELEE_ATTACK_2])
+    character.set_play_rate(3, anim_names[Animation.MAGIC_ATTACK_1])
     return character
 
 
@@ -25,4 +25,6 @@ anim_names = {
     Animation.STAND: "wait_2HS_FDarkElf",
     Animation.RUN: "run_2HS_FDarkElf",
     Animation.MELEE_ATTACK_1: "Atk01_2HS_FDarkElf",
+    Animation.MELEE_ATTACK_2: "SpAtk001_2HS_FDarkElf",
+    Animation.MAGIC_ATTACK_1: "CastMid_FDarkElf"
 }

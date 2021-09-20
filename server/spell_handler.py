@@ -14,9 +14,9 @@ class SpellHandler:
     def handle_action(self, datagram, iterator):
         connection = datagram.get_connection()
         player = self.server.find_player_by_connection(connection)
-        spell_id = iterator.get_uint8()
+        slot_id = iterator.get_uint8()
         targets = self.get_near_targets(player)
-        self.perform_test_action(player, targets, spell_id)
+        self.perform_test_action(player, targets, slot_id)
 
     def get_near_targets(self, player):
         targets = []
@@ -30,7 +30,8 @@ class SpellHandler:
         return targets
 
     def perform_test_action(self, source, targets, slot_number):
-        if source.spell_ids[slot_number] == -1:
+        spell_id = source.spell_ids[slot_number]
+        if spell_id == -1:
             return
 
         if source.cooldowns[slot_number] != 0:
@@ -71,7 +72,14 @@ class SpellHandler:
         animation_datagram = PyDatagram()
         animation_datagram.add_uint8(Message.ANIMATION)
         animation_datagram.add_uint8(source.id)
-        animation_datagram.add_string('melee_attack_1')
+
+        animation_string = {
+            0: 'melee_attack_1',
+            1: 'melee_attack_2',
+            2: 'magic_attack_1'
+        }[spell_id]
+
+        animation_datagram.add_string(animation_string)
         animation_datagram.add_uint8(0)
 
         for player in self.server.active_connections:
