@@ -4,6 +4,7 @@ class Message:
     SET_MODEL = 2
     WELCOME_MSG = 3
     SET_NAME = 4
+    SET_WEAPON = 5
     POS_HPR = 50
     ANIMATION = 51
     ACTION = 52

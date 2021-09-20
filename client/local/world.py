@@ -25,6 +25,7 @@ class World(DirectObject):
         )
         self.accept(Event.NAME_CHANGED, self.handle_name_changed)
         self.accept(Event.MODEL_CHANGED, self.handle_model_changed)
+        self.accept(Event.WEAPON_CHANGED, self.handle_weapon_changed)
 
         self.floating_bars = FloatingBars(self.units)
 
@@ -110,8 +111,9 @@ class World(DirectObject):
         #     ).start()
 
     def equip_weapon(self, unit, weapon):
-        hand = unit.actor.expose_joint(None, "modelRoot", "Weapon_R_Bone")
-        weapon.reparent_to(hand)
+        unit.hand_node = unit.actor.expose_joint(None, "modelRoot", "Weapon_R_Bone")
+        weapon.reparent_to(unit.hand_node)
+        unit.weapon_node = weapon
 
     def resume_stand_run(self, char):
         pass
@@ -131,4 +133,20 @@ class World(DirectObject):
         self.change_animation(unit, Animation.STAND, 1)
         weapon = weapon_config.load(unit.weapon)
         self.equip_weapon(unit, weapon)
+
+    def handle_weapon_changed(self, args):
+        self.change_weapon(args.player_id, args.weapon_id)
+
+    def change_weapon(self, player_id, weapon_id):
+        unit = self.units.get(player_id, None)
+        if unit is not None:
+            unit.weapon = weapon_id
+            unit.weapon_node.detach_node()
+            unit.weapon_node = weapon_config.load(unit.weapon)
+            unit.weapon_node.reparent_to(unit.hand_node)
+
+
+
+
+
 

@@ -10,6 +10,7 @@ class Event:
     TRIGGER_COOLDOWN = 'trigger-cooldown'
     SET_SPELL = 'set-spell'
     MODEL_CHANGED = 'set-model'
+    WEAPON_CHANGED = 'weapon-changed'
 
     # caused by event from the client
     COMMAND_TYPED = "message-typed"

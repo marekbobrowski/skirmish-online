@@ -222,6 +222,24 @@ class Handler:
                     self.server.writer.send(datagram, player.connection)
             return
 
+        elif words[0] == "/setweapon":
+            if len(words) < 2:
+                return
+
+            weapon_id = int(words[1])
+            if weapon_id < 0 or weapon_id >= config.n_weapons:
+                return
+
+            player.weapon = weapon_id
+            datagram = PyDatagram()
+            datagram.add_uint8(Message.SET_WEAPON)
+            datagram.add_uint8(player.id)
+            datagram.add_uint8(weapon_id)
+            for player in self.server.active_connections:
+                if player.joined_game:
+                    self.server.writer.send(datagram, player.connection)
+            return
+
         datagram = PyDatagram()
         datagram.add_uint8(Message.TEXT_MSG)
         datagram.add_string(player.name)

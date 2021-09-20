@@ -10,4 +10,5 @@ class Unit:
         self.animation = None
         self.weapon = None
         self.base_node = None
+        self.weapon_node = None
         self.actor = None

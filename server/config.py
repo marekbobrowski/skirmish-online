@@ -28,6 +28,7 @@ spell_cooldowns = [
 n_spells = len(spell_names)
 n_spell_slots = 5
 n_models = 5
+n_weapons = 4
 
 welcome_msg = "Welcome to Skirmish Online!\n"
 
@@ -38,16 +39,8 @@ help = (
     "/setspell <slot_number> <spell_id>\n"
     f"   - slot numbers are 0-{n_spell_slots-1}\n"
     f"   - spell ids are 0-{n_spells-1}\n"
-    f"      - 0 lorem ipsum (1 sec cd)\n"
-    f"      - 1 lorem ipsum (2 sec cd)\n"
-    f"      - 2 lorem ipsum (3 sec cd)\n"
-    f"      - 3 lorem ipsum (4 sec cd)\n"
-    f"      - 4 lorem ipsum (5 sec cd)\n"
-    f"      - 5 lorem ipsum (6 sec cd)\n"
-    f"      - 6 lorem ipsum (7 sec cd)\n"
-    f"      - 7 lorem ipsum (8 sec cd)\n"
-    f"      - 8 lorem ipsum (9 sec cd)\n"
-    f"      - 9 lorem ipsum (10 sec cd)\n"
+    "/setweapon <weapon_id>\n"
+    f"   - weapon ids are 0-{n_weapons-1}\n"
     "Ability usage: \n"
     "q - use slot 0 \n"
     "e - use slot 1 \n"
