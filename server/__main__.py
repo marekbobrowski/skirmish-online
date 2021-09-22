@@ -1,7 +1,10 @@
 from .server import Server
+import time
 
 
 if __name__ == "__main__":
     server = Server()
     server.run()
-    quit_server = input("Press any key to turn off the server...\n")
+
+    while True:
+        time.sleep(10)
