@@ -9,7 +9,6 @@ from panda3d.core import NetAddress
 from panda3d.core import NetDatagram
 from direct.distributed.PyDatagram import PyDatagram
 from .request_handler import Handler
-from utils.unspammer import RequestUnspammer
 
 from .storage.session import SessionManager
 from .event_notifier.notifier import NotifierManager
