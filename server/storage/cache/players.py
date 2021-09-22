@@ -1,4 +1,4 @@
-from ..domain import Player, PlayerPositionUpdate
+from ..domain import Player, PlayerPositionUpdate, PlayerAnimationUpdate
 import json
 import dataclasses
 import logging
@@ -51,6 +51,7 @@ class PlayerCache:
             50,
             1,
             "stand",
+            1,
             1,
             -3,
             -5,
@@ -119,6 +120,22 @@ class PlayerCache:
             )
 
         return position_update
+
+    def publish_animation_update(self, animation):
+        """
+        Self explanatory name!!!
+        """
+        animation_update = PlayerAnimationUpdate(
+            **animation._json(), id=self.session.player.id
+        )
+
+        for session_id in self.session.cache.get_other_sessions():
+            self.session.redis.publish(
+                self.channel_for_session(session_id),
+                json.dumps(dataclasses.asdict(animation_update)),
+            )
+
+        return animation_update
 
     def subscribe(self, subscriber):
         """

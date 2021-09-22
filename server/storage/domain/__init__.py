@@ -1,1 +1,1 @@
-from .player import Player, PlayerPositionUpdate
+from .player import Player, PlayerPositionUpdate, PlayerAnimationUpdate

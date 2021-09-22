@@ -1,4 +1,4 @@
-from .queue_subscribers.positon_updater import PositionUpdateSubscriber
+from .queue_subscribers.positon_update import PositionUpdateSubscriber
 from .queue_subscribers.new_player import NewPlayerSubscriber
 from redis import Redis
 from direct.distributed.PyDatagram import PyDatagram

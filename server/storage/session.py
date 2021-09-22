@@ -59,3 +59,8 @@ class Session:
         position_update = self.player_cache.publish_position_update(position)
         self.player.update_position(position_update)
         self.player_cache.save(self.player)
+
+    def set_animation(self, animation):
+        animation_update = self.player_cache.publish_animation_update(animation)
+        self.player.update_animation(animation_update)
+        self.player_cache.save(self.player)
