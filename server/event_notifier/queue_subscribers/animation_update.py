@@ -15,9 +15,9 @@ class AnimationUpdateSubscriber:
         Subscribed method, prepares response and pushes it
         """
         data = json.loads(message["data"])
-        # self.event_notifier.notify(
-        #     messages.PosHPRResponse.build(data),
-        # )
+        self.event_notifier.notify(
+             messages.AnimationResponse.build(data),
+        )
 
     def run(self):
         """

@@ -1,5 +1,5 @@
 from .Action import Action
-from .Animation import AnimationRequest
+from .Animation import AnimationRequest, AnimationResponse
 from .AskForPass import AskForPass
 from .CombatData import CombatData
 from .Disconnection import Disconnection
