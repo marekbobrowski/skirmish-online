@@ -51,7 +51,6 @@ class Handler:
         """
         Call correct message handler
         """
-        log.info(f"session: {session.id} message.ID: {message.ID}")
 
         try:
             handler = MessageHandlersBank.by_id(message.ID)(

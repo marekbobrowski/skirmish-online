@@ -46,7 +46,6 @@ class EventNotifier:
         """
         Method called by sub notifiers to send message
         """
-        log.info(message)
         datagram = PyDatagram()
         message.dump(datagram)
         self.server.writer.send(datagram, self.connection)

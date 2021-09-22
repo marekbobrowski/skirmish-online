@@ -4,5 +4,5 @@ from ..domain import Player, ListOf
 
 class NewPlayerResponse(Message):
     ID = UInt8(102)
-    SCHEMA = [ListOf(Player)]
+    SCHEMA = [Player]
     TYPE: MessageType.response
