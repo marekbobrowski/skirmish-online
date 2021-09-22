@@ -1,5 +1,6 @@
 from typing import List
 from enum import Enum
+import dataclasses
 from ..domain.base import ObjectBase, UInt8
 
 
@@ -61,10 +62,27 @@ class Message(metaclass=MetaClass):
         self.data = data
 
     @classmethod
-    def build(cls, values) -> "Message":
+    def build(cls, values=None, **kwargs) -> "Message":
+        if values is None:
+            values = [kwargs]
+
         data = []
+
+        if not isinstance(values, (tuple, list)):
+            values = [values]
+
         for model, value in zip(cls.SCHEMA, values):
-            data.append(model.build(*value))
+            if isinstance(value, model):
+                data.append(value)
+            elif isinstance(value, (tuple, list)):
+                data.append(model.build(*value))
+            elif isinstance(value, dict):
+                data.append(model.build(**value))
+            elif dataclasses.is_dataclass(value):
+                data.append(model.from_dataclass(value))
+            else:
+                data.append(model.build(value))
+                # will raise if incompatibile
         return cls(data)
 
     @classmethod

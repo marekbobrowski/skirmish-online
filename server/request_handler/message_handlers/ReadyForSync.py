@@ -12,9 +12,6 @@ class ReadyForSyncHandler(MessageHandler):
 
     def build_response(self) -> messages.TextMessageResponse:
         message = messages.TextMessageResponse.build(
-            [
-                [None, None, config.welcome_msg],
-            ],
+            message=config.welcome_msg,
         )
-
         return message

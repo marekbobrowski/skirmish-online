@@ -2,6 +2,7 @@ from abc import abstractmethod
 from typing import List, Dict, Any
 import inspect
 import datetime
+import dataclasses
 
 
 class ObjectBase:
@@ -42,18 +43,25 @@ class ObjectBase:
     def _json(self) -> Any:
         pass
 
+    @classmethod
+    def from_dataclass(cls, value) -> "ObjectBase":
+        assert dataclasses.is_dataclass(value)
+        return cls(**dataclasses.asdict(value))
+
 
 class BaseModel(ObjectBase):
     def __init__(self, *args, **kwargs):
         fields = self.get_fields()
         for name in kwargs:
-            fields.pop(name)
+            fields.pop(name, None)
 
         kwargs.update(dict(zip(fields.keys(), args)))
 
         fields = self.get_fields()
 
         for name, value in kwargs.items():
+            if name not in fields:
+                continue
             if value is not None:
                 setattr(self, name, fields[name](value))
             else:
@@ -190,7 +198,20 @@ class CustomizableList(ObjectBase):
     ELEMENT_CLS: ObjectBase
 
     def __init__(self, *args):
-        self.data = [self.ELEMENT_CLS.build(*x) for x in args]
+        self.data = []
+        model = self.ELEMENT_CLS
+
+        for value in args:
+            if isinstance(value, model):
+                self.data.append(value)
+            elif isinstance(value, (tuple, list)):
+                self.data.append(model.build(*value))
+            elif isinstance(value, dict):
+                self.data.append(model.build(**value))
+            elif dataclasses.is_dataclass(value):
+                self.data.append(model.from_dataclass(value))
+            else:
+                self.data.append(model.build(value))
 
     def _json(self) -> Dict:
         return [x._json() for x in self.data]
@@ -213,6 +234,11 @@ class CustomizableList(ObjectBase):
     @classmethod
     def dump_default(cls, datagram) -> None:
         pass
+
+    @classmethod
+    def from_dataclass(cls, value) -> "ObjectBase":
+        assert dataclasses.is_dataclass(value)
+        return cls(**dataclasses.asdict(value))
 
 
 def ListOf(cls):

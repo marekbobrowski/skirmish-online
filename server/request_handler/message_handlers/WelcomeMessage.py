@@ -12,8 +12,6 @@ class WelcomeMessageHandler(MessageHandler):
 
     def build_response(self) -> messages.WelcomeMessageResponse:
         message = messages.WelcomeMessageResponse(
-            [
-                domain.LongMessage(config.welcome_msg),
-            ]
+            domain.LongMessage(config.welcome_msg),
         )
         return message

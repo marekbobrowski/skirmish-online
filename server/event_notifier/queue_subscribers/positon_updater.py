@@ -16,19 +16,7 @@ class PositionUpdateSubscriber:
         """
         data = json.loads(message["data"])
         self.event_notifier.notify(
-            messages.PosHPRResponse.build(
-                [
-                    [
-                        data["player_id"],
-                        data["x"],
-                        data["y"],
-                        data["z"],
-                        data["h"],
-                        data["p"],
-                        data["r"],
-                    ],
-                ]
-            )
+            messages.PosHPRResponse.build(data),
         )
 
     def run(self):

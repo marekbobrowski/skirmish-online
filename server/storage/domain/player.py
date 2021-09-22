@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 @dataclass
 class PlayerPositionUpdate:
-    player_id: int
+    id: int
     x: float
     y: float
     z: float

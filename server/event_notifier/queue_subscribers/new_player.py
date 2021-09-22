@@ -16,24 +16,7 @@ class NewPlayerSubscriber:
         """
         data = json.loads(message["data"])
         self.event_notifier.notify(
-            messages.NewPlayerResponse.build(
-                [
-                    [
-                        data["id"],
-                        data["name"],
-                        data["health"],
-                        data["model"],
-                        data["animation"],
-                        data["weapon"],
-                        data["x"],
-                        data["y"],
-                        data["z"],
-                        data["h"],
-                        data["p"],
-                        data["r"],
-                    ],
-                ]
-            )
+            messages.NewPlayerResponse.build(data),
         )
 
     def run(self):

@@ -109,7 +109,7 @@ class PlayerCache:
         Pushes position update
         """
         position_update = PlayerPositionUpdate(
-            **position._json(), player_id=self.session.player.id
+            **position._json(), id=self.session.player.id
         )
 
         for session_id in self.session.cache.get_other_sessions():
