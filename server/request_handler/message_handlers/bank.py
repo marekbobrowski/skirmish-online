@@ -1,3 +1,9 @@
+import logging
+
+
+log = logging.getLogger(__name__)
+
+
 class MessageHandlersBank:
     handlers = []
     handlers_by_id = {}

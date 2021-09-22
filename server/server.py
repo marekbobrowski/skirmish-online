@@ -12,6 +12,8 @@ from direct.distributed.PyDatagram import PyDatagram
 from .request_handler import Handler
 from utils.unspammer import RequestUnspammer
 
+from .storage.session import SessionManager
+
 
 class Server:
     def __init__(self):
@@ -25,6 +27,7 @@ class Server:
         # Server state
         self.active_connections = []
         self.last_player_id = 0
+        self.session_manager = SessionManager()
 
         # Socket
         self.tcp_socket = self.manager.open_TCP_server_rendezvous(15000, 1000)
@@ -51,6 +54,9 @@ class Server:
                     new_connection = new_connection.p()
                     self.active_connections.append(Player(new_connection))
                     print(str(new_connection.get_address()) + " connected")
+
+                    self.session_manager.new_session(new_connection)
+
                     self.reader.add_connection(new_connection)
 
     def listen_for_new_data(self):
@@ -58,7 +64,12 @@ class Server:
             if self.reader.data_available():
                 datagram = NetDatagram()
                 if self.reader.get_data(datagram):
-                    self.handler.handle_data(datagram)
+                    connection = datagram.getConnection()
+                    self.handler.handle_data(
+                        datagram,
+                        connection,
+                        self.session_manager.for_connection(connection),
+                    )
 
     def send_updates_to_active_players(self):
         while True:

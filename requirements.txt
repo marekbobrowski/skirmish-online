@@ -3,7 +3,7 @@ panda3d
 panda3d-gltf
 pygltflib
 panda3d-simplepbr
-pika
+redis
 sqlalchemy
 psycopg2 --no-binary psycopg2
 

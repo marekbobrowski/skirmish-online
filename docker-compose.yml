@@ -15,9 +15,9 @@ services:
       - POSTGRESQL_DATABASE=db
       - POSTGRESQL_PASSWORD=passw0rd
 
-  rabbitmq:
+  redis:
     restart: unless-stopped
-    image: rabbitmq
+    image: redis
     networks:
     - skirmish-online
 

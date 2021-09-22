@@ -3,21 +3,38 @@ from direct.distributed.PyDatagram import PyDatagram
 from protocol.parser import MessageParser
 from protocol.messages import MessageType
 from .message_handlers import MessageHandlersBank
+import logging
+
+
+log = logging.getLogger(__name__)
 
 
 class Handler:
     def __init__(self, server):
+        """
+        Base handler for new data
+        """
         self.server = server
         self.message_parser = MessageParser()
 
-    def handle_data(self, datagram):
+    def handle_data(self, datagram, connection, session):
+        """
+        Handling new data.
+
+        First, message is obtained, then correct message handler is called
+        """
         iterator = PyDatagramIterator(datagram)
-        connection = datagram.get_connection()
+        # parse message
         message = self.message_parser(iterator, MessageType.request)
-        response = self.handle_message(connection, message)
+        # produce response
+        response = self.handle_message(session, message)
+        # send response
         self.handle_response(connection, response)
 
     def handle_response(self, connection, response) -> None:
+        """
+        Send response to message, if any
+        """
         if response is None:
             return
 
@@ -25,10 +42,14 @@ class Handler:
         response.dump(response_datagram)
         self.server.writer.send(response_datagram, connection)
 
-    def handle_message(self, connection, message):
+    def handle_message(self, session, message):
+        """
+        Call correct message handler
+        """
+        log.info(f"session: {session.id} message.ID: {message.ID}")
+
         handler = MessageHandlersBank.by_id(message.ID)(
-            self.server,
-            connection,
+            session,
             message,
         )
         return handler()

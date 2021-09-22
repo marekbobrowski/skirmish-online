@@ -8,13 +8,12 @@ class MessageHandler(metaclass=MetaClass):
     handled_message: Message = None
     response_message: Optional[Message] = None
 
-    def __init__(self, server, connection, message: Message):
-        self.server = server
-        self.connection = connection
+    def __init__(self, session, message: Message):
+        self.session = session
         self.message = message
 
     def __call__(self) -> Optional[Any]:
-        self.handle_message
+        self.handle_message()
         return self.build_response()
 
     @abstractmethod
