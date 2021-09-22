@@ -4,11 +4,11 @@ from ..domain import PlayerPosHPR, PlayerIdPosHPR
 
 class PosHPRRequest(Message):
     ID = UInt8(50)
-    SCHEMA = [PlayerPosHPR]
+    SCHEMA = PlayerPosHPR
     TYPE = MessageType.request
 
 
 class PosHPRResponse(Message):
     ID = UInt8(50)
-    SCHEMA = [PlayerIdPosHPR]
+    SCHEMA = PlayerIdPosHPR
     TYPE = MessageType.response

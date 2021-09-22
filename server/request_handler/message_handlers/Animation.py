@@ -11,5 +11,5 @@ class AnimationHandler(MessageHandler):
     response_message = None
 
     def handle_message(self):
-        animation_data = self.message.data[0]
+        animation_data = self.message.data
         self.session.set_animation(animation_data)

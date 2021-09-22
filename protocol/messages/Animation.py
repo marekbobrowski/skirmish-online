@@ -4,11 +4,11 @@ from ..domain import Animation, IdAnimation
 
 class AnimationRequest(Message):
     ID = UInt8(51)
-    SCHEMA = [Animation]
+    SCHEMA = Animation
     TYPE = MessageType.request
 
 
 class AnimationResponse(Message):
     ID = UInt8(51)
-    SCHEMA = [IdAnimation]
+    SCHEMA = IdAnimation
     TYPE = MessageType.response

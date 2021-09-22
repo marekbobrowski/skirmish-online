@@ -11,6 +11,7 @@ class PlayerCache:
     SET_KEY = "players"
     PREFIX = "player_"
     POSITION_UPDATE_CHANNEL = "position_update_"
+    ANIMATION_UPDATE_CHANNEL = "animation_update_"
     NEW_PLAYER_CHANNEL = "new_player_"
 
     def __init__(self, session):
@@ -105,6 +106,13 @@ class PlayerCache:
         """
         return f"{cls.NEW_PLAYER_CHANNEL}{session_id}"
 
+    @classmethod
+    def animation_update_channel_for_session(cls, session_id):
+        """
+        creates unique channel name for session
+        """
+        return f"{cls.ANIMATION_UPDATE_CHANNEL}{session_id}"
+
     def publish_position_update(self, position):
         """
         Pushes position update
@@ -131,7 +139,7 @@ class PlayerCache:
 
         for session_id in self.session.cache.get_other_sessions():
             self.session.redis.publish(
-                self.channel_for_session(session_id),
+                self.animation_update_channel_for_session(session_id),
                 json.dumps(dataclasses.asdict(animation_update)),
             )
 
@@ -155,6 +163,18 @@ class PlayerCache:
         p = self.session.redis.pubsub()
         p.subscribe(
             **{self.new_player_channel_for_session(self.session.id): subscriber}
+        )
+        thread = p.run_in_thread(sleep_time=0.001)
+        return thread
+
+    def subscribe_animation_update(self, subscriber):
+        """
+        Creates a thread that will subscribe to the channel
+        specific for current user
+        """
+        p = self.session.redis.pubsub()
+        p.subscribe(
+            **{self.animation_update_channel_for_session(self.session.id): subscriber}
         )
         thread = p.run_in_thread(sleep_time=0.001)
         return thread
