@@ -4,11 +4,10 @@ from ..domain import LongMessage
 
 class WelcomeMessageRequest(Message):
     ID = UInt8(3)
-    SCHEMA = []
     TYPE = MessageType.request
 
 
 class WelcomeMessageResponse(Message):
     ID = UInt8(3)
-    SCHEMA = [LongMessage]
+    SCHEMA = LongMessage
     TYPE = MessageType.response

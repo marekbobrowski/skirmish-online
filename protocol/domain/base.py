@@ -3,6 +3,10 @@ from typing import List, Dict, Any
 import inspect
 import datetime
 import dataclasses
+import logging
+
+
+log = logging.getLogger(__name__)
 
 
 class ObjectBase:
@@ -22,8 +26,14 @@ class ObjectBase:
         return Customized
 
     @classmethod
-    @abstractmethod
     def parse(cls, iterator) -> "ObjectBase":
+        if cls.METADATA["required"] is False and iterator.get_remaining_size() == 0:
+            return None
+        return cls._parse(iterator)
+
+    @classmethod
+    @abstractmethod
+    def _parse(cls, iterator) -> "ObjectBase":
         pass
 
     @abstractmethod
@@ -51,22 +61,25 @@ class ObjectBase:
 
 class BaseModel(ObjectBase):
     def __init__(self, *args, **kwargs):
-        fields = self.get_fields()
-        for name in kwargs:
-            fields.pop(name, None)
+        if args:
+            fields = self.get_fields()
+            for name in kwargs:
+                fields.pop(name, None)
 
-        kwargs.update(dict(zip(fields.keys(), args)))
+            kwargs.update(dict(zip(fields.keys(), args)))
 
         fields = self.get_fields()
 
         for name, value in kwargs.items():
             if name not in fields:
                 continue
-            if value is not None:
-                setattr(self, name, fields[name](value))
-            else:
+            if value is None:
                 assert fields[name].METADATA["required"] is False
                 setattr(self, name, None)
+            elif dataclasses.is_dataclass(value):
+                setattr(self, name, fields[name].from_dataclass(value))
+            else:
+                setattr(self, name, fields[name](value))
 
     @classmethod
     def get_fields(cls) -> "List[ObjectBase]":
@@ -87,7 +100,7 @@ class BaseModel(ObjectBase):
         return result
 
     @classmethod
-    def parse(cls, iterator) -> "BaseModel":
+    def _parse(cls, iterator) -> "BaseModel":
         kwargs = {}
         for name, type_ in cls.get_fields().items():
             kwargs[name] = type_.parse(iterator)
@@ -109,7 +122,7 @@ class BaseModel(ObjectBase):
 
 class UInt8(ObjectBase, int):
     @classmethod
-    def parse(cls, iterator) -> "UInt8":
+    def _parse(cls, iterator) -> "UInt8":
         return cls.build(iterator.get_uint8())
 
     def dump(self, datagram) -> None:
@@ -125,7 +138,7 @@ class UInt8(ObjectBase, int):
 
 class Float64(ObjectBase, float):
     @classmethod
-    def parse(cls, iterator) -> "Float64":
+    def _parse(cls, iterator) -> "Float64":
         return cls.build(iterator.get_float64())
 
     def dump(self, datagram) -> None:
@@ -141,7 +154,7 @@ class Float64(ObjectBase, float):
 
 class String(ObjectBase, str):
     @classmethod
-    def parse(cls, iterator) -> "String":
+    def _parse(cls, iterator) -> "String":
         return cls.build(iterator.get_string())
 
     def dump(self, datagram) -> None:
@@ -157,7 +170,7 @@ class String(ObjectBase, str):
 
 class MultilineString(String):
     @classmethod
-    def parse(cls, iterator) -> "MultilineString":
+    def _parse(cls, iterator) -> "MultilineString":
         lines = iterator.get_uint8()
         value = "\n".join((iterator.get_string() for i in len(lines)))
         return cls.build(value)
@@ -177,7 +190,7 @@ class DateTime(ObjectBase, datetime.datetime):
     FORMAT = "%H:%M:%S"
 
     @classmethod
-    def parse(cls, iterator) -> "MultilineString":
+    def _parse(cls, iterator) -> "MultilineString":
         data = iterator.get_string()
         value = datetime.datetime.strptime(data, cls.FORMAT)
         return cls.build(value)
@@ -197,9 +210,15 @@ class DateTime(ObjectBase, datetime.datetime):
 class CustomizableList(ObjectBase):
     ELEMENT_CLS: ObjectBase
 
-    def __init__(self, *args):
+    def __init__(self, value=None, *args):
         self.data = []
         model = self.ELEMENT_CLS
+
+        if value is not None:
+            if isinstance(value, (tuple, list)):
+                args = list(args) + list(value)
+            else:
+                args = list(args) + [value]
 
         for value in args:
             if isinstance(value, model):
@@ -221,7 +240,7 @@ class CustomizableList(ObjectBase):
         self.data.append(element)
 
     @classmethod
-    def parse(cls, iterator) -> "BaseModel":
+    def _parse(cls, iterator) -> "BaseModel":
         data = []
         while iterator.get_remaining_size() > 0:
             data.append(cls.ELEMENT_CLS.parse(iterator))

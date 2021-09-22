@@ -4,5 +4,5 @@ from ..domain import Animation
 
 class AnimationRequest(Message):
     ID = UInt8(51)
-    SCHEMA = [Animation]
+    SCHEMA = Animation
     TYPE = MessageType.request

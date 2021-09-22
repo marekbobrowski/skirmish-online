@@ -11,5 +11,5 @@ class PosHPRHandler(MessageHandler):
     response_message = None
 
     def handle_message(self):
-        player_pos = self.message.data[0]
+        player_pos = self.message.data
         self.session.set_position(player_pos)

@@ -1,7 +1,11 @@
-from typing import List
+from typing import List, Optional, Union
 from enum import Enum
 import dataclasses
 from ..domain.base import ObjectBase, UInt8
+import logging
+
+
+log = logging.getLogger(__name__)
 
 
 class MessagesBank:
@@ -55,42 +59,46 @@ class MessageType(Enum):
 
 class Message(metaclass=MetaClass):
     ID: UInt8
-    SCHEMA: List[ObjectBase]
+    SCHEMA: Optional[ObjectBase] = None
     TYPE: MessageType = None
 
-    def __init__(self, data: List[ObjectBase]):
+    def __init__(self, data: Optional[ObjectBase] = None):
         self.data = data
 
     @classmethod
-    def build(cls, values=None, **kwargs) -> "Message":
-        if values is None:
-            values = [kwargs]
+    def build(cls, value=None, **kwargs) -> "Message":
+        if cls.SCHEMA is None:
+            return cls()
 
-        data = []
+        model = cls.SCHEMA
 
-        if not isinstance(values, (tuple, list)):
-            values = [values]
-
-        for model, value in zip(cls.SCHEMA, values):
-            if isinstance(value, model):
-                data.append(value)
-            elif isinstance(value, (tuple, list)):
-                data.append(model.build(*value))
-            elif isinstance(value, dict):
-                data.append(model.build(**value))
-            elif dataclasses.is_dataclass(value):
-                data.append(model.from_dataclass(value))
-            else:
-                data.append(model.build(value))
-                # will raise if incompatibile
+        if value is None:
+            data = model.build(**kwargs)
+        elif isinstance(value, model):
+            data = value
+        elif isinstance(value, (tuple, list)):
+            data = model.build(*value, **kwargs)
+        elif isinstance(value, dict):
+            data = model.build(**value, **kwargs)
+        elif dataclasses.is_dataclass(value):
+            data = model.from_dataclass(value)
+        else:
+            data = model.build(value)
+            # will raise if incompatibile
         return cls(data)
 
     @classmethod
     def parse(cls, iterator) -> "Message":
-        data = [model.parse(iterator) for model in cls.SCHEMA]
+        if cls.SCHEMA is None:
+            return cls()
+
+        data = cls.SCHEMA.parse(iterator)
         return cls(data)
 
     def dump(self, datagram) -> None:
         self.ID.dump(datagram)
-        for obj in self.data:
-            obj.dump(datagram)
+
+        if self.data is None:
+            return
+
+        self.data.dump(datagram)

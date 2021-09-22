@@ -17,9 +17,7 @@ class WorldStateHandler(MessageHandler):
         self.session.for_player(random.randrange(0, 10))
         other_players = self.session.player_cache.other_players()
         message = messages.WorldStateResponse.build(
-            [
-                self.session.player,
-                other_players,
-            ],
+            player=self.session.player,
+            other_players=other_players,
         )
         return message
