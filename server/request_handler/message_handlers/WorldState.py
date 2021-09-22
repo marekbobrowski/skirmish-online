@@ -2,6 +2,7 @@ from .base import MessageHandler
 from protocol import messages, domain
 from ... import config
 from ...storage.domain import Player
+import random
 
 
 class WorldStateHandler(MessageHandler):
@@ -13,7 +14,7 @@ class WorldStateHandler(MessageHandler):
 
     def build_response(self) -> messages.WelcomeMessageResponse:
         # TODO
-        self.session.for_player(0)
+        self.session.for_player(random.randrange(0, 10))
         message = messages.WorldStateResponse.build(
             [
                 [

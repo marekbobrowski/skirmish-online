@@ -13,6 +13,7 @@ from .request_handler import Handler
 from utils.unspammer import RequestUnspammer
 
 from .storage.session import SessionManager
+from .event_notifier.notifier import NotifierManager
 
 
 class Server:
@@ -28,6 +29,7 @@ class Server:
         self.active_connections = []
         self.last_player_id = 0
         self.session_manager = SessionManager()
+        self.notifier_manager = NotifierManager(self)
 
         # Socket
         self.tcp_socket = self.manager.open_TCP_server_rendezvous(15000, 1000)
@@ -39,10 +41,14 @@ class Server:
     def run(self):
         Thread(target=self.listen_for_new_connections, daemon=True).start()
         Thread(target=self.listen_for_new_data, daemon=True).start()
-        Thread(target=self.send_updates_to_active_players, daemon=True).start()
+        # Thread(target=self.send_updates_to_active_players, daemon=True).start()
         Thread(target=self.regenerate_health_resource, daemon=True).start()
 
     def listen_for_new_connections(self):
+        """
+        Listens to new connections, when avalibe, creates new session
+        and event notifier
+        """
         while True:
             if self.listener.new_connection_available():
                 rendezvous = PointerToConnection()
@@ -55,9 +61,12 @@ class Server:
                     self.active_connections.append(Player(new_connection))
                     print(str(new_connection.get_address()) + " connected")
 
-                    self.session_manager.new_session(new_connection)
-
                     self.reader.add_connection(new_connection)
+
+                    session = self.session_manager.new_session(new_connection)
+                    notifier = self.notifier_manager.new_notifier(
+                        session, new_connection
+                    )
 
     def listen_for_new_data(self):
         while True:

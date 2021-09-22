@@ -17,7 +17,9 @@ class SessionManager:
         return self.sessions[connection]
 
     def new_session(self, connection):
-        self.sessions[connection] = Session()
+        session = Session()
+        self.sessions[connection] = session
+        return session
 
 
 class Session:
@@ -54,10 +56,6 @@ class Session:
         """
         Sets player position
         """
-        self.player.x = position.x
-        self.player.y = position.y
-        self.player.z = position.z
-        self.player.h = position.h
-        self.player.p = position.p
-        self.player.r = position.r
+        position_update = self.player_cache.publish_position_update(position)
+        self.player.update_position(position_update)
         self.player_cache.save(self.player)

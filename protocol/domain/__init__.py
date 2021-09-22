@@ -1,4 +1,4 @@
 from .LongMessage import LongMessage
-from .Player import Player, PlayerPosHPR
+from .Player import Player, PlayerPosHPR, PlayerIdPosHPR
 from .TextMessage import TextMessage
 from .Animation import Animation

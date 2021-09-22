@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import List
+from typing import List, Dict, Any
 import inspect
 import datetime
 
@@ -38,6 +38,10 @@ class ObjectBase:
     def dump_default(cls, datagram) -> None:
         pass
 
+    @abstractmethod
+    def _json(self) -> Any:
+        pass
+
 
 class BaseModel(ObjectBase):
     def __init__(self, *args, **kwargs):
@@ -63,6 +67,16 @@ class BaseModel(ObjectBase):
             if inspect.isclass(type_) and issubclass(type_, ObjectBase):
                 fields[name] = type_
         return fields
+
+    def _json(self) -> Dict:
+        result = {}
+        for name, type_ in self.get_fields().items():
+            value = getattr(self, name)
+            if value is not None and not inspect.isclass(value):
+                result[name] = value._json()
+            else:
+                result[name] = None
+        return result
 
     @classmethod
     def parse(cls, iterator) -> "BaseModel":
@@ -97,6 +111,9 @@ class UInt8(ObjectBase, int):
     def dump_default(cls, datagram) -> None:
         datagram.add_uint8(0)
 
+    def _json(self) -> int:
+        return self.__int__()
+
 
 class Float64(ObjectBase, float):
     @classmethod
@@ -104,11 +121,14 @@ class Float64(ObjectBase, float):
         return cls.build(iterator.get_float64())
 
     def dump(self, datagram) -> None:
-        datagram.add_float64(self.__int__())
+        datagram.add_float64(self.__float__())
 
     @classmethod
     def dump_default(cls, datagram) -> None:
         datagram.add_float64(0.0)
+
+    def _json(self) -> float:
+        return self.__float__()
 
 
 class String(ObjectBase, str):
@@ -122,6 +142,9 @@ class String(ObjectBase, str):
     @classmethod
     def dump_default(cls, datagram) -> None:
         datagram.add_string("")
+
+    def _json(self) -> str:
+        return self.__str__()
 
 
 class MultilineString(String):
@@ -158,3 +181,6 @@ class DateTime(ObjectBase, datetime.datetime):
     @classmethod
     def dump_default(cls, datagram) -> None:
         datagram.add_string("")
+
+    def _json(self) -> str:
+        return self.strftime(self.FORMAT)

@@ -5,7 +5,7 @@ from .CombatData import CombatData
 from .Disconnection import Disconnection
 from .Health import Health
 from .NewPlayer import NewPlayer
-from .PosHPR import PosHPRRequest
+from .PosHPR import PosHPRRequest, PosHPRResponse
 from .ReadyForSync import ReadyForSyncRequest
 from .RequestModel import RequestModel
 from .SetName import SetName

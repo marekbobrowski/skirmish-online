@@ -24,3 +24,13 @@ class PlayerPosHPR(BaseModel):
     h = Float64
     p = Float64
     r = Float64
+
+
+class PlayerIdPosHPR(BaseModel):
+    id = UInt8
+    x = Float64
+    y = Float64
+    z = Float64
+    h = Float64
+    p = Float64
+    r = Float64

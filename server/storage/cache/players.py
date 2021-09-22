@@ -1,4 +1,4 @@
-from ..domain import Player
+from ..domain import Player, PlayerPositionUpdate
 import json
 import dataclasses
 import logging
@@ -9,6 +9,7 @@ log = logging.getLogger(__name__)
 
 class PlayerCache:
     PREFIX = "player_"
+    POSITION_UPDATE_CHANNEL = "position_update_"
 
     def __init__(self, session):
         self.session = session
@@ -60,3 +61,36 @@ class PlayerCache:
         self.session.redis.set(
             self.key(player.id), json.dumps(dataclasses.asdict(player))
         )
+
+    @classmethod
+    def channel_for_session(cls, session_id):
+        """
+        creates unique channel name for session
+        """
+        return f"{cls.POSITION_UPDATE_CHANNEL}{session_id}"
+
+    def publish_position_update(self, position):
+        """
+        Pushes position update
+        """
+        position_update = PlayerPositionUpdate(
+            **position._json(), player_id=self.session.player.id
+        )
+
+        for session_id in self.session.cache.get_other_sessions():
+            self.session.redis.publish(
+                self.channel_for_session(session_id),
+                json.dumps(dataclasses.asdict(position_update)),
+            )
+
+        return position_update
+
+    def subscribe(self, subscriber):
+        """
+        Creates a thread that will subscribe to the channel
+        specific for current user
+        """
+        p = self.session.redis.pubsub()
+        p.subscribe(**{self.channel_for_session(self.session.id): subscriber})
+        thread = p.run_in_thread(sleep_time=0.001)
+        return thread
