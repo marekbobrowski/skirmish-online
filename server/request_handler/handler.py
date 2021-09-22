@@ -25,7 +25,12 @@ class Handler:
         """
         iterator = PyDatagramIterator(datagram)
         # parse message
-        message = self.message_parser(iterator, MessageType.request)
+        try:
+            message = self.message_parser(iterator, MessageType.request)
+        except KeyError as e:
+            log.exception(e)
+            log.error("unsuppoerted message")
+            return
         # produce response
         response = self.handle_message(session, message)
         # send response
@@ -48,8 +53,13 @@ class Handler:
         """
         log.info(f"session: {session.id} message.ID: {message.ID}")
 
-        handler = MessageHandlersBank.by_id(message.ID)(
-            session,
-            message,
-        )
+        try:
+            handler = MessageHandlersBank.by_id(message.ID)(
+                session,
+                message,
+            )
+        except KeyError as e:
+            log.exception(e)
+            log.error("unsuppoerted operation")
+            return
         return handler()
