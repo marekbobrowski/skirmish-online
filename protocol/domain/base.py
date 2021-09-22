@@ -184,3 +184,39 @@ class DateTime(ObjectBase, datetime.datetime):
 
     def _json(self) -> str:
         return self.strftime(self.FORMAT)
+
+
+class CustomizableList(ObjectBase):
+    ELEMENT_CLS: ObjectBase
+
+    def __init__(self, *args):
+        self.data = [self.ELEMENT_CLS.build(*x) for x in args]
+
+    def _json(self) -> Dict:
+        return [x._json() for x in self.data]
+
+    def append(self, element: "BaseModel"):
+        assert isinstance(element, self.ELEMENT_CLS)
+        self.data.append(element)
+
+    @classmethod
+    def parse(cls, iterator) -> "BaseModel":
+        data = []
+        while iterator.get_remaining_size() > 0:
+            data.append(cls.ELEMENT_CLS.parse(iterator))
+        return cls.build(*data)
+
+    def dump(self, datagram) -> None:
+        for value in self.data:
+            value.dump(datagram)
+
+    @classmethod
+    def dump_default(cls, datagram) -> None:
+        pass
+
+
+def ListOf(cls):
+    class CustomizedList(CustomizableList):
+        ELEMENT_CLS = cls
+
+    return CustomizedList

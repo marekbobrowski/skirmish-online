@@ -1,5 +1,5 @@
 from .base import Message, MessageType, UInt8
-from ..domain import Player
+from ..domain import Player, ListOf
 
 
 class WorldStateRequest(Message):
@@ -10,5 +10,5 @@ class WorldStateRequest(Message):
 
 class WorldStateResponse(Message):
     ID = UInt8(1)
-    SCHEMA = [Player]
+    SCHEMA = [Player, ListOf(Player)]
     TYPE = MessageType.response

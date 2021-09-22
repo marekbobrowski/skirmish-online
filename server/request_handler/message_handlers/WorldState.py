@@ -15,6 +15,23 @@ class WorldStateHandler(MessageHandler):
     def build_response(self) -> messages.WelcomeMessageResponse:
         # TODO
         self.session.for_player(random.randrange(0, 10))
+        other_players = [
+            (
+                p.id,
+                p.name,
+                p.health,
+                p.model,
+                p.animation,
+                p.weapon,
+                p.x,
+                p.y,
+                p.z,
+                p.h,
+                p.p,
+                p.r,
+            )
+            for p in self.session.player_cache.other_players()
+        ]
         message = messages.WorldStateResponse.build(
             [
                 [
@@ -31,6 +48,7 @@ class WorldStateHandler(MessageHandler):
                     self.session.player.p,
                     self.session.player.r,
                 ],
+                other_players,
             ],
         )
         return message
