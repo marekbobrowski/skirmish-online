@@ -1,6 +1,8 @@
-from .base import Message, UInt8
+from .base import Message, UInt8, MessageType
+from ..domain import Player, ListOf
 
 
-class NewPlayer(Message):
+class NewPlayerResponse(Message):
     ID = UInt8(102)
-    SCHEMA = []
+    SCHEMA = [ListOf(Player)]
+    TYPE: MessageType.response

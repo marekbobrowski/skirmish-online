@@ -1,4 +1,5 @@
 from .queue_subscribers.positon_updater import PositionUpdateSubscriber
+from .queue_subscribers.new_player import NewPlayerSubscriber
 from redis import Redis
 from direct.distributed.PyDatagram import PyDatagram
 import logging
@@ -33,8 +34,13 @@ class EventNotifier:
         self.connection = connection
 
         self.redis = Redis(host="redis")
-        self.position_update_subscriber = PositionUpdateSubscriber(self)
-        self.position_update_subscriber.run()
+
+        self.subsubscribers = [
+            PositionUpdateSubscriber(self),
+            NewPlayerSubscriber(self),
+        ]
+        for subsubscriber in self.subsubscribers:
+            subsubscriber.run()
 
     def notify(self, message):
         """

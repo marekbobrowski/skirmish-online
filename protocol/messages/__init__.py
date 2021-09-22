@@ -4,7 +4,7 @@ from .AskForPass import AskForPass
 from .CombatData import CombatData
 from .Disconnection import Disconnection
 from .Health import Health
-from .NewPlayer import NewPlayer
+from .NewPlayer import NewPlayerResponse
 from .PosHPR import PosHPRRequest, PosHPRResponse
 from .ReadyForSync import ReadyForSyncRequest
 from .RequestModel import RequestModel

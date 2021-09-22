@@ -11,6 +11,7 @@ class PlayerCache:
     SET_KEY = "players"
     PREFIX = "player_"
     POSITION_UPDATE_CHANNEL = "position_update_"
+    NEW_PLAYER_CHANNEL = "new_player_"
 
     def __init__(self, session):
         self.session = session
@@ -46,7 +47,7 @@ class PlayerCache:
         """
         player = Player(
             id_,
-            "name",
+            f"name{id_}",
             50,
             1,
             "stand",
@@ -58,9 +59,20 @@ class PlayerCache:
             0,
             0,
         )
-        self.save(player)
-        self.session.redis.sadd(self.SET_KEY, id_)
+        self.publish_new_player(player)
         return player
+
+    def publish_new_player(self, player):
+        """
+        Publishes new player
+        """
+        self.save(player)
+        self.session.redis.sadd(self.SET_KEY, player.id)
+        for session_id in self.session.cache.get_other_sessions():
+            self.session.redis.publish(
+                self.new_player_channel_for_session(session_id),
+                json.dumps(dataclasses.asdict(player)),
+            )
 
     def save(self, player):
         """
@@ -85,6 +97,13 @@ class PlayerCache:
         """
         return f"{cls.POSITION_UPDATE_CHANNEL}{session_id}"
 
+    @classmethod
+    def new_player_channel_for_session(cls, session_id):
+        """
+        creates unique channel name for session
+        """
+        return f"{cls.NEW_PLAYER_CHANNEL}{session_id}"
+
     def publish_position_update(self, position):
         """
         Pushes position update
@@ -108,5 +127,17 @@ class PlayerCache:
         """
         p = self.session.redis.pubsub()
         p.subscribe(**{self.channel_for_session(self.session.id): subscriber})
+        thread = p.run_in_thread(sleep_time=0.001)
+        return thread
+
+    def subscribe_new_players(self, subscriber):
+        """
+        Creates a thread that will subscribe to the channel
+        specific for current user
+        """
+        p = self.session.redis.pubsub()
+        p.subscribe(
+            **{self.new_player_channel_for_session(self.session.id): subscriber}
+        )
         thread = p.run_in_thread(sleep_time=0.001)
         return thread
