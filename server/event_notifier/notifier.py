@@ -39,7 +39,7 @@ class EventNotifier:
         self.subsubscribers = [
             PositionUpdateSubscriber(self),
             NewPlayerSubscriber(self),
-            AnimationUpdateSubscriber(self)
+            AnimationUpdateSubscriber(self),
         ]
         for subsubscriber in self.subsubscribers:
             subsubscriber.run()

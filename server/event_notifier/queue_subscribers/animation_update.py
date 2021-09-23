@@ -16,7 +16,7 @@ class AnimationUpdateSubscriber:
         """
         data = json.loads(message["data"])
         self.event_notifier.notify(
-             messages.AnimationResponse.build(data),
+            messages.AnimationResponse.build(data),
         )
 
     def run(self):

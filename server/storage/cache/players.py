@@ -64,18 +64,6 @@ class PlayerCache:
         self.publish_new_player(player)
         return player
 
-    def publish_new_player(self, player):
-        """
-        Publishes new player
-        """
-        self.save(player)
-        self.session.redis.sadd(self.SET_KEY, player.id)
-        for session_id in self.session.cache.get_other_sessions():
-            self.session.redis.publish(
-                self.new_player_channel_for_session(session_id),
-                json.dumps(dataclasses.asdict(player)),
-            )
-
     def save(self, player):
         """
         Saves player
@@ -91,6 +79,8 @@ class PlayerCache:
         members = self.session.redis.smembers(self.SET_KEY)
         other_ids = {int(m.decode()) for m in members} - {self.session.player.id}
         return [self.load(id_) for id_ in other_ids]
+
+    # channels for publication
 
     @classmethod
     def channel_for_session(cls, session_id):
@@ -112,6 +102,20 @@ class PlayerCache:
         creates unique channel name for session
         """
         return f"{cls.ANIMATION_UPDATE_CHANNEL}{session_id}"
+
+    # channel publication
+
+    def publish_new_player(self, player):
+        """
+        Publishes new player
+        """
+        self.save(player)
+        self.session.redis.sadd(self.SET_KEY, player.id)
+        for session_id in self.session.cache.get_other_sessions():
+            self.session.redis.publish(
+                self.new_player_channel_for_session(session_id),
+                json.dumps(dataclasses.asdict(player)),
+            )
 
     def publish_position_update(self, position):
         """
@@ -144,6 +148,8 @@ class PlayerCache:
             )
 
         return animation_update
+
+    # Subscribtions for channels
 
     def subscribe(self, subscriber):
         """

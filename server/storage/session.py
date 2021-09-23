@@ -11,12 +11,21 @@ log = logging.getLogger(__name__)
 
 class SessionManager:
     def __init__(self):
+        """
+        SessionManager is a container for all active sessions
+        """
         self.sessions = {}
 
     def for_connection(self, connection):
+        """
+        Fetches session assigned for connection
+        """
         return self.sessions[connection]
 
     def new_session(self, connection):
+        """
+        Creastes new session
+        """
         session = Session()
         self.sessions[connection] = session
         return session
@@ -24,6 +33,9 @@ class SessionManager:
 
 class Session:
     def __init__(self):
+        """
+        Creates empty session
+        """
         self.id = uuid.uuid4().hex
         self.player = None
         self.redis = Redis(host="redis")
@@ -61,6 +73,9 @@ class Session:
         self.player_cache.save(self.player)
 
     def set_animation(self, animation):
+        """
+        Sets player animation
+        """
         animation_update = self.player_cache.publish_animation_update(animation)
         self.player.update_animation(animation_update)
         self.player_cache.save(self.player)
