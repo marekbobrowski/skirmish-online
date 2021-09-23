@@ -1,9 +1,5 @@
 from .base import MessageHandler
-from protocol import messages, domain
-import logging
-
-
-log = logging.getLogger(__name__)
+from protocol import messages
 
 
 class AnimationHandler(MessageHandler):
