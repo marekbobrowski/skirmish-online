@@ -4,6 +4,7 @@ import logging
 import json
 from .cache.sessions import SessionCache
 from .cache.players import PlayerCache
+from .cache.spells import SpellCache
 
 
 log = logging.getLogger(__name__)
@@ -44,6 +45,7 @@ class Session:
         self.cache.store()
 
         self.player_cache = PlayerCache(self)
+        self.spell_cache = SpellCache(self)
 
     def close(self):
         pass
@@ -79,3 +81,9 @@ class Session:
         animation_update = self.player_cache.publish_animation_update(animation)
         self.player.update_animation(animation_update)
         self.player_cache.save(self.player)
+
+    def set_spell(self, spell_data):
+        # only broadcast information about spell
+        self.spell_cache.publish_spell_update(spell_data)
+
+

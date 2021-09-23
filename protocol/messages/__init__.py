@@ -1,7 +1,7 @@
-from .Action import Action
+from .Spell import SpellRequest
 from .Animation import AnimationRequest, AnimationResponse
 from .AskForPass import AskForPass
-from .CombatData import CombatData
+from .CombatData import CombatDataResponse
 from .Disconnection import Disconnection
 from .Health import Health
 from .NewPlayer import NewPlayerResponse
