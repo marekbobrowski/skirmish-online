@@ -1,4 +1,5 @@
-from protocol.domain import CombatData
+from protocol.domain import CombatData, Spells
+from .handlers import SpellHandlersBank
 import logging
 
 log = logging.getLogger(__name__)
@@ -22,5 +23,12 @@ class SpellHandler:
         Additionally, publishing spell information should be done
         here
         """
-        log.info(self.spell_data.__dict__)
-        # return CombatData(1, 1, 1, [1])
+        handler = self.get_handler()
+        return CombatData.from_dataclass(handler())
+
+    def get_handler(self):
+        """
+        Gets appropriate handler for the spell
+        """
+        handler_cls = SpellHandlersBank.by_spell(self.spell_data.spell)
+        return handler_cls(self.session, self.spell_data)

@@ -1,5 +1,6 @@
 from abc import abstractmethod
 from typing import List, Dict, Any
+from enum import Enum
 import inspect
 import datetime
 import dataclasses
@@ -58,7 +59,13 @@ class ObjectBase:
 
     def validate(self) -> None:
         accepted_values = self.METADATA["accepted_values"]
-        if accepted_values is not None and self not in accepted_values:
+        if accepted_values is None:
+            return
+
+        if inspect.isclass(accepted_values) and issubclass(accepted_values, Enum):
+            accepted_values = {v.value for v in accepted_values}
+
+        if self not in accepted_values:
             raise TypeError(f"{self} not in {accepted_values}")
 
     @classmethod

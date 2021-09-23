@@ -4,6 +4,6 @@ from .TextMessage import TextMessage
 from .Animation import Animation, IdAnimation
 from .Animation import Animation
 from .WorldState import WorldState
-from .Spell import Spell
+from .Spell import Spell, Spells
 from .CombatData import CombatData
 from .base import ListOf

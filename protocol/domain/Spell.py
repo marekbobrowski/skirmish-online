@@ -1,9 +1,11 @@
 from .base import BaseModel, UInt8
+from enum import Enum
 
 
-Spells = {
-    0: "Some spell 0",
-}
+class Spells(Enum):
+    mele_zero = 0
+    mele_one = 1
+    mele_two = 2
 
 
 class Spell(BaseModel):

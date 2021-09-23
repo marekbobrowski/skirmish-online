@@ -72,13 +72,19 @@ class PlayerCache:
             self.key(player.id), json.dumps(dataclasses.asdict(player))
         )
 
+    def other_player_ids(self):
+        """
+        Returns other player ids
+        """
+        members = self.session.redis.smembers(self.SET_KEY)
+        other_ids = {int(m.decode()) for m in members} - {self.session.player.id}
+        return other_ids
+
     def other_players(self):
         """
         Returns other players
         """
-        members = self.session.redis.smembers(self.SET_KEY)
-        other_ids = {int(m.decode()) for m in members} - {self.session.player.id}
-        return [self.load(id_) for id_ in other_ids]
+        return [self.load(id_) for id_ in self.other_player_ids()]
 
     # channels for publication
 
