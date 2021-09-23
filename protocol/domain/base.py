@@ -13,6 +13,7 @@ class ObjectBase:
     METADATA = {
         "required": True,
         "default": None,
+        "accepted_values": None,
     }
 
     @classmethod
@@ -42,7 +43,9 @@ class ObjectBase:
 
     @classmethod
     def build(cls, *args, **kwargs) -> "ObjectBase":
-        return cls(*args, **kwargs)
+        instance = cls(*args, **kwargs)
+        instance.validate()
+        return instance
 
     @classmethod
     @abstractmethod
@@ -52,6 +55,11 @@ class ObjectBase:
     @abstractmethod
     def _json(self) -> Any:
         pass
+
+    def validate(self) -> None:
+        accepted_values = self.METADATA["accepted_values"]
+        if accepted_values is not None and self not in accepted_values:
+            raise TypeError(f"{self} not in {accepted_values}")
 
     @classmethod
     def from_dataclass(cls, value) -> "ObjectBase":

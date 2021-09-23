@@ -17,7 +17,7 @@ class SpellSubscriber:
         data = json.loads(message["data"])
 
         self.event_notifier.notify(
-             messages.CombatDataResponse.build(data),
+            messages.CombatDataResponse.build(data),
         )
 
     def run(self):

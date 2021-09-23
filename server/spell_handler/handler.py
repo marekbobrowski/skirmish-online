@@ -1,65 +1,26 @@
-from protocol.parser import MessageParser
-from protocol.messages import MessageType
-from .message_handlers import MessageHandlersBank
-
+from protocol.domain import CombatData
 import logging
-
-from direct.distributed.PyDatagramIterator import PyDatagramIterator
-from direct.distributed.PyDatagram import PyDatagram
 
 log = logging.getLogger(__name__)
 
 
-class Handler:
-    def __init__(self, server):
+class SpellHandler:
+    def __init__(self, spell_data, session):
         """
-        Base handler for new data
-        """
-        self.server = server
-        self.message_parser = MessageParser()
+        Handling of upcoming spells is done here, in this class.
 
-    def handle_data(self, datagram, connection, session):
+        Implement veryfication, spell distinguish etc here.
         """
-        Handling new data.
+        self.spell_data = spell_data
+        self.session = session
 
-        First, message is obtained, then correct message handler is called
+    def __call__(self) -> CombatData:
         """
-        iterator = PyDatagramIterator(datagram)
-        # parse message
-        try:
-            message = self.message_parser(iterator, MessageType.request)
-        except KeyError as e:
-            log.exception(e)
-            log.error("unsuppoerted message")
-            return
-        # produce response
-        response = self.handle_message(session, message)
-        # send response
-        self.handle_response(connection, response)
+        This is the main procedure. Hadles the spell, and produces
+        CombatData packet that is distrubuted to original client.
 
-    def handle_response(self, connection, response) -> None:
+        Additionally, publishing spell information should be done
+        here
         """
-        Send response to message, if any
-        """
-        if response is None:
-            return
-
-        response_datagram = PyDatagram()
-        response.dump(response_datagram)
-        self.server.writer.send(response_datagram, connection)
-
-    def handle_message(self, session, message):
-        """
-        Call correct message handler
-        """
-
-        try:
-            handler = MessageHandlersBank.by_id(message.ID)(
-                session,
-                message,
-            )
-        except KeyError as e:
-            log.exception(e)
-            log.error("unsuppoerted operation")
-            return
-        return handler()
+        log.info(self.spell_data.__dict__)
+        # return CombatData(1, 1, 1, [1])

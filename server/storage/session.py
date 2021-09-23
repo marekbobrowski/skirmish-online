@@ -85,5 +85,3 @@ class Session:
     def set_spell(self, spell_data):
         # only broadcast information about spell
         self.spell_cache.publish_spell_update(spell_data)
-
-

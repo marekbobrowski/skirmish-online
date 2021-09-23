@@ -20,9 +20,7 @@ class SpellCache:
         """
         Broadcasts a spell.
         """
-        spell_update = SpellUpdate(
-            **spell._json(), id=self.session.player.id
-        )
+        spell_update = SpellUpdate(**spell._json(), id=self.session.player.id)
 
         for session_id in self.session.cache.get_other_sessions():
             self.session.redis.publish(
@@ -37,6 +35,8 @@ class SpellCache:
         Creates a thread that will subscribe to spell updates.
         """
         p = self.session.redis.pubsub()
-        p.subscribe(**{self.spell_update_channel_for_session(self.session.id): subscriber})
+        p.subscribe(
+            **{self.spell_update_channel_for_session(self.session.id): subscriber}
+        )
         thread = p.run_in_thread(sleep_time=0.001)
         return thread

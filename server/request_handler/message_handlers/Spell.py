@@ -1,20 +1,18 @@
 from .base import MessageHandler
 from protocol import messages
+from ...spell_handler.handler import SpellHandler
 
 
-class SpellHandler(MessageHandler):
+class SpellMessageHandler(MessageHandler):
     handled_message = messages.SpellRequest
-    response_message = None
+    response_message = messages.CombatDataResponse
 
-    def handle_message(self):
+    def __call__(self):
         """
-        Publish event of spell being used
+        Handle the spell. This procedure creates handler for
+        the spell_data and executes it
         """
         spell_data = self.message.data
-        self.session.set_spell(spell_data)
-
-    def build_response(self):
-        """
-        Responds with CombatData
-        """
-        pass
+        handler = SpellHandler(spell_data, self.session)
+        combat_data = handler()
+        return messages.CombatDataResponse(combat_data)

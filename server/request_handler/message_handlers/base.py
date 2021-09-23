@@ -13,14 +13,25 @@ class MessageHandler(metaclass=MetaClass):
         self.message = message
 
     def __call__(self) -> Optional[Any]:
+        """
+        Method called by root handler distributing
+        messages. By default, handler will first
+        handle new message, then build response seperately.
+
+        This design unsures, that basic requests only returning
+        data or only handling it are easier to write.
+
+        When handling complex procedures, where response is build
+        from handled data context it is best just to overwrite this
+        function
+        """
         self.handle_message()
         return self.build_response()
 
     @abstractmethod
     def handle_message(self):
         """
-        Main method, handles message
-        and updates application state
+        Method for handling self.message
         """
         pass
 

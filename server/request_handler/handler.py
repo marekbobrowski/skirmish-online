@@ -12,7 +12,14 @@ log = logging.getLogger(__name__)
 class Handler:
     def __init__(self, server):
         """
-        Base handler for new data
+        Base handler for new data.
+
+        The idea of handler is to delegate new requests to subhandlers.
+        Each subhandler has to implement procedure of handling upcoming
+        data and then providing response, if any.
+
+        In order to handle new massages write additional hanlders in message
+        handlers sub module.
         """
         self.server = server
         self.message_parser = MessageParser()
