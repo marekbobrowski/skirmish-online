@@ -32,6 +32,10 @@ class Server:
         self.listener.add_connection(self.tcp_socket)
 
     def run(self):
+        """
+        Creates threads with active targets for accepting new connections and
+        receiving data from existing ones
+        """
         Thread(target=self.listen_for_new_connections, daemon=True).start()
         Thread(target=self.listen_for_new_data, daemon=True).start()
 
@@ -56,6 +60,9 @@ class Server:
                     self.notifier_manager.new_notifier(session, new_connection)
 
     def listen_for_new_data(self):
+        """
+        Listens for new data from active connections
+        """
         while True:
             if self.reader.data_available():
                 datagram = NetDatagram()

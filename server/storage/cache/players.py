@@ -47,19 +47,19 @@ class PlayerCache:
         Creates new user from id_
         """
         player = Player(
-            id_,
-            f"name{id_}",
-            50,
-            1,
-            "stand",
-            1,
-            1,
-            -3,
-            -5,
-            1,
-            120,
-            0,
-            0,
+            id=id_,
+            name=f"name{id_}",
+            health=50,
+            model=1,
+            animation="stand",
+            loop=1,
+            weapon=1,
+            x=-3,
+            y=-5,
+            z=1,
+            h=120,
+            p=0,
+            r=0,
         )
         self.publish_new_player(player)
         return player
