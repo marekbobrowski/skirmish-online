@@ -1,15 +1,12 @@
-from ..event import Event
-from ..local.unit import Unit
-from ..local import core
-
 from panda3d.core import QueuedConnectionManager
 from panda3d.core import QueuedConnectionReader
 from panda3d.core import ConnectionWriter
 from panda3d.core import NetDatagram
 from direct.distributed.PyDatagram import PyDatagram
 from direct.distributed.PyDatagramIterator import PyDatagramIterator
-from direct.task.Task import Task
-
+from ..local import core
+from .send_requests import SendRequests
+from .fetch_events import FetchEvents
 from protocol.message import Message
 from protocol.parser import MessageParser, MessageType
 from protocol.domain.WorldState import WorldState
@@ -71,27 +68,18 @@ class NetClient:
 
         iterator = PyDatagramIterator(datagram)
         world_state_message = self.message_parser(iterator, MessageType.response)
-        print(world_state_message)
-        input('hmm')
+        return world_state_message.data
 
     def send_ready_for_updates(self):
         data = PyDatagram()
         data.add_uint8(Message.READY_FOR_SYNC)
         self.writer.send(data, self.server_connection)
 
-    def begin_sync(self, node, ref_node):
-        from ..local import core
-        from .send_requests import SendRequests
-        from .fetch_events import FetchEvents
-
+    def begin_sync(self):
         self.server_sync = SendRequests(self)
         self.local_sync = FetchEvents(self)
-        task = Task(self.server_sync.send_pos_hpr)
         core.instance.task_mgr.add(
             self.local_sync.listen_for_updates, "listen for updates"
-        )
-        core.instance.task_mgr.add(
-            funcOrTask=task, name="send pos hpr", extraArgs=[node, ref_node]
         )
 
     # def load_world_state(self, world):
