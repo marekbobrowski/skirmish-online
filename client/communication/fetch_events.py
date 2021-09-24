@@ -25,7 +25,7 @@ class FetchEvents:
             Message.SET_SPELL: self.read_set_spell,
             Message.TRIGGER_COOLDOWN: self.read_trigger_cooldown,
             Message.SET_MODEL: self.read_set_model,
-            Message.SET_WEAPON: self.read_set_weapon
+            Message.SET_WEAPON: self.read_set_weapon,
         }
 
     def listen_for_updates(self, task):

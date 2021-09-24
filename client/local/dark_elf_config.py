@@ -26,5 +26,5 @@ anim_names = {
     Animation.RUN: "run_2HS_FDarkElf",
     Animation.MELEE_ATTACK_1: "Atk01_2HS_FDarkElf",
     Animation.MELEE_ATTACK_2: "SpAtk001_2HS_FDarkElf",
-    Animation.MAGIC_ATTACK_1: "CastMid_FDarkElf"
+    Animation.MAGIC_ATTACK_1: "CastMid_FDarkElf",
 }

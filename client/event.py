@@ -7,10 +7,10 @@ class Event:
     TXT_MSG_FROM_SERVER_RECEIVED = "msg-from-server-received"
     PLAYER_CHANGED_POS_HPR = "player-changed-pos"
     RECEIVED_COMBAT_DATA = "received-combat-data"
-    TRIGGER_COOLDOWN = 'trigger-cooldown'
-    SET_SPELL = 'set-spell'
-    MODEL_CHANGED = 'set-model'
-    WEAPON_CHANGED = 'weapon-changed'
+    TRIGGER_COOLDOWN = "trigger-cooldown"
+    SET_SPELL = "set-spell"
+    MODEL_CHANGED = "set-model"
+    WEAPON_CHANGED = "weapon-changed"
 
     # caused by event from the client
     COMMAND_TYPED = "message-typed"

@@ -36,7 +36,7 @@ class CooldownPanel(DirectObject):
             (0.945, 0.972, 0.745, 1),
             (0.8, 0.972, 0.745, 1),
             (0.745, 0.945, 0.972, 1),
-            (0.929, 0.745, 0.972, 1)
+            (0.929, 0.745, 0.972, 1),
         ]
 
         # number of lines displayable in the terminal
@@ -61,7 +61,7 @@ class CooldownPanel(DirectObject):
         # (cooldown_time, remaining_time)
         self.cooldowns = [[0, 0] for i in range(n_lines)]
 
-        self.spell_names = ["" for i in range (n_lines)]
+        self.spell_names = ["" for i in range(n_lines)]
 
         self.direct_labels = []
         for i in range(n_lines):
@@ -86,14 +86,16 @@ class CooldownPanel(DirectObject):
     def set_cooldown_tracking(self, slot_number, spell_name, spell_cooldown):
         self.spell_names[slot_number] = spell_name
         self.cooldowns[slot_number] = [spell_cooldown, spell_cooldown]
-        task = Task(self.update_cooldown_view, 'update cooldown view')
+        task = Task(self.update_cooldown_view, "update cooldown view")
         core.instance.task_mgr.add(task, extraArgs=[task, slot_number])
 
     def handle_set_spell(self, args):
-        self.set_cooldown_tracking(args.spell_number, args.spell_name, args.spell_cooldown)
+        self.set_cooldown_tracking(
+            args.spell_number, args.spell_name, args.spell_cooldown
+        )
 
     def handle_trigger_cooldown(self, args):
-        task = Task(self.update_cooldown_view, 'update cooldown view')
+        task = Task(self.update_cooldown_view, "update cooldown view")
         core.instance.task_mgr.add(task, extraArgs=[task, args.slot_number])
 
     def update_cooldown_view(self, task, slot_number):
@@ -106,8 +108,14 @@ class CooldownPanel(DirectObject):
         return Task.done
 
     def gowno(self, slot_number):
-        self.lines[slot_number] = self.spell_names[slot_number] + ' ' + '|' * int(
-            (1 - self.cooldowns[slot_number][1] / self.cooldowns[slot_number][0]) * 80
+        self.lines[slot_number] = (
+            self.spell_names[slot_number]
+            + " "
+            + "|"
+            * int(
+                (1 - self.cooldowns[slot_number][1] / self.cooldowns[slot_number][0])
+                * 80
+            )
         )
 
     def aspect_ratio_change_update(self):

@@ -1,11 +1,14 @@
 from ...storage.domain.combat_data import CombatData
+from protocol.domain import Spells, AnimationName, Animation
 from .bank import MetaClass
 from abc import abstractmethod
 from typing import List
 
 
 class BaseSpellHandler(metaclass=MetaClass):
-    SPELL: int = None
+    SPELL: Spells = None
+    ANIMATION: AnimationName = None
+    LOOP: int = 0
 
     def __init__(self, session, spell_data):
         """
@@ -22,10 +25,20 @@ class BaseSpellHandler(metaclass=MetaClass):
             3. interact with targets
             4. produce response
         """
+        if not self.valid():
+            return
+
         self.publish_spell_update()
+        self.publish_animation_update()
         targets = self.calculate_targets()
         hp_change = self.interact_with_tagets(targets)
         return self.produce_response(targets, hp_change)
+
+    def valid(self) -> bool:
+        """
+        If spell is valid
+        """
+        return True
 
     def publish_spell_update(self):
         """
@@ -33,6 +46,16 @@ class BaseSpellHandler(metaclass=MetaClass):
         spell being casted
         """
         self.session.spell_cache.publish_spell_update(self.spell_data)
+
+    def publish_animation_update(self):
+        """
+        Notifies all other players about
+        new animation
+        """
+        self.session.set_animation(
+            Animation(animation_name=self.ANIMATION.value, loop=self.LOOP),
+            including_self=True,
+        )
 
     @abstractmethod
     def calculate_targets(self) -> List[int]:

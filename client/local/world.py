@@ -107,7 +107,7 @@ class World(DirectObject):
     def handle_model_changed(self, args):
         unit = self.units.get(args.player_id, None)
         unit.model = args.model_id
-        unit.actor.removePart('modelRoot')
+        unit.actor.removePart("modelRoot")
         unit.actor = actor_config.load(unit.model)
         unit.actor.reparent_to(unit.base_node)
         self.change_animation(unit, Animation.STAND, 1)
@@ -124,9 +124,3 @@ class World(DirectObject):
             unit.weapon_node.detach_node()
             unit.weapon_node = weapon_config.load(unit.weapon)
             unit.weapon_node.reparent_to(unit.hand_node)
-
-
-
-
-
-

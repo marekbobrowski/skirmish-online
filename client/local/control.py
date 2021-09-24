@@ -323,9 +323,8 @@ class Control:
     def update_animation(self):
         f = core.instance.task_mgr.hasTaskNamed
         if f("MoveRight"):
-            if (
-                self.unit.actor.get_current_anim()
-                != actor_config.get_anim_name(self.unit.model, Animation.RUN)
+            if self.unit.actor.get_current_anim() != actor_config.get_anim_name(
+                self.unit.model, Animation.RUN
             ):
                 args = EventArgs()
                 args.id_ = self.unit.id
@@ -338,9 +337,8 @@ class Control:
                     event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.RUN, 1]
                 )
         elif f("MoveLeft"):
-            if (
-                self.unit.actor.get_current_anim()
-                != actor_config.get_anim_name(self.unit.model, Animation.RUN)
+            if self.unit.actor.get_current_anim() != actor_config.get_anim_name(
+                self.unit.model, Animation.RUN
             ):
                 args = EventArgs()
                 args.id_ = self.unit.id
@@ -353,9 +351,8 @@ class Control:
                     event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.RUN, 1]
                 )
         elif f("MoveForward") or f("MoveBackward"):
-            if (
-                self.unit.actor.get_current_anim()
-                != actor_config.get_anim_name(self.unit.model, Animation.RUN)
+            if self.unit.actor.get_current_anim() != actor_config.get_anim_name(
+                self.unit.model, Animation.RUN
             ):
                 args = EventArgs()
                 args.id_ = self.unit.id
@@ -368,9 +365,8 @@ class Control:
                     event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.RUN, 1]
                 )
         else:
-            if (
-                self.unit.actor.get_current_anim()
-                != actor_config.get_anim_name(self.unit.model, Animation.STAND)
+            if self.unit.actor.get_current_anim() != actor_config.get_anim_name(
+                self.unit.model, Animation.STAND
             ):
                 args = EventArgs()
                 args.id_ = self.unit.id
