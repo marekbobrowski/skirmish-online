@@ -7,7 +7,7 @@ from direct.task.Task import Task
 
 from protocol.message import Message
 
-from utils.unspammer import RequestUnspammer
+import time
 
 
 class SendRequests(DirectObject):
@@ -18,22 +18,33 @@ class SendRequests(DirectObject):
         self.accept(Event.TXT_MSG_TO_SERVER_TYPED, self.send_chat_message)
         self.accept(Event.CLIENT_SPELL_ATTEMPT, self.send_ability_attempt)
 
-        self.guardian = RequestUnspammer()
+        self.last_position = tuple()
 
     def write(self, datagram, safe=False):
-        if self.guardian.clean() or safe:
-            self.manager.writer.send(datagram, self.manager.server_connection)
+        self.manager.writer.send(datagram, self.manager.server_connection)
 
     def send_pos_hpr(self, node, ref_node):
-        datagram = PyDatagram()
-        datagram.add_uint8(Message.POS_HPR)
-        datagram.add_float64(node.get_x(ref_node))
-        datagram.add_float64(node.get_y(ref_node))
-        datagram.add_float64(node.get_z(ref_node))
-        datagram.add_float64(node.get_h(ref_node))
-        datagram.add_float64(node.get_p(ref_node))
-        datagram.add_float64(node.get_r(ref_node))
-        self.write(datagram)
+        position = (
+            node.get_x(ref_node),
+            node.get_y(ref_node),
+            node.get_z(ref_node),
+            node.get_h(ref_node),
+            node.get_p(ref_node),
+            node.get_r(ref_node),
+        )
+
+        if position != self.last_position:
+            datagram = PyDatagram()
+            datagram.add_uint8(Message.POS_HPR)
+            datagram.add_float64(position[0])
+            datagram.add_float64(position[1])
+            datagram.add_float64(position[2])
+            datagram.add_float64(position[3])
+            datagram.add_float64(position[4])
+            datagram.add_float64(position[5])
+            self.write(datagram)
+            self.last_position = position
+            time.sleep(0.001)
         return Task.cont
 
     def send_ability_attempt(self, ability):
