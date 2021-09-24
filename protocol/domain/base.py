@@ -96,7 +96,7 @@ class BaseModel(ObjectBase):
             elif isinstance(value, fields[name]):
                 setattr(self, name, value)
             else:
-                setattr(self, name, fields[name](value))
+                setattr(self, name, fields[name].build(value))
 
     @classmethod
     def get_fields(cls) -> "List[ObjectBase]":
@@ -222,6 +222,24 @@ class DateTime(ObjectBase, datetime.datetime):
 
     def _json(self) -> str:
         return self.strftime(self.FORMAT)
+
+    @classmethod
+    def build(cls, *args, **kwargs):
+        if len(args) == 1 and isinstance(args[0], datetime.datetime):
+            dt = args[0]
+            args = []
+            kwargs = dict(
+                year=dt.year,
+                month=dt.month,
+                day=dt.day,
+                hour=dt.hour,
+                minute=dt.minute,
+                second=dt.second,
+                microsecond=dt.microsecond,
+                tzinfo=dt.tzinfo,
+                fold=dt.fold,
+            )
+        return cls(*args, **kwargs)
 
 
 class CustomizableList(ObjectBase):

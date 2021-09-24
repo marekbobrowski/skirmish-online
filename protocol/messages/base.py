@@ -1,7 +1,7 @@
 from typing import List, Optional, Union
 from enum import Enum
 import dataclasses
-from ..domain.base import ObjectBase, UInt8
+from ..domain.base import ObjectBase, UInt8, String
 import logging
 
 

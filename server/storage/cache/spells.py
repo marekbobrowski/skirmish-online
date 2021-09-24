@@ -21,11 +21,12 @@ class SpellCache:
         Broadcasts a spell.
         """
         spell_update = SpellUpdate(**spell._json(), id=self.session.player.id)
+        data = json.dumps(dataclasses.asdict(spell_update))
 
         for session_id in self.session.cache.get_other_sessions():
             self.session.redis.publish(
                 self.spell_update_channel_for_session(session_id),
-                json.dumps(dataclasses.asdict(spell_update)),
+                data,
             )
 
         return spell_update

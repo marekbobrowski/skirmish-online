@@ -5,7 +5,7 @@ spell_cooldowns = [1, 2, 3]
 
 n_spells = len(spell_names)
 n_spell_slots = 5
-n_models = 5
+n_models = 4
 n_weapons = 4
 
 welcome_msg = "Welcome to Skirmish Online!\n"

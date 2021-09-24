@@ -2,22 +2,27 @@ from .base import MessageHandler
 from protocol import messages, domain
 from ... import config
 from ...storage.domain import Player
-import random
+import logging
+
+
+log = logging.getLogger(__name__)
 
 
 class WorldStateHandler(MessageHandler):
     handled_message = messages.WorldStateRequest
     response_message = messages.WorldStateResponse
 
-    def handle_message(self):
-        pass
+    def __call__(self) -> messages.WorldStateResponse:
+        """
+        Build session and return world state
+        """
+        current_players = self.session.player_cache.all_players()
+        id_ = max({p.id for p in current_players} | {-1}) + 1
 
-    def build_response(self) -> messages.WelcomeMessageResponse:
-        # TODO
-        self.session.for_player(random.randrange(0, 10))
-        other_players = self.session.player_cache.other_players()
+        self.session.for_player(id_)
+
         message = messages.WorldStateResponse.build(
             player=self.session.player,
-            other_players=other_players,
+            other_players=current_players,
         )
         return message

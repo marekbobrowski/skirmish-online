@@ -1,16 +1,12 @@
 from protocol import messages, domain
 import json
-import logging
 
 
-log = logging.getLogger(__name__)
-
-
-class AnimationUpdateSubscriber:
+class HealthUpdateSubscriber:
     def __init__(self, event_notifier):
         """
-        AnimationUpdateSubscriber notifies user of animation changes
-        for all other users
+        HealthUpdateSubscriber notifies user
+        with health changes
         """
         self.event_notifier = event_notifier
 
@@ -20,11 +16,11 @@ class AnimationUpdateSubscriber:
         """
         data = json.loads(message["data"])
         self.event_notifier.notify(
-            messages.AnimationResponse.build(data),
+            messages.HealthUpdateResponse.build(data),
         )
 
     def run(self):
         """
         Creates thread subscribed to the channel
         """
-        self.event_notifier.session.player_cache.subscribe_animation_update(self)
+        self.event_notifier.session.player_cache.subscribe_health_update(self)

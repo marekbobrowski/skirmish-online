@@ -1,6 +1,8 @@
 from .queue_subscribers.positon_update import PositionUpdateSubscriber
 from .queue_subscribers.new_player import NewPlayerSubscriber
 from .queue_subscribers.animation_update import AnimationUpdateSubscriber
+from .queue_subscribers.health_change import HealthUpdateSubscriber
+from .queue_subscribers.text_message import TextMessageSubscriber
 from redis import Redis
 from direct.distributed.PyDatagram import PyDatagram
 import logging
@@ -40,6 +42,8 @@ class EventNotifier:
             PositionUpdateSubscriber(self),
             NewPlayerSubscriber(self),
             AnimationUpdateSubscriber(self),
+            HealthUpdateSubscriber(self),
+            TextMessageSubscriber(self),
         ]
         for subsubscriber in self.subsubscribers:
             subsubscriber.run()

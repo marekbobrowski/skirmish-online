@@ -1,7 +1,9 @@
-from ..domain import Player, PlayerPositionUpdate, PlayerAnimationUpdate
+from ..domain import Player, PlayerPositionUpdate, PlayerAnimationUpdate, HealthUpdate
 import json
 import dataclasses
 import logging
+from protocol.domain import Weapon, Model
+import random
 
 
 log = logging.getLogger(__name__)
@@ -12,6 +14,7 @@ class PlayerCache:
     PREFIX = "player_"
     POSITION_UPDATE_CHANNEL = "position_update_"
     ANIMATION_UPDATE_CHANNEL = "animation_update_"
+    HEALTH_UPDATE_CHANNEL = "health_update_"
     NEW_PLAYER_CHANNEL = "new_player_"
 
     def __init__(self, session):
@@ -52,10 +55,10 @@ class PlayerCache:
             id=id_,
             name=f"name{id_}",
             health=50,
-            model=1,
+            model=random.choice([m.value for m in Model]),
             animation="stand",
             loop=1,
-            weapon=1,
+            weapon=random.choice([w.value for w in Weapon]),
             x=-3,
             y=-5,
             z=1,
@@ -124,6 +127,13 @@ class PlayerCache:
         """
         return f"{cls.ANIMATION_UPDATE_CHANNEL}{session_id}"
 
+    @classmethod
+    def health_update_channel_for_session(cls, session_id):
+        """
+        creates unique channel name for session
+        """
+        return f"{cls.HEALTH_UPDATE_CHANNEL}{session_id}"
+
     # channel publication
 
     def publish_new_player(self, player):
@@ -134,10 +144,12 @@ class PlayerCache:
         self.session.redis.sadd(self.SET_KEY, player.id)
         self.session.player_position_cache.update_position(player)
 
+        data = json.dumps(dataclasses.asdict(player))
+
         for session_id in self.session.cache.get_other_sessions():
             self.session.redis.publish(
                 self.new_player_channel_for_session(session_id),
-                json.dumps(dataclasses.asdict(player)),
+                data,
             )
 
     def publish_position_update(self, position):
@@ -150,10 +162,12 @@ class PlayerCache:
 
         self.session.player_position_cache.update_position(position_update)
 
+        data = json.dumps(dataclasses.asdict(position_update))
+
         for session_id in self.session.cache.get_other_sessions():
             self.session.redis.publish(
                 self.channel_for_session(session_id),
-                json.dumps(dataclasses.asdict(position_update)),
+                data,
             )
 
         return position_update
@@ -170,13 +184,36 @@ class PlayerCache:
         if including_self is True:
             sessions.add(self.session.id)
 
+        data = json.dumps(dataclasses.asdict(animation_update))
+
         for session_id in sessions:
             self.session.redis.publish(
                 self.animation_update_channel_for_session(session_id),
-                json.dumps(dataclasses.asdict(animation_update)),
+                data,
             )
 
         return animation_update
+
+    def publish_health_update(self, targets, hp_change) -> None:
+        """
+        Self explanatory name!!!
+        """
+        affected_players = [self.load(id_) for id_ in targets]
+
+        for player in affected_players:
+            player.health = max((player.health - hp_change, 0))
+            self.save(player)
+
+        health_updates = [HealthUpdate(p.id, p.health) for p in affected_players]
+        data = json.dumps([dataclasses.asdict(hu) for hu in health_updates])
+
+        sessions = self.session.cache.get_all_sessions()
+
+        for session_id in sessions:
+            self.session.redis.publish(
+                self.health_update_channel_for_session(session_id),
+                data,
+            )
 
     # Subscribtions for channels
 
@@ -210,6 +247,18 @@ class PlayerCache:
         p = self.session.redis.pubsub()
         p.subscribe(
             **{self.animation_update_channel_for_session(self.session.id): subscriber}
+        )
+        thread = p.run_in_thread(sleep_time=0.001)
+        return thread
+
+    def subscribe_health_update(self, subscriber):
+        """
+        Creates a thread that will subscribe to the channel
+        specific for current user
+        """
+        p = self.session.redis.pubsub()
+        p.subscribe(
+            **{self.health_update_channel_for_session(self.session.id): subscriber}
         )
         thread = p.run_in_thread(sleep_time=0.001)
         return thread
