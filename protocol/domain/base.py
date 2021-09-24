@@ -93,6 +93,8 @@ class BaseModel(ObjectBase):
                 setattr(self, name, None)
             elif dataclasses.is_dataclass(value):
                 setattr(self, name, fields[name].from_dataclass(value))
+            elif isinstance(value, fields[name]):
+                setattr(self, name, value)
             else:
                 setattr(self, name, fields[name](value))
 

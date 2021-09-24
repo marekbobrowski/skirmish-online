@@ -1,15 +1,7 @@
-spell_names = [
-    "SPELL A",
-    "SPELL B",
-    "SPELL C"
-]
+spell_names = ["SPELL A", "SPELL B", "SPELL C"]
 
 
-spell_cooldowns = [
-    1,
-    2,
-    3
-]
+spell_cooldowns = [1, 2, 3]
 
 n_spells = len(spell_names)
 n_spell_slots = 5
@@ -33,9 +25,7 @@ help = (
     "r - use slot 2 \n"
     "f - use slot 3 \n"
     "c - use slot 4 \n"
-
 )
 
 
 welcome_msg += help
-

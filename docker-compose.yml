@@ -5,15 +5,15 @@ networks:
     driver: bridge
 
 services:
-  database:
-    restart: unless-stopped
-    image: centos/postgresql-96-centos7
-    networks:
-    - skirmish-online
-    environment:
-      - POSTGRESQL_USER=postgres
-      - POSTGRESQL_DATABASE=db
-      - POSTGRESQL_PASSWORD=passw0rd
+  # database:
+  #   restart: unless-stopped
+  #   image: centos/postgresql-96-centos7
+  #   networks:
+  #   - skirmish-online
+  #   environment:
+  #     - POSTGRESQL_USER=postgres
+  #     - POSTGRESQL_DATABASE=db
+  #     - POSTGRESQL_PASSWORD=passw0rd
 
   redis:
     restart: unless-stopped
