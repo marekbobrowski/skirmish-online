@@ -12,7 +12,7 @@ class MainSectionState:
         player_unit = Unit.from_player(state.player)
         self.units_by_id[self.player_id] = player_unit
 
-        if state.other_players.data is None:
+        if state.other_players is None:
             return
 
         for other_player in state.other_players.data:

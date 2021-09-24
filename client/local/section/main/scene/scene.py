@@ -75,7 +75,6 @@ class MainSectionScene(DirectObject):
         self.state.units_by_id.get(id_).name = name
 
     def spawn_unit(self, unit):
-        print(unit)
         unit.actor = actor_config.load(unit.model)
         weapon = weapon_config.load(unit.weapon)
         self.equip_weapon(unit, weapon)

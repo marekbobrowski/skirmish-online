@@ -8,11 +8,14 @@ from direct.task import Task
 from panda3d.core import NetDatagram
 
 from protocol.message import Message
+from protocol.parser import MessageParser
+from protocol.messages.NewPlayer import NewPlayerResponse
 
 
 class FetchEvents:
     def __init__(self, manager):
         self.manager = manager
+        self.message_parser = MessageParser()
         self.data_handler_mapping = {
             Message.POS_HPR: self.update_pos_hpr,
             Message.NEW_PLAYER: self.update_new_player,

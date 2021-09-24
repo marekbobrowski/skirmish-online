@@ -5,6 +5,7 @@ from client.event import Event
 from direct.showbase.DirectObject import DirectObject
 from direct.gui.DirectGui import DirectFrame, DirectEntry, DirectLabel
 from panda3d.core import TextNode
+from . import command
 
 
 class Console(DirectObject):
