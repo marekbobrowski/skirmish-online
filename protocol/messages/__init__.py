@@ -11,6 +11,5 @@ from .RequestModel import RequestModel
 from .SetName import SetName
 from .Teleport import Teleport
 from .TextMessage import TextMessageRequest, TextMessageResponse
-from .WelcomeMessage import WelcomeMessageResponse, WelcomeMessageRequest
 from .WorldState import WorldStateRequest, WorldStateResponse
 from .base import MessagesBank, MessageType

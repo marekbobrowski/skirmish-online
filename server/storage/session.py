@@ -5,6 +5,7 @@ import json
 from .cache.sessions import SessionCache
 from .cache.players import PlayerCache
 from .cache.spells import SpellCache
+from .cache.text_message import TextMessageCache
 
 
 log = logging.getLogger(__name__)
@@ -47,6 +48,7 @@ class Session:
         self.player_cache = PlayerCache(self)
         self.player_position_cache = player_position_cache
         self.spell_cache = SpellCache(self)
+        self.text_message_cache = TextMessageCache(self)
 
     def close(self):
         pass

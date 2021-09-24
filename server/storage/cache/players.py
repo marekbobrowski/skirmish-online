@@ -199,7 +199,7 @@ class PlayerCache:
         affected_players = [self.load(id_) for id_ in targets]
 
         for player in affected_players:
-            player.health -= hp_change
+            player.health = max((player.health - hp_change, 0))
             self.save(player)
 
         health_updates = [HealthUpdate(p.id, p.health) for p in affected_players]
