@@ -21,7 +21,6 @@ RUN chmod -R 700 /opt/skirmish
 
 COPY server /opt/skirmish/server
 COPY protocol /opt/skirmish/protocol
-COPY utils /opt/skirmish/utils
 
 USER skirmish
 
