@@ -2,6 +2,8 @@ from ..domain import Player, PlayerPositionUpdate, PlayerAnimationUpdate, Health
 import json
 import dataclasses
 import logging
+from protocol.domain import Weapon, Model
+import random
 
 
 log = logging.getLogger(__name__)
@@ -53,10 +55,10 @@ class PlayerCache:
             id=id_,
             name=f"name{id_}",
             health=50,
-            model=1,
+            model=random.choice([m.value for m in Model]),
             animation="stand",
             loop=1,
-            weapon=1,
+            weapon=random.choice([w.value for w in Weapon]),
             x=-3,
             y=-5,
             z=1,
