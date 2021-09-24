@@ -1,6 +1,6 @@
-from .state import MainSectionState
-from .scene import MainSectionScene
-from .ui import MainSectionUi
+from .state.state import MainSectionState
+from .scene.scene import MainSectionScene
+from .ui.ui import MainSectionUi
 from ..base import Section
 from protocol.domain.WorldState import WorldState
 

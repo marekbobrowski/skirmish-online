@@ -7,6 +7,7 @@ class SectionManager:
     Responsible for switching sections, for example
     login screen, character creation or main gameplay section.
     """
+
     def __init__(self):
         self.active_section = None
 

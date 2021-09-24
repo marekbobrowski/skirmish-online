@@ -1,4 +1,4 @@
-from .communication.net_client import NetClient
+from .net.net_client import NetClient
 from .local import core
 from client.local.section.section_manager import SectionManager
 from client.local.section.main.section import MainSection
@@ -17,5 +17,3 @@ class Client:
             self.net_client.send_ready_for_updates()
             self.net_client.begin_sync()
             core.instance.run()
-
-
