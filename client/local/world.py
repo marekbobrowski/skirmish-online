@@ -13,11 +13,11 @@ from direct.interval.IntervalGlobal import *
 class World(DirectObject):
     def __init__(self):
         DirectObject.__init__(self)
-        self.node = core.instance.render.attach_new_node("scene node")
+        self.node = core.instance.render.attach_new_node("section node")
         self.main_player_id = None
         self.units = {}
 
-        # scene has to handle the event first, before the floating bars
+        # section has to handle the event first, before the floating bars
         self.accept(Event.PLAYER_JOINED, self.handle_player_joined)
         self.accept(Event.PLAYER_CHANGED_POS_HPR, self.handle_player_changed_pos_hpr)
         self.accept(
@@ -29,7 +29,7 @@ class World(DirectObject):
 
         self.floating_bars = FloatingBars(self.units)
 
-        # those will be parented to the scene graph so need to keep the references
+        # those will be parented to the section graph so need to keep the references
         skybox = core.instance.loader.loadModel(assets.skybox)
         skybox.set_scale(100)
         skybox.reparent_to(core.instance.camera)
