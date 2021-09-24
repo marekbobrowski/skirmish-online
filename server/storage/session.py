@@ -23,17 +23,17 @@ class SessionManager:
         """
         return self.sessions[connection]
 
-    def new_session(self, connection):
+    def new_session(self, connection, player_position_cache):
         """
         Creastes new session
         """
-        session = Session()
+        session = Session(player_position_cache)
         self.sessions[connection] = session
         return session
 
 
 class Session:
-    def __init__(self):
+    def __init__(self, player_position_cache):
         """
         Creates empty session
         """
@@ -45,6 +45,7 @@ class Session:
         self.cache.store()
 
         self.player_cache = PlayerCache(self)
+        self.player_position_cache = player_position_cache
         self.spell_cache = SpellCache(self)
 
     def close(self):

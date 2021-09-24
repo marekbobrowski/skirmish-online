@@ -1,6 +1,7 @@
 from .request_handler import Handler
 from .storage.session import SessionManager
 from .event_notifier.notifier import NotifierManager
+from .storage.cache.player_position import PlayerPositionCache
 
 from panda3d.core import QueuedConnectionManager
 from panda3d.core import QueuedConnectionListener
@@ -25,6 +26,7 @@ class Server:
         # Server state
         self.session_manager = SessionManager()
         self.notifier_manager = NotifierManager(self)
+        self.player_position_cache = PlayerPositionCache()
 
         # Socket
         self.tcp_socket = self.manager.open_TCP_server_rendezvous(15000, 1000)
@@ -55,7 +57,9 @@ class Server:
 
                     self.reader.add_connection(new_connection)
 
-                    session = self.session_manager.new_session(new_connection)
+                    session = self.session_manager.new_session(
+                        new_connection, self.player_position_cache
+                    )
                     self.notifier_manager.new_notifier(session, new_connection)
 
     def listen_for_new_data(self):

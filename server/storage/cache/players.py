@@ -23,6 +23,8 @@ class PlayerCache:
         """
         if id_ is None:
             id_ = self.session.player.id
+        if isinstance(id_, bytes):
+            return f"{self.PREFIX}{id_.decode()}"
         return f"{self.PREFIX}{id_}"
 
     def load(self, id_):
@@ -30,7 +32,7 @@ class PlayerCache:
         Loads player
         """
         player_data = self.session.redis.get(self.key(id_))
-        assert player_data is not None
+        assert player_data is not None, self.key(id_)
         return Player(**json.loads(player_data))
 
     def load_or_create(self, id_):
@@ -72,11 +74,24 @@ class PlayerCache:
             self.key(player.id), json.dumps(dataclasses.asdict(player))
         )
 
+    def all_player_ids(self):
+        """
+        Returns all player ids
+        """
+        members = self.session.redis.smembers(self.SET_KEY)
+        return members
+
+    def all_players(self):
+        """
+        Returns all players objects
+        """
+        return [self.load(id_) for id_ in self.all_player_ids()]
+
     def other_player_ids(self):
         """
         Returns other player ids
         """
-        members = self.session.redis.smembers(self.SET_KEY)
+        members = self.all_player_ids()
         other_ids = {int(m.decode()) for m in members} - {self.session.player.id}
         return other_ids
 
@@ -117,6 +132,8 @@ class PlayerCache:
         """
         self.save(player)
         self.session.redis.sadd(self.SET_KEY, player.id)
+        self.session.player_position_cache.update_position(player)
+
         for session_id in self.session.cache.get_other_sessions():
             self.session.redis.publish(
                 self.new_player_channel_for_session(session_id),
@@ -130,6 +147,8 @@ class PlayerCache:
         position_update = PlayerPositionUpdate(
             **position._json(), id=self.session.player.id
         )
+
+        self.session.player_position_cache.update_position(position_update)
 
         for session_id in self.session.cache.get_other_sessions():
             self.session.redis.publish(
