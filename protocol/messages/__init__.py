@@ -3,7 +3,7 @@ from .Animation import AnimationRequest, AnimationResponse
 from .AskForPass import AskForPass
 from .CombatData import CombatDataResponse
 from .Disconnection import Disconnection
-from .Health import Health
+from .HealthUpdate import HealthUpdateResponse
 from .NewPlayer import NewPlayerResponse
 from .PosHPR import PosHPRRequest, PosHPRResponse
 from .ReadyForSync import ReadyForSyncRequest

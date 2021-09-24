@@ -32,6 +32,7 @@ class BaseSpellHandler(metaclass=MetaClass):
         self.publish_animation_update()
         targets = self.calculate_targets()
         hp_change = self.interact_with_tagets(targets)
+        self.publish_health_update(targets, hp_change)
         return self.produce_response(targets, hp_change)
 
     def valid(self) -> bool:
@@ -55,6 +56,16 @@ class BaseSpellHandler(metaclass=MetaClass):
         self.session.set_animation(
             Animation(animation_name=self.ANIMATION.value, loop=self.LOOP),
             including_self=True,
+        )
+
+    def publish_health_update(self, targets, hp_change):
+        """
+        Notifies all other players about
+        health updates
+        """
+        self.session.player_cache.publish_health_update(
+            targets,
+            hp_change,
         )
 
     @abstractmethod

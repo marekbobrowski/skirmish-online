@@ -79,7 +79,6 @@ class Session:
         """
         Sets player animation
         """
-        log.info(including_self)
         animation_update = self.player_cache.publish_animation_update(
             animation, including_self
         )
