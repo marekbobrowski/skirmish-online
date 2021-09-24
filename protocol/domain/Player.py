@@ -1,4 +1,5 @@
 from .base import BaseModel, UInt8, String, Float64
+from .Animation import AnimationName
 
 
 class Player(BaseModel):
@@ -6,7 +7,7 @@ class Player(BaseModel):
     name = String
     health = UInt8
     model = UInt8
-    animation = String
+    animation = String.customize(accepted_values=AnimationName)
     weapon = UInt8
 
     x = Float64

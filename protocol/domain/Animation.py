@@ -1,8 +1,16 @@
-from .base import BaseModel, UInt8, String
+from .base import BaseModel, UInt8, String, Enum
+
+
+class AnimationName(Enum):
+    Stand = "stand"
+    Run = "run"
+    MeleAttack1 = "melee_attack_1"
+    MeleAttack2 = "melee_attack_2"
+    MagicAttack1 = "magic_attack_1"
 
 
 class Animation(BaseModel):
-    animation_name = String
+    animation_name = String.customize(accepted_values=AnimationName)
     loop = UInt8
 
 

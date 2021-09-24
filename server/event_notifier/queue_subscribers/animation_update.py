@@ -1,5 +1,9 @@
 from protocol import messages, domain
 import json
+import logging
+
+
+log = logging.getLogger(__name__)
 
 
 class AnimationUpdateSubscriber:
@@ -15,6 +19,8 @@ class AnimationUpdateSubscriber:
         Subscribed method, prepares response and pushes it
         """
         data = json.loads(message["data"])
+        log.info(data)
+        log.info(self.event_notifier.session.player.id)
         self.event_notifier.notify(
             messages.AnimationResponse.build(data),
         )

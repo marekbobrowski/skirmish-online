@@ -75,10 +75,13 @@ class Session:
         self.player.update_position(position_update)
         self.player_cache.save(self.player)
 
-    def set_animation(self, animation):
+    def set_animation(self, animation, including_self=False):
         """
         Sets player animation
         """
-        animation_update = self.player_cache.publish_animation_update(animation)
+        log.info(including_self)
+        animation_update = self.player_cache.publish_animation_update(
+            animation, including_self
+        )
         self.player.update_animation(animation_update)
         self.player_cache.save(self.player)

@@ -6,11 +6,17 @@ class Section:
     Sections are different parts of applications having different views (scene, GUI) and state.
     """
 
-    def enter(self) -> None:
+    def show(self) -> None:
         pass
 
-    def leave(self) -> None:
+    def hide(self) -> None:
         pass
 
     def load_state(self, state: BaseModel) -> None:
+        pass
+
+    def post_state_setup(self) -> None:
+        """
+        Called after loading the state.
+        """
         pass

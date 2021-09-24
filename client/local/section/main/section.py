@@ -1,8 +1,10 @@
 from .state.state import MainSectionState
 from .scene.scene import MainSectionScene
+from .control.control import Control
 from .ui.ui import MainSectionUi
 from ..base import Section
 from protocol.domain.WorldState import WorldState
+from client.local import core
 
 
 class MainSection(Section):
@@ -10,31 +12,30 @@ class MainSection(Section):
         self.state = MainSectionState()
         self.scene = MainSectionScene(self.state)
         self.ui = MainSectionUi(self.state)
+        self.control = None
 
-    def enter(self) -> None:
+    def show(self) -> None:
         self.scene.show()
         self.ui.show()
 
-    def leave(self) -> None:
+    def hide(self) -> None:
         self.scene.hide()
         self.ui.hide()
 
     def load_state(self, state: WorldState) -> None:
         self.state.load(state)
 
-    # self.world = World()
-    # self.ui = Ui(self.world.units)
-    #
-    # self.net_client.load_world_state(self.world)
-    # self.net_client.send_ready_for_updates()
-    #
-    # main_player = self.world.units[self.world.main_player_id]
-    # control = Control(main_player, core.instance.camera)
-    # control.enable(self.world.node)
-    # self.net_client.begin_sync(main_player.base_node, self.world.node)
-    # core.instance.run()
-    # # print("Connecting...")
-    # # if self.net_client.connect(server_ip):
-    # #     print("Connected. Loading assets...")
-    #
-    # # load_assets_to_cache()
+    def post_state_setup(self) -> None:
+        units = self.state.units_by_id.values()
+        for unit in units:
+            self.scene.spawn_unit(unit)
+            self.scene.floating_bars.create_bar(unit)
+        self.enable_control()
+
+    def enable_control(self) -> None:
+        player_unit = self.state.units_by_id[self.state.player_id]
+        self.control = Control(player_unit, core.instance.camera)
+        self.control.enable(self.scene.node)
+
+    def disable_control(self) -> None:
+        pass

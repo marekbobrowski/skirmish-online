@@ -1,5 +1,6 @@
 from client.local import core
-from client.local.model_config import actor_config
+from client.local.model_config.actor_config import actor_config
+from client.local.model_config.weapon_config import weapon_config
 from client.local.section.main.control.camera_control import CameraControl
 from client.local.section.main.control.node_control import NodeControl
 from client.event import Event
@@ -58,9 +59,9 @@ class Control:
         }
         core.instance.disable_mouse()
 
-    def enable(self, world_node):
+    def enable(self, scene_node):
         if self.actor_control is None:
-            self.actor_control = NodeControl(self.unit.base_node, world_node)
+            self.actor_control = NodeControl(self.unit.base_node, scene_node)
         if self.camera_control is None:
             self.camera_control = CameraControl(self.camera)
             self.camera_control.attach_to(

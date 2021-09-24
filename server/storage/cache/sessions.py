@@ -31,3 +31,10 @@ class SessionCache:
         """
         members = self.session.redis.smembers(self.SET_KEY)
         return {m.decode() for m in members} - {self.session.id}
+
+    def get_all_sessions(self):
+        """
+        Returns all other session ids
+        """
+        members = self.session.redis.smembers(self.SET_KEY)
+        return {m.decode() for m in members}

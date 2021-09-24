@@ -158,7 +158,7 @@ class PlayerCache:
 
         return position_update
 
-    def publish_animation_update(self, animation):
+    def publish_animation_update(self, animation, including_self=False):
         """
         Self explanatory name!!!
         """
@@ -166,7 +166,11 @@ class PlayerCache:
             **animation._json(), id=self.session.player.id
         )
 
-        for session_id in self.session.cache.get_other_sessions():
+        sessions = self.session.cache.get_other_sessions()
+        if including_self is True:
+            sessions.add(self.session.id)
+
+        for session_id in sessions:
             self.session.redis.publish(
                 self.animation_update_channel_for_session(session_id),
                 json.dumps(dataclasses.asdict(animation_update)),

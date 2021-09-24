@@ -45,7 +45,7 @@ class NetClient:
             return True
         return False
 
-    def get_world_state(self) -> WorldState:
+    def get_main_section_state(self) -> WorldState:
         """
         Fetch current world state from the server.
         """
@@ -81,49 +81,3 @@ class NetClient:
         core.instance.task_mgr.add(
             self.local_sync.listen_for_updates, "listen for updates"
         )
-
-    # def load_world_state(self, world):
-    #     # send datagram asking for initial world data (player's location, other player names, positions)
-    #     data = PyDatagram()
-    #     data.add_uint8(Message.WORLD_STATE)
-    #     self.writer.send(data, self.server_connection)
-    #     # wait for datagram from the server
-    #     self.manager.wait_for_readers(self.timeout / 1000)
-    #     if self.reader.data_available():
-    #         datagram = NetDatagram()
-    #         if self.reader.get_data(datagram):
-    #             iterator = PyDatagramIterator(datagram)
-    #             packet_type = iterator.get_uint8()
-    #             if packet_type == Message.WORLD_STATE:
-    #                 main_player = Unit()
-    #                 main_player.id = iterator.get_uint8()
-    #                 main_player.name = iterator.get_string()
-    #                 main_player.health = iterator.get_uint8()
-    #                 main_player.model = iterator.get_uint8()
-    #                 main_player.animation = iterator.get_string()
-    #                 main_player.weapon = iterator.get_uint8()
-    #                 main_player.x = iterator.get_float64()
-    #                 main_player.y = iterator.get_float64()
-    #                 main_player.z = iterator.get_float64()
-    #                 main_player.h = iterator.get_float64()
-    #                 main_player.p = iterator.get_float64()
-    #                 main_player.r = iterator.get_float64()
-    #                 world.spawn_unit(main_player)
-    #                 world.floating_bars.create_bar(main_player)
-    #                 world.main_player_id = main_player.id
-    #                 while iterator.get_remaining_size() > 0:
-    #                     player = Unit()
-    #                     player.id = iterator.get_uint8()
-    #                     player.name = iterator.get_string()
-    #                     player.health = iterator.get_uint8()
-    #                     player.model = iterator.get_uint8()
-    #                     player.animation = iterator.get_string()
-    #                     player.weapon = iterator.get_uint8()
-    #                     player.x = iterator.get_float64()
-    #                     player.y = iterator.get_float64()
-    #                     player.z = iterator.get_float64()
-    #                     player.h = iterator.get_float64()
-    #                     player.p = iterator.get_float64()
-    #                     player.r = iterator.get_float64()
-    #                     world.spawn_unit(player)
-    #                     world.floating_bars.create_bar(player)

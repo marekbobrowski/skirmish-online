@@ -2,14 +2,16 @@ from client.local import core
 from client.local.assets import asset_names
 from client.event import Event
 
+from ..state.state import MainSectionState
+
 from direct.gui.DirectGui import DirectWaitBar, DirectLabel
 from direct.showbase.DirectObject import DirectObject
 
 
 class FloatingBars(DirectObject):
-    def __init__(self, units):
+    def __init__(self, state: MainSectionState):
         DirectObject.__init__(self)
-        self.units = units
+        self.state = state
         self.bars = {}
         self.labels = {}
         self.accept(Event.PLAYER_JOINED, self.handle_player_joined)
@@ -17,7 +19,7 @@ class FloatingBars(DirectObject):
         self.accept(Event.NAME_CHANGED, self.update_name)
 
     def handle_player_joined(self, args):
-        unit = self.units.get(args.unit.id, None)
+        unit = self.state.units_by_id.get(args.unit.id, None)
         if unit is not None:
             self.create_bar(unit)
 
@@ -32,8 +34,8 @@ class FloatingBars(DirectObject):
             label["text"] = name
 
     def create_bar(self, unit):
-        actor = self.units[unit.id].actor
-        unit = self.units[unit.id]
+        actor = self.state.units_by_id[unit.id].actor
+        unit = self.state.units_by_id[unit.id]
         new_bar = DirectWaitBar(
             value=unit.health,
             pos=(0, 0, 0.5),

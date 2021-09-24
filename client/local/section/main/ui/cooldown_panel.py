@@ -86,7 +86,7 @@ class CooldownPanel(DirectObject):
     def set_cooldown_tracking(self, slot_number, spell_name, spell_cooldown):
         self.spell_names[slot_number] = spell_name
         self.cooldowns[slot_number] = [spell_cooldown, spell_cooldown]
-        task = Task(self.update_cooldown_view, "update cooldown section")
+        task = Task(self.update_cooldown_view, "update cooldown view")
         core.instance.task_mgr.add(task, extraArgs=[task, slot_number])
 
     def handle_set_spell(self, args):
@@ -95,7 +95,8 @@ class CooldownPanel(DirectObject):
         )
 
     def handle_trigger_cooldown(self, args):
-        task = Task(self.update_cooldown_view, "update cooldown section")
+
+        task = Task(self.update_cooldown_view, "update cooldown view")
         core.instance.task_mgr.add(task, extraArgs=[task, args.slot_number])
 
     def update_cooldown_view(self, task, slot_number):

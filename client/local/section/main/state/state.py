@@ -9,11 +9,11 @@ class MainSectionState:
 
     def load(self, state: WorldState) -> None:
         self.player_id = state.player.id
-        player_unit = Unit(state.player)
-        self.units_by_id[player_unit.id] = player_unit
+        player_unit = Unit.from_player(state.player)
+        self.units_by_id[self.player_id] = player_unit
 
         if state.other_players.data is None:
             return
 
         for other_player in state.other_players.data:
-            self.units_by_id[other_player.id] = Unit(other_player)
+            self.units_by_id[other_player.id] = Unit.from_player(other_player)

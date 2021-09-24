@@ -11,8 +11,9 @@ class SectionManager:
     def __init__(self):
         self.active_section = None
 
-    def switch_to_section(self, cls: Type[Section]) -> None:
+    def switch_to_section(self, cls: Type[Section]) -> Section:
         if self.active_section is not None:
-            self.active_section.leave()
+            self.active_section.hide()
         self.active_section = cls()
-        self.active_section.enter()
+        self.active_section.show()
+        return self.active_section
