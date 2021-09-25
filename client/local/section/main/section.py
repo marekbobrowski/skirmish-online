@@ -5,6 +5,7 @@ from .ui.ui import MainSectionUi
 from ..base import Section
 from protocol.domain.WorldState import WorldState
 from client.local import core
+from .state.node_watcher import NodeWatcher
 
 
 class MainSection(Section):
@@ -31,6 +32,7 @@ class MainSection(Section):
             self.scene.spawn_unit(unit)
             self.scene.floating_bars.create_bar(unit)
         self.enable_control()
+        NodeWatcher(self.state.player_unit.base_node, self.scene.node, 0).enable()
 
     def enable_control(self) -> None:
         player_unit = self.state.units_by_id[self.state.player_id]

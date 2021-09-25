@@ -1,5 +1,6 @@
 from protocol.domain.WorldState import WorldState
 from client.local.section.main.state.unit import Unit
+from .node_watcher import NodeWatcher
 from client.event import Event
 from direct.showbase.DirectObject import DirectObject
 from client.local import core
@@ -9,14 +10,16 @@ class MainSectionState(DirectObject):
     def __init__(self):
         DirectObject.__init__(self)
         self.player_id = None
+        self.player_unit = None
         self.units_by_id = {}
         self.accept(Event.PLAYER_JOINED, self.handle_player_joined)
         self.accept(Event.HEALTH_CHANGED, self.handle_health_changed)
+        self.accept(Event.PLAYER_CHANGED_POS_HPR, self.handle_player_changed_pos_hpr)
 
     def load(self, state: WorldState) -> None:
         self.player_id = state.player.id
-        player_unit = Unit.from_player(state.player)
-        self.units_by_id[self.player_id] = player_unit
+        self.player_unit = Unit.from_player(state.player)
+        self.units_by_id[self.player_id] = self.player_unit
 
         if state.other_players is None:
             return
@@ -42,3 +45,13 @@ class MainSectionState(DirectObject):
             core.instance.messenger.send(
                 Event.LOCAL_UNIT_HP_CHANGED, sentArgs=[unit, new_hp]
             )
+
+    def handle_player_changed_pos_hpr(self, *args):
+        unit = self.units_by_id[args[0]]
+        unit.x = args[1]
+        unit.y = args[2]
+        unit.z = args[3]
+        unit.h = args[4]
+        unit.p = args[5]
+        unit.r = args[6]
+        core.instance.messenger.send(Event.LOCAL_UNIT_POS_ROT_CHANGED, sentArgs=[unit])

@@ -24,3 +24,4 @@ class Event:
     LOCAL_NEW_UNIT = "local-new-unit"
     LOCAL_UNIT_HP_CHANGED = "local-unit-hp-changed"
     LOCAL_UNIT_NAME_CHANGED = "local-unit-name-changed"
+    LOCAL_UNIT_POS_ROT_CHANGED = "local-unit-pos-rot-changed"

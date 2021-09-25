@@ -18,7 +18,7 @@ class MainSectionScene(DirectObject):
 
         # section has to handle the event first, before the floating bars
         self.accept(Event.LOCAL_NEW_UNIT, self.handle_local_new_unit)
-        self.accept(Event.PLAYER_CHANGED_POS_HPR, self.handle_player_changed_pos_hpr)
+        self.accept(Event.LOCAL_UNIT_POS_ROT_CHANGED, self.handle_unit_pos_hpr_changed)
         self.accept(
             Event.PLAYER_CHANGED_ANIMATION, self.handle_player_changed_animation
         )
@@ -61,11 +61,11 @@ class MainSectionScene(DirectObject):
         unit = args[0]
         self.spawn_unit(unit)
 
-    def handle_player_changed_pos_hpr(self, args):
-        unit = self.state.units_by_id.get(args.id_, None)
+    def handle_unit_pos_hpr_changed(self, *args):
+        unit = args[0]
         if unit is not None:
             self.move_rotate_character(
-                unit, args.x, args.y, args.z, args.h, args.p, args.r
+                unit, unit.x, unit.y, unit.z, unit.h, unit.p, unit.r
             )
 
     def handle_player_changed_animation(self, *args):

@@ -14,5 +14,8 @@ class PosRotHandler(MessageHandler):
     response_message = None
 
     def handle_message(self):
-        pos_rot = self.message.data
-        core.instance.messenger.send(Event.PLAYER_CHANGED_POS_HPR, sentArgs=[pos_rot])
+        data = self.message.data
+        core.instance.messenger.send(
+            Event.PLAYER_CHANGED_POS_HPR,
+            sentArgs=[data.id, data.x, data.y, data.z, data.h, data.p, data.r],
+        )
