@@ -63,8 +63,7 @@ class Handler:
 #         self.message_parser = MessageParser()
 #         self.data_handler_mapping = {
 #             Message.POS_HPR: self.update_pos_hpr,
-#             Message.NEW_PLAYER: self.update_new_player,
-#             Message.DISCONNECTION: self.update_disconnection,
+#             Message.NEW_PLAYER: self.update_new_player
 #             Message.HEALTH: self.update_health,
 #             Message.TEXT_MSG: self.update_chat,
 #             Message.ANIMATION: self.update_animation,
@@ -124,8 +123,6 @@ class Handler:
 #
 #         core.instance.messenger.send(event=Event.PLAYER_JOINED, sentArgs=[args])
 #
-#     def update_disconnection(self, datagram, iterator):
-#         id_ = iterator.get_uint8()
 #
 #     def update_health(self, datagram, iterator):
 #         while iterator.get_remaining_size() > 0:
