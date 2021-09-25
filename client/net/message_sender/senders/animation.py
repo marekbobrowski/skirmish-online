@@ -6,6 +6,7 @@ class AnimationSender(BaseSender):
     """
     Sends animation updates
     """
+
     MANAGED_EVENT = Event.CLIENT_STARTED_ANIMATION
     MESSAGE_CLS = AnimationRequest
 
@@ -14,4 +15,3 @@ class AnimationSender(BaseSender):
         Sends the animation update
         """
         self.send(AnimationRequest.build(animation_name=animation, loop=loop))
-

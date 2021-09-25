@@ -50,6 +50,7 @@ class NetClient:
     def listen_for_updates(self, task):
         if self.reader.data_available():
             datagram = NetDatagram()
+            print(datagram)
             if self.reader.get_data(datagram):
                 self.handler.handle_data(datagram)
         return Task.cont

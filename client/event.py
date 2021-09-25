@@ -20,3 +20,4 @@ class Event:
     CLIENT_STARTED_ANIMATION = "client-send-animation-attempt"
     CLIENT_STARTED_CHANGING_POS_HPR = "client-started-changing-pos-hpr"
     CLIENT_STOPPED_CHANGING_POS_HPR = "client-stopped-changing-pos-hpr"
+    LOCAL_NEW_UNIT = "local-new-unit"

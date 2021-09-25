@@ -14,12 +14,12 @@ class FloatingBars(DirectObject):
         self.state = state
         self.bars = {}
         self.labels = {}
-        self.accept(Event.PLAYER_JOINED, self.handle_player_joined)
+        self.accept(Event.LOCAL_NEW_UNIT, self.handle_local_new_unit)
         self.accept(Event.HEALTH_CHANGED, self.update_health)
         self.accept(Event.NAME_CHANGED, self.update_name)
 
-    def handle_player_joined(self, args):
-        unit = self.state.units_by_id.get(args.unit.id, None)
+    def handle_local_new_unit(self, args):
+        unit = args[0]
         if unit is not None:
             self.create_bar(unit)
 
@@ -34,7 +34,6 @@ class FloatingBars(DirectObject):
             label["text"] = name
 
     def create_bar(self, unit):
-        actor = self.state.units_by_id[unit.id].actor
         unit = self.state.units_by_id[unit.id]
         new_bar = DirectWaitBar(
             value=unit.health,

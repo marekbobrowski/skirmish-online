@@ -6,6 +6,7 @@ class SpellSender(BaseSender):
     """
     Sends spell cliecked
     """
+
     MANAGED_EVENT = Event.CLIENT_SPELL_ATTEMPT
     MESSAGE_CLS = SpellRequest
 
@@ -14,4 +15,3 @@ class SpellSender(BaseSender):
         Sends the spell cliecked
         """
         self.send(SpellRequest.build(ability))
-

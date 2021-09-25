@@ -6,6 +6,7 @@ class TextMessageSender(BaseSender):
     """
     Sends text messages
     """
+
     MANAGED_EVENT = Event.TXT_MSG_TO_SERVER_TYPED
     MESSAGE_CLS = TextMessageRequest
 
@@ -14,4 +15,3 @@ class TextMessageSender(BaseSender):
         Sends the text message
         """
         self.send(TextMessageRequest.build(message))
-

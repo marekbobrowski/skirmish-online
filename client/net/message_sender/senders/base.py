@@ -3,12 +3,14 @@ from direct.distributed.PyDatagram import PyDatagram
 from client.event import Event
 from protocol.messages.base import Message
 from abc import abstractmethod
+from direct.task.Task import Task
 
 
 class BaseSender(DirectObject):
     """
     Base sender implementation
     """
+
     MANAGED_EVENT: Event
     MESSAGE_CLS: Message
 

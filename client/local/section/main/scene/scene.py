@@ -17,7 +17,7 @@ class MainSectionScene(DirectObject):
         self.node = core.instance.render.attach_new_node("section node")
 
         # section has to handle the event first, before the floating bars
-        self.accept(Event.PLAYER_JOINED, self.handle_player_joined)
+        self.accept(Event.LOCAL_NEW_UNIT, self.handle_local_new_unit)
         self.accept(Event.PLAYER_CHANGED_POS_HPR, self.handle_player_changed_pos_hpr)
         self.accept(
             Event.PLAYER_CHANGED_ANIMATION, self.handle_player_changed_animation
@@ -57,8 +57,9 @@ class MainSectionScene(DirectObject):
     def hide(self) -> None:
         self.node.hide()
 
-    def handle_player_joined(self, args):
-        self.spawn_unit(args.unit)
+    def handle_local_new_unit(self, *args):
+        unit = args[0]
+        self.spawn_unit(unit)
 
     def handle_player_changed_pos_hpr(self, args):
         unit = self.state.units_by_id.get(args.id_, None)

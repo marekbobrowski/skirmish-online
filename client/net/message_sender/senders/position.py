@@ -7,6 +7,7 @@ class PositionSender(BaseSender):
     """
     Position sender
     """
+
     MANAGED_EVENT = Event.POSITION_CHANGED
     MESSAGE_CLS = PosHPRRequest
 
@@ -14,8 +15,4 @@ class PositionSender(BaseSender):
         """
         Handle new position
         """
-        self.send(
-            PosHPRRequest.build(
-                position
-            )
-        )
+        self.send(PosHPRRequest.build(position))
