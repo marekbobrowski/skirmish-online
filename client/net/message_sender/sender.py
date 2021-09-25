@@ -1,5 +1,5 @@
-from ..event import Event
-from ..local import core
+from client.event import Event
+from client.local import core
 
 from direct.distributed.PyDatagram import PyDatagram
 from direct.showbase.DirectObject import DirectObject
@@ -10,17 +10,18 @@ from protocol.message import Message
 import time
 
 
-class SendRequests(DirectObject):
+class Sender(DirectObject):
     def __init__(self, manager):
         DirectObject.__init__(self)
         self.manager = manager
+
         self.accept(Event.CLIENT_STARTED_ANIMATION, self.send_animation)
         self.accept(Event.TXT_MSG_TO_SERVER_TYPED, self.send_chat_message)
         self.accept(Event.CLIENT_SPELL_ATTEMPT, self.send_ability_attempt)
 
         self.last_position = tuple()
 
-    def write(self, datagram, safe=False):
+    def write(self, datagram):
         self.manager.writer.send(datagram, self.manager.server_connection)
 
     def send_pos_hpr(self, node, ref_node):
@@ -51,17 +52,17 @@ class SendRequests(DirectObject):
         datagram = PyDatagram()
         datagram.add_uint8(Message.ACTION)
         datagram.add_uint8(ability)
-        self.write(datagram, True)
+        self.write(datagram)
 
     def send_chat_message(self, message):
         datagram = PyDatagram()
         datagram.add_uint8(Message.TEXT_MSG)
         datagram.add_string(message)
-        self.write(datagram, True)
+        self.write(datagram)
 
     def send_animation(self, animation, loop):
         datagram = PyDatagram()
         datagram.add_uint8(Message.ANIMATION)
         datagram.add_string(animation)
         datagram.add_uint8(loop)
-        self.write(datagram, True)
+        self.write(datagram)

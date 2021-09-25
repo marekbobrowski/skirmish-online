@@ -16,11 +16,13 @@ class Client:
             self.basic_configuration()
 
             section = self.section_manager.switch_to_section(Client.STARTUP_SECTION)
-            section.load_state(self.net_client.get_main_section_state())
+            section.load_state(
+                self.net_client.section_state_fetcher.get_main_section_state()
+            )
             section.post_state_setup()
 
             self.net_client.send_ready_for_updates()
-            self.net_client.begin_sync()
+            self.net_client.begin_sync_with_server()
 
             core.instance.run()
 

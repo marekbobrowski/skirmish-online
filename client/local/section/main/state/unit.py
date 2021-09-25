@@ -22,7 +22,6 @@ class Unit:
     weapon_node: Optional[Any] = None
     actor: Optional[Actor] = None
 
-
     @classmethod
     def from_player(cls, player):
         """
@@ -41,6 +40,6 @@ class Unit:
             "z": player.z,
             "h": player.h,
             "p": player.p,
-            "r": player.r
+            "r": player.r,
         }
         return cls(**data)
