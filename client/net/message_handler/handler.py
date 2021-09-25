@@ -34,11 +34,11 @@ class Handler:
 
         First, message is obtained, then correct message handler is called
         """
-        print(datagram)
         iterator = PyDatagramIterator(datagram)
         # parse message
         try:
-            self.message_parser(iterator, MessageType.response)
+            message = self.message_parser(iterator, MessageType.response)
+            self.handle_message(message)
         except KeyError as e:
             log.exception(e)
             log.error("Unsupported message.")
