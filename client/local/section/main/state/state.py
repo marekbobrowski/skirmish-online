@@ -11,6 +11,7 @@ class MainSectionState(DirectObject):
         self.player_id = None
         self.units_by_id = {}
         self.accept(Event.PLAYER_JOINED, self.handle_player_joined)
+        self.accept(Event.HEALTH_CHANGED, self.handle_health_changed)
 
     def load(self, state: WorldState) -> None:
         self.player_id = state.player.id
@@ -27,3 +28,17 @@ class MainSectionState(DirectObject):
         unit = args[0]
         self.units_by_id[unit.id] = unit
         core.instance.messenger.send(Event.LOCAL_NEW_UNIT, sentArgs=[unit])
+
+    def handle_health_changed(self, *args):
+        hp_info = args[0]
+
+        for obj in hp_info:
+            new_hp = obj.health
+            unit_id = obj.id
+
+            unit = self.units_by_id[unit_id]
+            unit.health = new_hp
+
+            core.instance.messenger.send(
+                Event.LOCAL_UNIT_HP_CHANGED, sentArgs=[unit, new_hp]
+            )

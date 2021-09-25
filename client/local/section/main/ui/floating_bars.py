@@ -15,26 +15,25 @@ class FloatingBars(DirectObject):
         self.bars = {}
         self.labels = {}
         self.accept(Event.LOCAL_NEW_UNIT, self.handle_local_new_unit)
-        self.accept(Event.HEALTH_CHANGED, self.update_health)
-        self.accept(Event.NAME_CHANGED, self.update_name)
+        self.accept(Event.LOCAL_UNIT_HP_CHANGED, self.update_health)
+        self.accept(Event.LOCAL_UNIT_NAME_CHANGED, self.update_name)
 
-    def handle_local_new_unit(self, args):
+    def handle_local_new_unit(self, *args):
         unit = args[0]
         if unit is not None:
             self.create_bar(unit)
 
-    def update_health(self, id_, health):
-        bar = self.bars.get(id_, None)
+    def update_health(self, unit, health):
+        bar = self.bars.get(unit.id, None)
         if bar is not None:
             bar["value"] = health
 
-    def update_name(self, id_, name):
-        label = self.labels.get(id_, None)
+    def update_name(self, unit, name):
+        label = self.labels.get(unit.id, None)
         if label is not None:
             label["text"] = name
 
     def create_bar(self, unit):
-        unit = self.state.units_by_id[unit.id]
         new_bar = DirectWaitBar(
             value=unit.health,
             pos=(0, 0, 0.5),
