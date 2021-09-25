@@ -67,9 +67,9 @@ class MainSectionScene(DirectObject):
                 unit, args.x, args.y, args.z, args.h, args.p, args.r
             )
 
-    def handle_player_changed_animation(self, args):
-        unit = self.state.units_by_id.get(args.id_, None)
-        self.change_animation(unit, args.animation, args.loop)
+    def handle_player_changed_animation(self, *args):
+        unit = self.state.units_by_id.get(args[0], None)
+        self.change_animation(unit, args[1], args[2])
 
     def handle_name_changed(self, id_, name):
         self.state.units_by_id.get(id_).name = name

@@ -327,12 +327,9 @@ class Control:
             if self.unit.actor.get_current_anim() != actor_config.get_anim_name(
                 self.unit.model, Animation.RUN
             ):
-                args = EventArgs()
-                args.id_ = self.unit.id
-                args.animation = Animation.RUN
-                args.loop = 1
                 core.instance.messenger.send(
-                    event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args]
+                    event=Event.PLAYER_CHANGED_ANIMATION,
+                    sentArgs=[self.unit.id, Animation.RUN, 1],
                 )
                 core.instance.messenger.send(
                     event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.RUN, 1]
@@ -341,12 +338,9 @@ class Control:
             if self.unit.actor.get_current_anim() != actor_config.get_anim_name(
                 self.unit.model, Animation.RUN
             ):
-                args = EventArgs()
-                args.id_ = self.unit.id
-                args.animation = Animation.RUN
-                args.loop = 1
                 core.instance.messenger.send(
-                    event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args]
+                    event=Event.PLAYER_CHANGED_ANIMATION,
+                    sentArgs=[self.unit.id, Animation.RUN, 1],
                 )
                 core.instance.messenger.send(
                     event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.RUN, 1]
@@ -355,12 +349,9 @@ class Control:
             if self.unit.actor.get_current_anim() != actor_config.get_anim_name(
                 self.unit.model, Animation.RUN
             ):
-                args = EventArgs()
-                args.id_ = self.unit.id
-                args.animation = Animation.RUN
-                args.loop = 1
                 core.instance.messenger.send(
-                    event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args]
+                    event=Event.PLAYER_CHANGED_ANIMATION,
+                    sentArgs=[self.unit.id, Animation.RUN, 1],
                 )
                 core.instance.messenger.send(
                     event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.RUN, 1]
@@ -374,7 +365,8 @@ class Control:
                 args.animation = Animation.STAND
                 args.loop = 1
                 core.instance.messenger.send(
-                    event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args]
+                    event=Event.PLAYER_CHANGED_ANIMATION,
+                    sentArgs=[self.unit.id, Animation.STAND, 1],
                 )
                 core.instance.messenger.send(
                     event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.STAND, 1]
