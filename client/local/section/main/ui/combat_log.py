@@ -94,12 +94,12 @@ class CombatLog(DirectObject):
                 * core.instance.win.get_y_size(),
             )
 
-    def handle_received_combat_data(self, args):
+    def handle_received_combat_data(self, *args):
         lines = []
-        target_ids = args.target_ids
+        target_ids = args[3]
         for target_id in target_ids:
             lines.append(
-                f"{self.units.get(args.source_id).name} -> {self.units.get(target_id).name} {args.hp_change}"
+                f"{self.units.get(args[2]).name} -> {self.units.get(target_id).name} {args[1]}"
             )
         self.add_lines(lines)
         self.update_view()
