@@ -1,6 +1,6 @@
 from protocol.messages import MessageType
 from protocol.messages.base import Message
-from .handlers.bank import MessageHandlersBank
+from .handlers import MessageHandlersBank
 from protocol.parser import MessageParser
 
 from panda3d.core import QueuedConnectionManager
