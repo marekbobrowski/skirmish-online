@@ -4,7 +4,7 @@ from client.local import core
 from protocol import messages
 
 
-class TextMessageHandler(MessageHandler):
+class AnimationMessageHandler(MessageHandler):
     handled_message = messages.AnimationResponse
     response_message = None
 
