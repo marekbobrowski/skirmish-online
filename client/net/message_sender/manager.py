@@ -1,8 +1,7 @@
 from .senders.animation import AnimationSender
 from .senders.spell import SpellSender
 from .senders.text_message import TextMessageSender
-
-from .updaters.position import PositionUpdater
+from .senders.position import PositionSender
 
 
 class MessageSendersManager:
@@ -15,7 +14,5 @@ class MessageSendersManager:
             AnimationSender(manager),
             SpellSender(manager),
             TextMessageSender(manager),
-        ]
-        self.updaters = [
-            PositionUpdater(manager),
+            PositionSender(manager),
         ]

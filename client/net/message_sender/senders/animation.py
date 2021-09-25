@@ -13,6 +13,5 @@ class AnimationSender(BaseSender):
         """
         Sends the animation update
         """
-        print("called")
         self.send(AnimationRequest.build(animation_name=animation, loop=loop))
 
