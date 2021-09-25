@@ -31,7 +31,7 @@ class FloatingBars(DirectObject):
             label["text"] = name
 
     def create_bar(self, unit):
-        actor = self.units[unit.id].actor
+        _ = self.units[unit.id].actor
         unit = self.units[unit.id]
         new_bar = DirectWaitBar(
             value=unit.health,

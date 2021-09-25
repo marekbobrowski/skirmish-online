@@ -96,7 +96,6 @@ class NetClient:
         self.writer.send(data, self.server_connection)
 
     def begin_sync(self, node, ref_node):
-        from ..local import core
         from .send_requests import SendRequests
         from .fetch_events import FetchEvents
 
@@ -111,25 +110,10 @@ class NetClient:
         )
 
     def get_welcome_message(self):
-        data = PyDatagram()
-        data.add_uint8(Message.WELCOME_MSG)
-        self.writer.send(data, self.server_connection)
-        self.manager.wait_for_readers(self.timeout / 1000)
-        if self.reader.data_available():
-            datagram = NetDatagram()
-            if self.reader.get_data(datagram):
-                iterator = PyDatagramIterator(datagram)
-                packet_type = iterator.get_uint8()
-                if packet_type == Message.WELCOME_MSG:
-                    n_lines = iterator.get_uint8()
-                    lines = []
-                    for i in range(n_lines):
-                        lines.append(iterator.get_string())
-                    return lines
-        return None
+        # DEPRECIATED
+        pass
 
     def stop_updating_skirmish(self):
-        from local import core
 
         core.instance.task_mgr.remove("listen for updates")
         core.instance.task_mgr.remove("send pos hpr")

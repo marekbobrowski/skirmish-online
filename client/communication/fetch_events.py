@@ -77,7 +77,7 @@ class FetchEvents:
         core.instance.messenger.send(event=Event.PLAYER_JOINED, sentArgs=[args])
 
     def update_disconnection(self, datagram, iterator):
-        id_ = iterator.get_uint8()
+        _ = iterator.get_uint8()
 
     def update_health(self, datagram, iterator):
         while iterator.get_remaining_size() > 0:
@@ -88,11 +88,15 @@ class FetchEvents:
             )
 
     def update_chat(self, datagram, iterator):
-        name = iterator.get_string()
-        time = iterator.get_string()
-        message = iterator.get_string()
+        # message = iterator.get_string()
+        # name = iterator.get_string()
+        # time = iterator.get_string()
+        from protocol.domain import TextMessage
+
+        t = TextMessage.parse(iterator)
         core.instance.messenger.send(
-            event=Event.TXT_MSG_FROM_SERVER_RECEIVED, sentArgs=[name, time, message]
+            event=Event.TXT_MSG_FROM_SERVER_RECEIVED,
+            sentArgs=[t.player_name, t.send_dtime, t.message],
         )
 
     def update_animation(self, datagram, iterator):

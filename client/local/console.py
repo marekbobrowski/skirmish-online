@@ -152,7 +152,13 @@ class Console(DirectObject):
             )
 
     def add_msg(self, name, time, msg):
-        if name == "":
+        if time is None:
+            time = ""
+        else:
+            time = time._json()
+
+        if name is None:
+            # NO PAN TU PO CHUJU POSZEDL XDDDD
             self.add_lines(msg.splitlines())
         else:
             self.add_lines([f"{time} {name}: {msg}"])

@@ -147,7 +147,7 @@ class UInt8(ObjectBase, int):
 
     @classmethod
     def dump_default(cls, datagram) -> None:
-        datagram.add_uint8(0)
+        pass
 
     def _json(self) -> int:
         return self.__int__()
@@ -163,7 +163,7 @@ class Float64(ObjectBase, float):
 
     @classmethod
     def dump_default(cls, datagram) -> None:
-        datagram.add_float64(0.0)
+        pass
 
     def _json(self) -> float:
         return self.__float__()
@@ -179,7 +179,7 @@ class String(ObjectBase, str):
 
     @classmethod
     def dump_default(cls, datagram) -> None:
-        datagram.add_string("")
+        pass
 
     def _json(self) -> str:
         return self.__str__()
@@ -200,7 +200,7 @@ class MultilineString(String):
 
     @classmethod
     def dump_default(cls, datagram) -> None:
-        datagram.add_uint8(0)
+        pass
 
 
 class DateTime(ObjectBase, datetime.datetime):
@@ -208,20 +208,21 @@ class DateTime(ObjectBase, datetime.datetime):
 
     @classmethod
     def _parse(cls, iterator) -> "MultilineString":
-        data = iterator.get_string()
-        value = datetime.datetime.strptime(data, cls.FORMAT)
+        data = iterator.get_float64()
+        value = datetime.datetime.fromtimestamp(data)
         return cls.build(value)
 
     def dump(self, datagram) -> None:
-        value = self.strftime(self.FORMAT)
-        datagram.add_string(value)
+        value = self.timestamp()
+        datagram.add_float64(value)
 
     @classmethod
     def dump_default(cls, datagram) -> None:
-        datagram.add_string("")
+        pass
 
-    def _json(self) -> str:
-        return self.strftime(self.FORMAT)
+    def _json(self, format_=None) -> str:
+        format_ = format_ or self.FORMAT
+        return self.strftime(format_)
 
     @classmethod
     def build(cls, *args, **kwargs):
