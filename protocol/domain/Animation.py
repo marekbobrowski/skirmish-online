@@ -16,5 +16,5 @@ class Animation(BaseModel):
 
 class IdAnimation(BaseModel):
     id = UInt8
-    animation_name = String
+    animation_name = String.customize(accepted_values=AnimationName)
     loop = UInt8

@@ -11,6 +11,7 @@ class Event:
     SET_SPELL = "set-spell"
     MODEL_CHANGED = "set-model"
     WEAPON_CHANGED = "weapon-changed"
+    POSITION_CHANGED = "position-changed"
 
     # caused by event from the client
     COMMAND_TYPED = "message-typed"

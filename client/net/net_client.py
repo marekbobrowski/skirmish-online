@@ -1,8 +1,8 @@
 from ..local import core
-from .message_sender.sender import Sender
+from .message_sender.manager import MessageSendersManager
 from .message_handler.handler import Handler
 from .section_state_fetcher import SectionStateFetcher
-from protocol.message import Message
+from protocol.messages import ReadyForSyncRequest
 
 from panda3d.core import QueuedConnectionManager
 from panda3d.core import QueuedConnectionReader
@@ -26,7 +26,7 @@ class NetClient:
         self.writer = ConnectionWriter(self.manager, 0)
 
         # modules that deal with messages
-        self.sender = Sender(self)
+        self.sender_manager = MessageSendersManager(self)
         self.handler = Handler(self)
         self.section_state_fetcher = SectionStateFetcher(self)
 
@@ -40,9 +40,9 @@ class NetClient:
         return False
 
     def send_ready_for_updates(self):
-        data = PyDatagram()
-        data.add_uint8(Message.READY_FOR_SYNC)
-        self.writer.send(data, self.server_connection)
+        datagram = PyDatagram()
+        ReadyForSyncRequest.build().dump(datagram)
+        self.writer.send(datagram, self.server_connection)
 
     def begin_sync_with_server(self):
         core.instance.task_mgr.add(self.listen_for_updates, "listen-for-updates")

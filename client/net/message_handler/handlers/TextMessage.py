@@ -16,6 +16,8 @@ class TextMessageHandler(MessageHandler):
     def handle_message(self):
         data = self.message.data
         name, time, msg = data.player_name, data.send_dtime, data.message
+        if time is not None:
+            time = time._json()
         core.instance.messenger.send(
             Event.TXT_MSG_FROM_SERVER_RECEIVED, sentArgs=[name, time, msg]
         )
