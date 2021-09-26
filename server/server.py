@@ -69,8 +69,15 @@ class Server:
                 datagram = NetDatagram()
                 if self.reader.get_data(datagram):
                     connection = datagram.getConnection()
+                    try:
+                        session = (self.session_manager.for_connection(connection),)
+                    except KeyError:
+                        """
+                        At this point, the session is yet to be created
+                        """
+                        continue
                     self.handler.handle_data(
                         datagram,
                         connection,
-                        self.session_manager.for_connection(connection),
+                        session,
                     )
