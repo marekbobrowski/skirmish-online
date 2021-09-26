@@ -53,12 +53,11 @@ class Server:
                 ):
                     new_connection = new_connection.p()
 
-                    self.reader.add_connection(new_connection)
-
                     session = self.session_manager.new_session(
                         new_connection,
                     )
                     self.notifier_manager.new_notifier(session, new_connection)
+                    self.reader.add_connection(new_connection)
 
     def listen_for_new_data(self):
         """
@@ -69,13 +68,7 @@ class Server:
                 datagram = NetDatagram()
                 if self.reader.get_data(datagram):
                     connection = datagram.getConnection()
-                    try:
-                        session = (self.session_manager.for_connection(connection),)
-                    except KeyError:
-                        """
-                        At this point, the session is yet to be created
-                        """
-                        continue
+                    session = (self.session_manager.for_connection(connection),)
                     self.handler.handle_data(
                         datagram,
                         connection,
