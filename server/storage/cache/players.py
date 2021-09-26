@@ -15,9 +15,9 @@ class PlayerCache:
     SET_KEY = "players"
     PREFIX = "player_"
     POSITION_UPDATE_CHANNEL = "position_update"
-    ANIMATION_UPDATE_CHANNEL = "animation_update_"
-    HEALTH_UPDATE_CHANNEL = "health_update_"
-    NEW_PLAYER_CHANNEL = "new_player_"
+    ANIMATION_UPDATE_CHANNEL = "animation_update"
+    HEALTH_UPDATE_CHANNEL = "health_update"
+    NEW_PLAYER_CHANNEL = "new_player"
 
     def __init__(self, session):
         self.session = session
@@ -107,36 +107,6 @@ class PlayerCache:
         """
         return [self.load(id_) for id_ in self.other_player_ids()]
 
-    # channels for publication
-
-    @classmethod
-    def channel_for_session(cls, session_id):
-        """
-        creates unique channel name for session
-        """
-        return f"{cls.POSITION_UPDATE_CHANNEL}{session_id}"
-
-    @classmethod
-    def new_player_channel_for_session(cls, session_id):
-        """
-        creates unique channel name for session
-        """
-        return f"{cls.NEW_PLAYER_CHANNEL}{session_id}"
-
-    @classmethod
-    def animation_update_channel_for_session(cls, session_id):
-        """
-        creates unique channel name for session
-        """
-        return f"{cls.ANIMATION_UPDATE_CHANNEL}{session_id}"
-
-    @classmethod
-    def health_update_channel_for_session(cls, session_id):
-        """
-        creates unique channel name for session
-        """
-        return f"{cls.HEALTH_UPDATE_CHANNEL}{session_id}"
-
     # channel publication
 
     def publish_new_player(self, player):
@@ -149,11 +119,10 @@ class PlayerCache:
 
         data = json.dumps(dataclasses.asdict(player))
 
-        for session_id in self.session.cache.get_other_sessions():
-            self.session.redis.publish(
-                self.new_player_channel_for_session(session_id),
-                data,
-            )
+        self.session.redis.publish(
+            self.NEW_PLAYER_CHANNEL,
+            data,
+        )
 
     def publish_position_update(self, position):
         """
@@ -184,7 +153,7 @@ class PlayerCache:
 
         return position_update
 
-    def publish_animation_update(self, animation, including_self=False):
+    def publish_animation_update(self, animation):
         """
         Self explanatory name!!!
         """
@@ -192,17 +161,12 @@ class PlayerCache:
             **animation._json(), id=self.session.player.id
         )
 
-        sessions = self.session.cache.get_other_sessions()
-        if including_self is True:
-            sessions.add(self.session.id)
-
         data = json.dumps(dataclasses.asdict(animation_update))
 
-        for session_id in sessions:
-            self.session.redis.publish(
-                self.animation_update_channel_for_session(session_id),
-                data,
-            )
+        self.session.redis.publish(
+            self.ANIMATION_UPDATE_CHANNEL,
+            data,
+        )
 
         return animation_update
 
@@ -219,13 +183,10 @@ class PlayerCache:
         health_updates = [HealthUpdate(p.id, p.health) for p in affected_players]
         data = json.dumps([dataclasses.asdict(hu) for hu in health_updates])
 
-        sessions = self.session.cache.get_all_sessions()
-
-        for session_id in sessions:
-            self.session.redis.publish(
-                self.health_update_channel_for_session(session_id),
-                data,
-            )
+        self.session.redis.publish(
+            self.HEALTH_UPDATE_CHANNEL,
+            data,
+        )
 
     # Subscribtions for channels
 
@@ -245,9 +206,7 @@ class PlayerCache:
         specific for current user
         """
         p = self.session.redis.pubsub()
-        p.subscribe(
-            **{self.new_player_channel_for_session(self.session.id): subscriber}
-        )
+        p.subscribe(**{self.NEW_PLAYER_CHANNEL: subscriber})
         thread = p.run_in_thread(sleep_time=0.001)
         return thread
 
@@ -257,9 +216,7 @@ class PlayerCache:
         specific for current user
         """
         p = self.session.redis.pubsub()
-        p.subscribe(
-            **{self.animation_update_channel_for_session(self.session.id): subscriber}
-        )
+        p.subscribe(**{self.ANIMATION_UPDATE_CHANNEL: subscriber})
         thread = p.run_in_thread(sleep_time=0.001)
         return thread
 
@@ -269,8 +226,6 @@ class PlayerCache:
         specific for current user
         """
         p = self.session.redis.pubsub()
-        p.subscribe(
-            **{self.health_update_channel_for_session(self.session.id): subscriber}
-        )
+        p.subscribe(**{self.HEALTH_UPDATE_CHANNEL: subscriber})
         thread = p.run_in_thread(sleep_time=0.001)
         return thread

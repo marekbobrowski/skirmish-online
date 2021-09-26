@@ -16,6 +16,13 @@ class NewPlayerSubscriber:
         Subscribed method, prepares response and pushes it
         """
         data = json.loads(message["data"])
+
+        if (
+            self.event_notifier.session.player is not None
+            and data["id"] == self.event_notifier.session.player.id
+        ):
+            return
+
         self.event_notifier.session.player_position_cache.update_position(
             PlayerPositionUpdate(
                 id=data["id"],

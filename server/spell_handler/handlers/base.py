@@ -55,7 +55,6 @@ class BaseSpellHandler(metaclass=MetaClass):
         """
         self.session.set_animation(
             Animation(animation_name=self.ANIMATION.value, loop=self.LOOP),
-            including_self=True,
         )
 
     def publish_health_update(self, targets, hp_change):
