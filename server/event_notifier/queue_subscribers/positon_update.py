@@ -1,6 +1,11 @@
 from protocol import messages, domain
 from ...storage.domain import PlayerPositionUpdate
 import json
+import logging
+from datetime import datetime
+
+
+log = logging.getLogger(__name__)
 
 
 class PositionUpdateSubscriber:
@@ -16,6 +21,12 @@ class PositionUpdateSubscriber:
         Subscribed method, prepares response and pushes it
         """
         data = json.loads(message["data"])
+        event_dtime = datetime.fromtimestamp(data.pop("event_dtime"))
+
+        log.info(
+            f"delay: {datetime.now() - event_dtime}, notified {self.event_notifier.session.player.id} about {data['id']}"
+        )
+
         self.event_notifier.session.player_position_cache.update_position(
             PlayerPositionUpdate(**data),
         )

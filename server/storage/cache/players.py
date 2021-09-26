@@ -2,6 +2,7 @@ from ..domain import Player, PlayerPositionUpdate, PlayerAnimationUpdate, Health
 import json
 import dataclasses
 import logging
+from datetime import datetime
 from protocol.domain import Weapon, Model
 import random
 
@@ -162,7 +163,9 @@ class PlayerCache:
 
         self.session.player_position_cache.update_position(position_update)
 
-        data = json.dumps(dataclasses.asdict(position_update))
+        data = dataclasses.asdict(position_update)
+        data["event_dtime"] = datetime.now().timestamp()
+        data = json.dumps(data)
 
         for session_id in self.session.cache.get_other_sessions():
             self.session.redis.publish(

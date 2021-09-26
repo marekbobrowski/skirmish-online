@@ -1,4 +1,5 @@
 from protocol import messages, domain
+from ...storage.domain import PlayerPositionUpdate
 import json
 
 
@@ -15,6 +16,17 @@ class NewPlayerSubscriber:
         Subscribed method, prepares response and pushes it
         """
         data = json.loads(message["data"])
+        self.event_notifier.session.player_position_cache.update_position(
+            PlayerPositionUpdate(
+                id=data["id"],
+                x=data["x"],
+                y=data["y"],
+                z=data["z"],
+                h=data["h"],
+                p=data["p"],
+                r=data["r"],
+            ),
+        )
         self.event_notifier.notify(
             messages.NewPlayerResponse.build(data),
         )
