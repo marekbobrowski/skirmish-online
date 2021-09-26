@@ -21,6 +21,9 @@ class PositionUpdateSubscriber:
         Subscribed method, prepares response and pushes it
         """
         data = json.loads(message["data"])
+        if data["id"] == self.event_notifier.session.player.id:
+            return
+
         event_dtime = datetime.fromtimestamp(data.pop("event_dtime"))
 
         log.info(
