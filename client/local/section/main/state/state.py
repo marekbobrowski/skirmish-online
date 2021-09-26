@@ -54,4 +54,5 @@ class MainSectionState(DirectObject):
         unit.h = args[4]
         unit.p = args[5]
         unit.r = args[6]
+        unit.interpolator.update()
         core.instance.messenger.send(Event.LOCAL_UNIT_POS_ROT_CHANGED, sentArgs=[unit])

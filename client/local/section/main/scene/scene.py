@@ -8,6 +8,8 @@ from client.local.model_config.actor_config.animation import Animation
 from client.local.section.main.ui.floating_bars import FloatingBars
 from panda3d.core import PointLight, AmbientLight
 from direct.showbase.DirectObject import DirectObject
+from direct.task.Task import Task
+from ..state.unit_interpolator import UnitInterpolator
 
 
 class MainSectionScene(DirectObject):
@@ -62,6 +64,7 @@ class MainSectionScene(DirectObject):
         self.spawn_unit(unit)
 
     def handle_unit_pos_hpr_changed(self, *args):
+        return
         unit = args[0]
         if unit is not None:
             self.move_rotate_character(
@@ -84,6 +87,13 @@ class MainSectionScene(DirectObject):
         unit.base_node.set_pos_hpr(unit.x, unit.y, unit.z, unit.h, unit.p, unit.r)
         unit.actor.reparent_to(unit.base_node)
         unit.actor.set_blend(frameBlend=True)
+        if unit.id != self.state.player_id:
+            unit.interpolator = UnitInterpolator(unit)
+            unit.interpolator.update()
+            task = Task(self.update_position_task)
+            core.instance.task_mgr.add(
+                task, f"interpolate{unit}", extraArgs=[unit, task]
+            )
 
     def move_rotate_character(self, unit, x, y, z, h, p, r):
         unit.base_node.set_pos_hpr(x, y, z, h, p, r)
@@ -120,3 +130,7 @@ class MainSectionScene(DirectObject):
             unit.weapon_node.detach_node()
             unit.weapon_node = weapon_config.load(unit.weapon)
             unit.weapon_node.reparent_to(unit.hand_node)
+
+    def update_position_task(self, unit, task):
+        unit.interpolator.interpolate()
+        return Task.cont

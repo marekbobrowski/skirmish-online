@@ -21,6 +21,7 @@ class Unit:
     base_node: Optional[Any] = None
     weapon_node: Optional[Any] = None
     actor: Optional[Actor] = None
+    interpolator: Optional[Any] = None
 
     @classmethod
     def from_player(cls, player):
