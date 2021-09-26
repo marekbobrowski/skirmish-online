@@ -2,9 +2,10 @@ from ..domain import Player, PlayerPositionUpdate, PlayerAnimationUpdate, Health
 import json
 import dataclasses
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 from protocol.domain import Weapon, Model
 import random
+from server import config
 
 
 log = logging.getLogger(__name__)
@@ -20,6 +21,7 @@ class PlayerCache:
 
     def __init__(self, session):
         self.session = session
+        self.last_position_update = datetime.now()
 
     def key(self, id_=None):
         """
@@ -155,8 +157,16 @@ class PlayerCache:
 
     def publish_position_update(self, position):
         """
-        Pushes position update
+        Pushes position update, only if some time passed
         """
+        event_dtime = datetime.now()
+
+        if event_dtime - self.last_position_update < timedelta(
+            milliseconds=config.position_update_delay
+        ):
+            return
+
+        self.last_position_update = event_dtime
         position_update = PlayerPositionUpdate(
             **position._json(), id=self.session.player.id
         )
@@ -164,7 +174,7 @@ class PlayerCache:
         self.session.player_position_cache.update_position(position_update)
 
         data = dataclasses.asdict(position_update)
-        data["event_dtime"] = datetime.now().timestamp()
+        data["event_dtime"] = event_dtime.timestamp()
         data = json.dumps(data)
 
         for session_id in self.session.cache.get_other_sessions():

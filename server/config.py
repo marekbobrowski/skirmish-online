@@ -29,3 +29,5 @@ help = (
 
 
 welcome_msg += help
+
+position_update_delay = 100
