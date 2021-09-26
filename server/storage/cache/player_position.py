@@ -1,10 +1,8 @@
 import pandas
-from redis import Redis
-from .players import PlayerCache
 
 
 class PlayerPositionCache:
-    def __init__(self):
+    def __init__(self, session):
         """
         PlayerPositionCache is cache of user positions.
 
@@ -12,9 +10,8 @@ class PlayerPositionCache:
         in rectangular areas and then allows to narrow
         down the search
         """
-        self.redis = Redis(host="redis")
-        self.player_cache = PlayerCache(self)
-        all_players = self.player_cache.all_players()
+        self.session = session
+        all_players = self.session.player_cache.all_players()
 
         self.db = pandas.DataFrame(columns=["x", "y", "z"], dtype=float)
         for player in all_players:

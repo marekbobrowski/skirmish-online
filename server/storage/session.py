@@ -4,6 +4,7 @@ import logging
 import json
 from .cache.sessions import SessionCache
 from .cache.players import PlayerCache
+from .cache.player_position import PlayerPositionCache
 from .cache.spells import SpellCache
 from .cache.text_message import TextMessageCache
 
@@ -24,17 +25,17 @@ class SessionManager:
         """
         return self.sessions[connection]
 
-    def new_session(self, connection, player_position_cache):
+    def new_session(self, connection):
         """
         Creastes new session
         """
-        session = Session(player_position_cache)
+        session = Session()
         self.sessions[connection] = session
         return session
 
 
 class Session:
-    def __init__(self, player_position_cache):
+    def __init__(self):
         """
         Creates empty session
         """
@@ -46,7 +47,7 @@ class Session:
         self.cache.store()
 
         self.player_cache = PlayerCache(self)
-        self.player_position_cache = player_position_cache
+        self.player_position_cache = PlayerPositionCache(self)
         self.spell_cache = SpellCache(self)
         self.text_message_cache = TextMessageCache(self)
 
