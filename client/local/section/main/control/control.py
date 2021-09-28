@@ -4,7 +4,6 @@ from client.local.model_config.weapon_config import weapon_config
 from client.local.section.main.control.camera_control import CameraControl
 from client.local.section.main.control.node_control import NodeControl
 from client.event import Event
-from client.event_args import EventArgs
 from client.local.model_config.actor_config.animation import Animation
 
 from direct.task.Task import Task
@@ -246,16 +245,6 @@ class Control:
 
     def q_handler(self):
         core.instance.messenger.send(event=Event.CLIENT_SPELL_ATTEMPT, sentArgs=[0])
-        # core.instance.messenger.send(
-        #     event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.MELEE_ATTACK_1, 0]
-        # )
-        args = EventArgs()
-        args.id_ = self.unit.id
-        args.animation = Animation.MELEE_ATTACK_1
-        args.loop = 0
-        # core.instance.messenger.send(
-        #     event=Event.PLAYER_CHANGED_ANIMATION, sentArgs=[args]
-        # )
 
     def q_up_handler(self):
         pass
@@ -360,10 +349,6 @@ class Control:
             if self.unit.actor.get_current_anim() != actor_config.get_anim_name(
                 self.unit.model, Animation.STAND
             ):
-                args = EventArgs()
-                args.id_ = self.unit.id
-                args.animation = Animation.STAND
-                args.loop = 1
                 core.instance.messenger.send(
                     event=Event.PLAYER_CHANGED_ANIMATION,
                     sentArgs=[self.unit.id, Animation.STAND, 1],
