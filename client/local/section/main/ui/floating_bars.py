@@ -1,6 +1,7 @@
 from client.local import core
 from client.local.assets import asset_names
-from client.event import Event
+from client.net.server_event import ServerEvent
+from client.local.client_event import ClientEvent
 
 from ..state.state import MainSectionState
 
@@ -14,9 +15,9 @@ class FloatingBars(DirectObject):
         self.state = state
         self.bars = {}
         self.labels = {}
-        self.accept(Event.LOCAL_NEW_UNIT, self.handle_local_new_unit)
-        self.accept(Event.LOCAL_UNIT_HP_CHANGED, self.update_health)
-        self.accept(Event.LOCAL_UNIT_NAME_CHANGED, self.update_name)
+        self.accept(ClientEvent.NEW_UNIT, self.handle_local_new_unit)
+        self.accept(ClientEvent.UNIT_HP, self.update_health)
+        self.accept(ClientEvent.UNIT_NAME, self.update_name)
 
     def handle_local_new_unit(self, *args):
         unit = args[0]

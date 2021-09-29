@@ -1,6 +1,5 @@
 from direct.task.Task import Task
-from client.event import Event
-from client.local import core
+from client.net.server_event import ServerEvent
 from panda3d.core import NodePath
 from client.local import core
 from datetime import datetime, timedelta
@@ -48,5 +47,7 @@ class NodeWatcher:
             pos_rot = [value for value in self.last_pos] + [
                 value for value in self.last_rot
             ]
-            core.instance.messenger.send(Event.POSITION_CHANGED, sentArgs=[pos_rot])
+            core.instance.messenger.send(
+                ServerEvent.POSITION_CHANGED, sentArgs=[pos_rot]
+            )
         return Task.cont

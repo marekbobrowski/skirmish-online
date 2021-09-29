@@ -1,5 +1,6 @@
 from client.local import core
-from client.event import Event
+from client.net.server_event import ServerEvent
+from client.local.client_event import ClientEvent
 
 
 def parse(command):
@@ -8,7 +9,7 @@ def parse(command):
 
 
 def send_msg_to_server(msg, words):
-    core.instance.messenger.send(event=Event.TXT_MSG_TO_SERVER_TYPED, sentArgs=[msg])
+    core.instance.messenger.send(event=ClientEvent.COMMAND_TO_SERVER, sentArgs=[msg])
 
 
 def set_volume(amt):
@@ -19,7 +20,7 @@ def toggle_combat_log():
     pass
 
 
-core.instance.accept(Event.COMMAND_TYPED, parse)
+core.instance.accept(ClientEvent.COMMAND, parse)
 
 
 class Command:

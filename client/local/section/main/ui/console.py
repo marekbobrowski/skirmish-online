@@ -1,7 +1,7 @@
 from client.local import core
 from client.local.assets import asset_names as assets
-from client.event import Event
-
+from client.net.server_event import ServerEvent
+from client.local.client_event import ClientEvent
 from direct.showbase.DirectObject import DirectObject
 from direct.gui.DirectGui import DirectFrame, DirectEntry, DirectLabel
 from panda3d.core import TextNode
@@ -94,14 +94,14 @@ class Console(DirectObject):
 
         self.accept("aspectRatioChanged", self.aspect_ratio_change_update)
         self.accept("enter", self.focus_entry)
-        self.accept(Event.TXT_MSG_FROM_SERVER_RECEIVED, self.add_msg)
+        self.accept(ServerEvent.TXT_MSG_FROM_SERVER_RECEIVED, self.add_msg)
 
     def send_msg_event(self, msg):
         self.input_symbol_node.hide()
         if msg != "":
             self.entry.enterText("")
             self.entry["focus"] = False
-            core.instance.messenger.send(event=Event.COMMAND_TYPED, sentArgs=[msg])
+            core.instance.messenger.send(event=ClientEvent.COMMAND, sentArgs=[msg])
 
     def focus_entry(self):
         self.input_symbol_node.show()
@@ -156,7 +156,7 @@ class Console(DirectObject):
         if name is None:
             self.add_lines(msg.splitlines())
         else:
-            self.add_lines([f"{time} {name}: {msg}"])
+            self.add_lines([f"[{time}] {name}: {msg}"])
         self.update_view()
 
     def add_lines(self, lines):

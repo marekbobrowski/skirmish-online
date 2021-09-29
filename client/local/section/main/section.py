@@ -29,8 +29,8 @@ class MainSection(Section):
     def post_state_setup(self) -> None:
         units = self.state.units_by_id.values()
         for unit in units:
-            self.scene.spawn_unit(unit)
-            self.scene.floating_bars.create_bar(unit)
+            self.scene.manipulator.spawn_unit(unit)
+            self.ui.floating_bars.create_bar(unit)
         self.enable_control()
         NodeWatcher(self.state.player_unit.base_node, self.scene.node, 0).enable()
 

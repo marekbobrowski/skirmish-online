@@ -1,6 +1,6 @@
 from client.local import core
 from client.local.assets import asset_names as assets
-from client.event import Event
+from client.net.server_event import ServerEvent
 
 from random import uniform
 
@@ -14,7 +14,7 @@ class DmgText(DirectObject):
     def __init__(self, units_by_id):
         DirectObject.__init__(self)
         self.units_by_id = units_by_id
-        self.accept(Event.RECEIVED_COMBAT_DATA, self.handle_received_combat_data)
+        self.accept(ServerEvent.RECEIVED_COMBAT_DATA, self.handle_received_combat_data)
 
         # shaking text settings
         self.init_displacement = 0.2

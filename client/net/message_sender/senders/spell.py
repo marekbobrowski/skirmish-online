@@ -1,4 +1,5 @@
-from .base import BaseSender, Event
+from .base import BaseSender
+from client.local.client_event import ClientEvent
 from protocol.messages import SpellRequest
 
 
@@ -7,7 +8,7 @@ class SpellSender(BaseSender):
     Sends spell cliecked
     """
 
-    MANAGED_EVENT = Event.CLIENT_SPELL_ATTEMPT
+    MANAGED_EVENT = ClientEvent.SPELL_ATTEMPT
     MESSAGE_CLS = SpellRequest
 
     def handle(self, ability: int) -> None:

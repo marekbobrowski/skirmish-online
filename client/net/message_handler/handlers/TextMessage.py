@@ -1,5 +1,5 @@
 from .base import MessageHandler
-from client.event import Event
+from client.net.server_event import ServerEvent
 from client.local import core
 from protocol import messages
 
@@ -19,5 +19,5 @@ class TextMessageHandler(MessageHandler):
         if time is not None:
             time = time._json()
         core.instance.messenger.send(
-            Event.TXT_MSG_FROM_SERVER_RECEIVED, sentArgs=[name, time, msg]
+            ServerEvent.TXT_MSG_FROM_SERVER_RECEIVED, sentArgs=[name, time, msg]
         )

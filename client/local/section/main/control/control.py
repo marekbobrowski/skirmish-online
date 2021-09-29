@@ -1,9 +1,9 @@
 from client.local import core
 from client.local.model_config.actor_config import actor_config
-from client.local.model_config.weapon_config import weapon_config
 from client.local.section.main.control.camera_control import CameraControl
 from client.local.section.main.control.node_control import NodeControl
-from client.event import Event
+from client.local.client_event import ClientEvent
+from client.net.server_event import ServerEvent
 from client.local.model_config.actor_config.animation import Animation
 
 from direct.task.Task import Task
@@ -244,25 +244,25 @@ class Control:
         self.camera_control.zoom_out(1)
 
     def q_handler(self):
-        core.instance.messenger.send(event=Event.CLIENT_SPELL_ATTEMPT, sentArgs=[0])
+        core.instance.messenger.send(event=ClientEvent.SPELL_ATTEMPT, sentArgs=[0])
 
     def q_up_handler(self):
         pass
 
     def e_handler(self):
-        core.instance.messenger.send(event=Event.CLIENT_SPELL_ATTEMPT, sentArgs=[1])
+        core.instance.messenger.send(event=ClientEvent.SPELL_ATTEMPT, sentArgs=[1])
 
     def e_up_handler(self):
         pass
 
     def r_handler(self):
-        core.instance.messenger.send(event=Event.CLIENT_SPELL_ATTEMPT, sentArgs=[2])
+        core.instance.messenger.send(event=ClientEvent.SPELL_ATTEMPT, sentArgs=[2])
 
     def f_handler(self):
-        core.instance.messenger.send(event=Event.CLIENT_SPELL_ATTEMPT, sentArgs=[3])
+        core.instance.messenger.send(event=ClientEvent.SPELL_ATTEMPT, sentArgs=[3])
 
     def c_handler(self):
-        core.instance.messenger.send(event=Event.CLIENT_SPELL_ATTEMPT, sentArgs=[4])
+        core.instance.messenger.send(event=ClientEvent.SPELL_ATTEMPT, sentArgs=[4])
 
     def esc_handler(self):
         pass
@@ -317,42 +317,42 @@ class Control:
                 self.unit.model, Animation.RUN
             ):
                 core.instance.messenger.send(
-                    event=Event.PLAYER_CHANGED_ANIMATION,
+                    event=ServerEvent.PLAYER_CHANGED_ANIMATION,
                     sentArgs=[self.unit.id, Animation.RUN, 1],
                 )
                 core.instance.messenger.send(
-                    event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.RUN, 1]
+                    event=ClientEvent.ANIMATION_CHANGE, sentArgs=[Animation.RUN, 1]
                 )
         elif f("MoveLeft"):
             if self.unit.actor.get_current_anim() != actor_config.get_anim_name(
                 self.unit.model, Animation.RUN
             ):
                 core.instance.messenger.send(
-                    event=Event.PLAYER_CHANGED_ANIMATION,
+                    event=ServerEvent.PLAYER_CHANGED_ANIMATION,
                     sentArgs=[self.unit.id, Animation.RUN, 1],
                 )
                 core.instance.messenger.send(
-                    event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.RUN, 1]
+                    event=ClientEvent.ANIMATION_CHANGE, sentArgs=[Animation.RUN, 1]
                 )
         elif f("MoveForward") or f("MoveBackward"):
             if self.unit.actor.get_current_anim() != actor_config.get_anim_name(
                 self.unit.model, Animation.RUN
             ):
                 core.instance.messenger.send(
-                    event=Event.PLAYER_CHANGED_ANIMATION,
+                    event=ServerEvent.PLAYER_CHANGED_ANIMATION,
                     sentArgs=[self.unit.id, Animation.RUN, 1],
                 )
                 core.instance.messenger.send(
-                    event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.RUN, 1]
+                    event=ClientEvent.ANIMATION_CHANGE, sentArgs=[Animation.RUN, 1]
                 )
         else:
             if self.unit.actor.get_current_anim() != actor_config.get_anim_name(
                 self.unit.model, Animation.STAND
             ):
                 core.instance.messenger.send(
-                    event=Event.PLAYER_CHANGED_ANIMATION,
+                    event=ServerEvent.PLAYER_CHANGED_ANIMATION,
                     sentArgs=[self.unit.id, Animation.STAND, 1],
                 )
                 core.instance.messenger.send(
-                    event=Event.CLIENT_STARTED_ANIMATION, sentArgs=[Animation.STAND, 1]
+                    event=ClientEvent.ANIMATION_CHANGE, sentArgs=[Animation.STAND, 1]
                 )

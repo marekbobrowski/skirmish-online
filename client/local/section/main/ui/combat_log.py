@@ -1,6 +1,6 @@
 from client.local import core
 from client.local.assets import asset_names as assets
-from client.event import Event
+from client.net.server_event import ServerEvent
 
 from direct.showbase.DirectObject import DirectObject
 from direct.gui.DirectGui import DirectFrame, DirectLabel
@@ -66,7 +66,7 @@ class CombatLog(DirectObject):
             )
 
         self.accept("aspectRatioChanged", self.aspect_ratio_change_update)
-        self.accept(Event.RECEIVED_COMBAT_DATA, self.handle_received_combat_data)
+        self.accept(ServerEvent.RECEIVED_COMBAT_DATA, self.handle_received_combat_data)
 
     def aspect_ratio_change_update(self):
         self.frame["frameSize"] = (

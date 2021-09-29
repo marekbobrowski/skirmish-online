@@ -1,5 +1,5 @@
 from .base import MessageHandler
-from client.event import Event
+from client.net.server_event import ServerEvent
 from client.local import core
 from protocol import messages
 
@@ -11,6 +11,6 @@ class HealthHandler(MessageHandler):
     def handle_message(self):
         health_info = self.message.data.data
         core.instance.messenger.send(
-            Event.HEALTH_CHANGED,
+            ServerEvent.HEALTH_CHANGED,
             sentArgs=[health_info],
         )

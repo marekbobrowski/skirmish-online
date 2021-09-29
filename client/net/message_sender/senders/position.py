@@ -1,4 +1,4 @@
-from .base import BaseSender, Event
+from .base import BaseSender, ServerEvent
 from protocol.messages import PosHPRRequest
 import time
 
@@ -8,7 +8,7 @@ class PositionSender(BaseSender):
     Position sender
     """
 
-    MANAGED_EVENT = Event.POSITION_CHANGED
+    MANAGED_EVENT = ServerEvent.POSITION_CHANGED
     MESSAGE_CLS = PosHPRRequest
 
     def handle(self, position):

@@ -4,6 +4,7 @@ from .console import Console
 from .dmg_text import DmgText
 from .combat_log import CombatLog
 from .cooldown_panel import CooldownPanel
+from .floating_bars import FloatingBars
 
 
 class MainSectionUi:
@@ -14,6 +15,7 @@ class MainSectionUi:
         self.dmg_text = DmgText(self.state.units_by_id)
         self.combat_log = CombatLog(self.node, self.state.units_by_id)
         self.cooldown_panel = CooldownPanel(self.node, self.state.units_by_id)
+        self.floating_bars = FloatingBars(self.state)
 
     def show(self) -> None:
         self.node.show()

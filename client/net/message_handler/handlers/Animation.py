@@ -1,5 +1,5 @@
 from .base import MessageHandler
-from client.event import Event
+from client.net.server_event import ServerEvent
 from client.local import core
 from protocol import messages
 
@@ -12,5 +12,5 @@ class AnimationMessageHandler(MessageHandler):
         data = self.message.data
         id_, anim_name, loop = data.id, data.animation_name, data.loop
         core.instance.messenger.send(
-            Event.PLAYER_CHANGED_ANIMATION, sentArgs=[id_, anim_name, loop]
+            ServerEvent.PLAYER_CHANGED_ANIMATION, sentArgs=[id_, anim_name, loop]
         )

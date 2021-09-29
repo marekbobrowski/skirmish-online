@@ -1,7 +1,7 @@
 from protocol.domain.WorldState import WorldState
 from client.local.section.main.state.unit import Unit
-from .node_watcher import NodeWatcher
-from client.event import Event
+from client.net.server_event import ServerEvent
+from client.local.client_event import ClientEvent
 from direct.showbase.DirectObject import DirectObject
 from client.local import core
 
@@ -12,9 +12,11 @@ class MainSectionState(DirectObject):
         self.player_id = None
         self.player_unit = None
         self.units_by_id = {}
-        self.accept(Event.PLAYER_JOINED, self.handle_player_joined)
-        self.accept(Event.HEALTH_CHANGED, self.handle_health_changed)
-        self.accept(Event.PLAYER_CHANGED_POS_HPR, self.handle_player_changed_pos_hpr)
+        self.accept(ServerEvent.PLAYER_JOINED, self.handle_player_joined)
+        self.accept(ServerEvent.HEALTH_CHANGED, self.handle_health_changed)
+        self.accept(
+            ServerEvent.PLAYER_CHANGED_POS_HPR, self.handle_player_changed_pos_hpr
+        )
 
     def load(self, state: WorldState) -> None:
         self.player_id = state.player.id
@@ -30,7 +32,7 @@ class MainSectionState(DirectObject):
     def handle_player_joined(self, *args):
         unit = args[0]
         self.units_by_id[unit.id] = unit
-        core.instance.messenger.send(Event.LOCAL_NEW_UNIT, sentArgs=[unit])
+        core.instance.messenger.send(ClientEvent.NEW_UNIT, sentArgs=[unit])
 
     def handle_health_changed(self, *args):
         hp_info = args[0]
@@ -42,9 +44,7 @@ class MainSectionState(DirectObject):
             unit = self.units_by_id[unit_id]
             unit.health = new_hp
 
-            core.instance.messenger.send(
-                Event.LOCAL_UNIT_HP_CHANGED, sentArgs=[unit, new_hp]
-            )
+            core.instance.messenger.send(ClientEvent.UNIT_HP, sentArgs=[unit, new_hp])
 
     def handle_player_changed_pos_hpr(self, *args):
         unit = self.units_by_id[args[0]]
@@ -55,4 +55,4 @@ class MainSectionState(DirectObject):
         unit.p = args[5]
         unit.r = args[6]
         unit.interpolator.update()
-        core.instance.messenger.send(Event.LOCAL_UNIT_POS_ROT_CHANGED, sentArgs=[unit])
+        core.instance.messenger.send(ClientEvent.UNIT_POS_ROT, sentArgs=[unit])
