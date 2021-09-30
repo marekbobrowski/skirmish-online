@@ -3,7 +3,7 @@ from protocol.domain.base import BaseModel
 
 class Section:
     """
-    Sections are different parts of applications having different views (scene, GUI) and model.
+    Sections are different parts of application, having different views (scene, GUI) and model.
     """
 
     def show(self) -> None:
@@ -12,10 +12,10 @@ class Section:
     def hide(self) -> None:
         pass
 
-    def load_state(self, state: BaseModel) -> None:
+    def load_model(self, model: BaseModel) -> None:
         pass
 
-    def post_state_setup(self) -> None:
+    def post_model_setup(self) -> None:
         """
         Called after loading the model.
         """

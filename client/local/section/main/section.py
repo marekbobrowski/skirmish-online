@@ -23,10 +23,10 @@ class MainSection(Section):
         self.scene.hide()
         self.ui.hide()
 
-    def load_state(self, state: WorldState) -> None:
-        self.model.load(state)
+    def load_model(self, model: WorldState) -> None:
+        self.model.load(model)
 
-    def post_state_setup(self) -> None:
+    def post_model_setup(self) -> None:
         units = self.model.units_by_id.values()
         for unit in units:
             self.scene.manipulator.spawn_unit(unit)
