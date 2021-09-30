@@ -1,5 +1,5 @@
 from .base import MessageHandler
-from client.net.server_event import ServerEvent
+from client.event import Event
 from client.local import core
 from protocol import messages
 
@@ -11,6 +11,6 @@ class CombatDataHandler(MessageHandler):
     def handle_message(self):
         data = self.message.data
         core.instance.messenger.send(
-            ServerEvent.RECEIVED_COMBAT_DATA,
+            Event.COMBAT_DATA_RECEIVED,
             sentArgs=[data.spell, data.hp_change, data.source, data.targets.data],
         )

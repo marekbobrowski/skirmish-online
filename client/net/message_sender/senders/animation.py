@@ -1,5 +1,5 @@
 from .base import BaseSender
-from client.local.client_event import ClientEvent
+from client.event import Event
 from protocol.messages import AnimationRequest
 
 
@@ -8,7 +8,7 @@ class AnimationSender(BaseSender):
     Sends animation updates
     """
 
-    MANAGED_EVENT = ClientEvent.ANIMATION_CHANGE
+    MANAGED_EVENT = Event.MY_ANIMATION_CHANGE_ATTEMPT
     MESSAGE_CLS = AnimationRequest
 
     def handle(self, animation: str, loop: int) -> None:

@@ -1,38 +1,45 @@
 from client.local.model_config.actor_config import actor_config
 from client.local.model_config.weapon_config import weapon_config
 from direct.task.Task import Task
-from client.local.section.main.state.unit_interpolator import UnitInterpolator
+from client.local.section.main.scene.actor_manipulation.unit_interpolator import (
+    UnitInterpolator,
+)
 from client.local.model_config.actor_config.animation import Animation
 from client.local import core
-from client.net.server_event import ServerEvent
-from client.local.client_event import ClientEvent
+from client.event import Event
 from direct.showbase.DirectObject import DirectObject
 
 
 class ActorManipulator(DirectObject):
-    def __init__(self, state, node):
+    def __init__(self, model, node):
         DirectObject.__init__(self)
-        self.state = state
+        self.model = model
         self.node = node
 
-        self.accept(ClientEvent.NEW_UNIT, self.handle_local_new_unit)
-        self.accept(
-            ServerEvent.PLAYER_CHANGED_ANIMATION, self.handle_player_changed_animation
-        )
-        self.accept(ServerEvent.NAME_CHANGED, self.handle_name_changed)
-        self.accept(ServerEvent.MODEL_CHANGED, self.handle_model_changed)
-        self.accept(ServerEvent.WEAPON_CHANGED, self.handle_weapon_changed)
+        self.accept(Event.NEW_UNIT_CREATED, self.handle_new_unit_created)
+        self.accept(Event.UNIT_ANIMATION_UPDATED, self.handle_unit_animation_updated)
+        self.accept(Event.UNIT_MODEL_UPDATED, self.handle_unit_model_updated)
 
-    def handle_local_new_unit(self, *args):
+    def handle_new_unit_created(self, *args):
         unit = args[0]
         self.spawn_unit(unit)
 
-    def handle_player_changed_animation(self, *args):
-        unit = self.state.units_by_id.get(args[0], None)
-        self.change_animation(unit, args[1], args[2])
+    def handle_unit_animation_updated(self, *args):
+        unit, loop = args
+        self.change_animation(unit, unit.animation, loop)
 
-    def handle_name_changed(self, id_, name):
-        self.state.units_by_id.get(id_).name = name
+    def handle_unit_model_updated(self, *args):
+        unit = args[0]
+        unit.actor.removePart("modelRoot")
+        unit.actor = actor_config.load(unit.model)
+        unit.actor.reparent_to(unit.base_node)
+        self.change_animation(unit, Animation.STAND, 1)
+        weapon = weapon_config.load(unit.weapon)
+        self.equip_weapon(unit, weapon)
+
+    def handle_weapon_changed(self, *args):
+        unit = args
+        self.change_weapon(unit, unit.weapon)
 
     def spawn_unit(self, unit):
         unit.actor = actor_config.load(unit.model)
@@ -43,7 +50,7 @@ class ActorManipulator(DirectObject):
         unit.base_node.set_pos_hpr(unit.x, unit.y, unit.z, unit.h, unit.p, unit.r)
         unit.actor.reparent_to(unit.base_node)
         unit.actor.set_blend(frameBlend=True)
-        if unit.id != self.state.player_id:
+        if unit != self.model.player_unit:
             unit.interpolator = UnitInterpolator(unit)
             unit.interpolator.update()
             task = Task(self.update_position_task)
@@ -66,21 +73,8 @@ class ActorManipulator(DirectObject):
         weapon.reparent_to(unit.hand_node)
         unit.weapon_node = weapon
 
-    def handle_model_changed(self, args):
-        unit = self.state.units_by_id.get(args.player_id, None)
-        unit.model = args.model_id
-        unit.actor.removePart("modelRoot")
-        unit.actor = actor_config.load(unit.model)
-        unit.actor.reparent_to(unit.base_node)
-        self.change_animation(unit, Animation.STAND, 1)
-        weapon = weapon_config.load(unit.weapon)
-        self.equip_weapon(unit, weapon)
-
-    def handle_weapon_changed(self, args):
-        self.change_weapon(args.player_id, args.weapon_id)
-
     def change_weapon(self, player_id, weapon_id):
-        unit = self.state.units_by_id.get(player_id, None)
+        unit = self.model.units_by_id.get(player_id, None)
         if unit is not None:
             unit.weapon = weapon_id
             unit.weapon_node.detach_node()

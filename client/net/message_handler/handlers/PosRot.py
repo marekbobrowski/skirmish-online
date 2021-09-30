@@ -1,5 +1,5 @@
 from .base import MessageHandler
-from client.net.server_event import ServerEvent
+from client.event import Event
 from client.local import core
 from protocol import messages
 
@@ -16,6 +16,6 @@ class PosRotHandler(MessageHandler):
     def handle_message(self):
         data = self.message.data
         core.instance.messenger.send(
-            ServerEvent.PLAYER_CHANGED_POS_HPR,
+            Event.UNIT_POS_ROT_RECEIVED,
             sentArgs=[data.id, data.x, data.y, data.z, data.h, data.p, data.r],
         )

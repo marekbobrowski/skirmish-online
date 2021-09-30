@@ -1,4 +1,4 @@
 from .section import MainSection
-from .state.state import MainSectionState
+from .model.model import MainSectionModel
 from .scene.scene import MainSectionScene
 from .ui import MainSectionUi

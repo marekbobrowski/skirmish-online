@@ -1,8 +1,8 @@
 from .base import MessageHandler
-from client.net.server_event import ServerEvent
+from client.event import Event
 from client.local import core
 from protocol import messages
-from client.local.section.main.state.unit import Unit
+from client.local.section.main.model.unit import Unit
 
 
 class NewPlayerHandler(MessageHandler):
@@ -13,6 +13,6 @@ class NewPlayerHandler(MessageHandler):
         data = self.message.data
         unit = Unit.from_player(data)
         core.instance.messenger.send(
-            ServerEvent.PLAYER_JOINED,
+            Event.NEW_UNIT_DATA_RECEIVED,
             sentArgs=[unit],
         )

@@ -1,6 +1,6 @@
 from client.local import core
 from client.local.assets import asset_names as assets
-from client.net.server_event import ServerEvent
+from client.event import Event
 
 from direct.showbase.DirectObject import DirectObject
 from direct.gui.DirectGui import DirectFrame, DirectLabel
@@ -78,8 +78,8 @@ class CooldownPanel(DirectObject):
             )
 
         self.accept("aspectRatioChanged", self.aspect_ratio_change_update)
-        self.accept(ServerEvent.SET_SPELL, self.handle_set_spell)
-        self.accept(ServerEvent.TRIGGER_COOLDOWN, self.handle_trigger_cooldown)
+        self.accept(Event.SET_SPELL_RECEIVED, self.handle_set_spell)
+        self.accept(Event.TRIGGER_COOLDOWN_RECEIVED, self.handle_trigger_cooldown)
 
         self.update_view()
 

@@ -1,6 +1,6 @@
 from direct.showbase.DirectObject import DirectObject
 from direct.distributed.PyDatagram import PyDatagram
-from client.net.server_event import ServerEvent
+from client.event import Event
 from protocol.messages.base import Message
 from abc import abstractmethod
 from direct.task.Task import Task
@@ -11,7 +11,7 @@ class BaseSender(DirectObject):
     Base sender implementation
     """
 
-    MANAGED_EVENT: ServerEvent
+    MANAGED_EVENT: Event
     MESSAGE_CLS: Message
 
     def __init__(self, manager):

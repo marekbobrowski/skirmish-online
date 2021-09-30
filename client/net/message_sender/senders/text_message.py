@@ -1,5 +1,5 @@
 from .base import BaseSender
-from client.local.client_event import ClientEvent
+from client.event import Event
 from protocol.messages import TextMessageRequest
 
 
@@ -8,7 +8,7 @@ class TextMessageSender(BaseSender):
     Sends text messages
     """
 
-    MANAGED_EVENT = ClientEvent.COMMAND_TO_SERVER
+    MANAGED_EVENT = Event.COMMAND_TO_SERVER_ENTERED
     MESSAGE_CLS = TextMessageRequest
 
     def handle(self, message: str) -> None:

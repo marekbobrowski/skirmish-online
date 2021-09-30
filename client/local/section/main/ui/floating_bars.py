@@ -1,38 +1,45 @@
 from client.local import core
 from client.local.assets import asset_names
-from client.net.server_event import ServerEvent
-from client.local.client_event import ClientEvent
+from client.event import Event
 
-from ..state.state import MainSectionState
+from ..model.model import MainSectionModel
 
 from direct.gui.DirectGui import DirectWaitBar, DirectLabel
 from direct.showbase.DirectObject import DirectObject
 
 
 class FloatingBars(DirectObject):
-    def __init__(self, state: MainSectionState):
+    def __init__(self, model: MainSectionModel):
         DirectObject.__init__(self)
-        self.state = state
+        self.model = model
         self.bars = {}
         self.labels = {}
-        self.accept(ClientEvent.NEW_UNIT, self.handle_local_new_unit)
-        self.accept(ClientEvent.UNIT_HP, self.update_health)
-        self.accept(ClientEvent.UNIT_NAME, self.update_name)
+        self.accept(Event.NEW_UNIT_CREATED, self.handle_local_new_unit)
+        self.accept(Event.UNIT_HP_UPDATED, self.handle_unit_hp_updated)
+        self.accept(Event.UNIT_NAME_UPDATED, self.handle_unit_name_updated)
 
     def handle_local_new_unit(self, *args):
         unit = args[0]
         if unit is not None:
             self.create_bar(unit)
 
-    def update_health(self, unit, health):
+    def handle_unit_hp_updated(self, *args):
+        unit = args[0]
+        self.update_health_bar(unit)
+
+    def handle_unit_name_updated(self, *args):
+        unit = args[0]
+        self.update_name_label(unit)
+
+    def update_health_bar(self, unit):
         bar = self.bars.get(unit.id, None)
         if bar is not None:
-            bar["value"] = health
+            bar["value"] = unit.health
 
-    def update_name(self, unit, name):
+    def update_name_label(self, unit):
         label = self.labels.get(unit.id, None)
         if label is not None:
-            label["text"] = name
+            label["text"] = unit.name
 
     def create_bar(self, unit):
         new_bar = DirectWaitBar(

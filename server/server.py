@@ -22,7 +22,7 @@ class Server:
         self.writer = ConnectionWriter(self.manager, 0)
         self.handler = Handler(self)
 
-        # Server state
+        # Server model
         self.session_manager = SessionManager()
         self.notifier_manager = NotifierManager(self)
 

@@ -14,7 +14,7 @@ class WorldStateHandler(MessageHandler):
 
     def __call__(self) -> messages.WorldStateResponse:
         """
-        Build session and return world state
+        Build session and return world model
         """
         current_players = self.session.player_cache.all_players()
         id_ = max({p.id for p in current_players} | {-1}) + 1
