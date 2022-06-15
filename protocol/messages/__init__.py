@@ -8,7 +8,7 @@ from .NewPlayer import NewPlayerResponse
 from .PosHPR import PosHPRRequest, PosHPRResponse
 from .ReadyForSync import ReadyForSyncRequest
 from .RequestModel import RequestModel
-from .SetName import SetName
+from .NameUpdate import SetNameResponse
 from .Teleport import Teleport
 from .TextMessage import TextMessageRequest, TextMessageResponse
 from .WorldState import WorldStateRequest, WorldStateResponse

@@ -1,0 +1,1 @@
+from .SetNameCommandHandler import SetNameCommandHandler

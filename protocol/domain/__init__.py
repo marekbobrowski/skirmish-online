@@ -6,6 +6,7 @@ from .WorldState import WorldState
 from .Spell import Spell, Spells
 from .CombatData import CombatData
 from .HealthUpdate import HealthUpdate
+from .NameUpdate import NameUpdate
 from .Weapon import Weapon
 from .Model import Model
 from .base import ListOf

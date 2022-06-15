@@ -28,10 +28,10 @@ class PositionUpdateSubscriber:
             return
 
         event_dtime = datetime.fromtimestamp(data.pop("event_dtime"))
-
-        log.info(
-            f"delay: {(datetime.now() - event_dtime).total_seconds() * 1000}, notified {self.event_notifier.session.player.id} about {data['id']}"
-        )
+        #
+        # log.info(
+        #     f"delay: {(datetime.now() - event_dtime).total_seconds() * 1000}, notified {self.event_notifier.session.player.id} about {data['id']}"
+        # )
 
         self.event_notifier.session.player_position_cache.update_position(
             PlayerPositionUpdate(**data),
