@@ -1,4 +1,4 @@
-from ..domain import Player, PlayerPositionUpdate, PlayerAnimationUpdate, HealthUpdate, NameUpdate
+from ..domain import Player, PlayerPositionUpdate, PlayerAnimationUpdate, HealthUpdate, NameUpdate, ModelUpdate
 import json
 import dataclasses
 import logging
@@ -15,6 +15,7 @@ class PlayerCache:
     SET_KEY = "players"
     PREFIX = "player_"
     POSITION_UPDATE_CHANNEL = "position_update"
+    MODEL_UPDATE_CHANNEL = "model_update"
     ANIMATION_UPDATE_CHANNEL = "animation_update"
     HEALTH_UPDATE_CHANNEL = "health_update"
     NAME_UPDATE_CHANNEL = "name_update"
@@ -199,6 +200,16 @@ class PlayerCache:
             data,
         )
 
+    def publish_model_update(self, model):
+        self.session.player.model = model
+        self.save(self.session.player)
+        data = json.dumps(dataclasses.asdict(ModelUpdate(self.session.player.id,
+                                                         self.session.player.model)))
+        self.session.redis.publish(
+            self.MODEL_UPDATE_CHANNEL,
+            data,
+        )
+
 
     # Subscribtions for channels
 
@@ -250,4 +261,14 @@ class PlayerCache:
         p = self.session.redis.pubsub()
         p.subscribe(**{self.NAME_UPDATE_CHANNEL: subscriber})
         thread = p.run_in_thread(sleep_time=0.001)
+        return thread
+
+    def subscribe_model_update(self, subscriber):
+        """
+        Creates a thread that will subscribe to the channel
+        specific for current user
+        """
+        p = self.session.redis.pubsub()
+        p.subscribe(**{self.MODEL_UPDATE_CHANNEL: subscriber})
+        thread = p.run_in_thread(sleep_time=0.25)
         return thread

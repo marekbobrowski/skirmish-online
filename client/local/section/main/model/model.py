@@ -92,6 +92,7 @@ class MainSectionModel(DirectObject):
             model_id,
         ) = args
         unit = self.units_by_id.get(unit_id, None)
+        unit.model = model_id
         if unit is None:
             return
         core.instance.messenger.send(Event.UNIT_MODEL_UPDATED, sentArgs=[unit])

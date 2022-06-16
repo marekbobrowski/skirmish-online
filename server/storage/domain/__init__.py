@@ -4,3 +4,4 @@ from .combat_data import CombatData
 from .health_update import HealthUpdate
 from .text_message import TextMessage
 from .name_update import NameUpdate
+from .model_update import ModelUpdate

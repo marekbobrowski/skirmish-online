@@ -1,1 +1,2 @@
 from .SetNameCommandHandler import SetNameCommandHandler
+from .SetModelCommandHandler import SetModelCommandHandler

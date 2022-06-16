@@ -7,3 +7,4 @@ from .CombatData import CombatDataHandler
 from .NewPlayer import NewPlayerHandler
 from .Health import HealthHandler
 from .SetName import SetNameHandler
+from .SetModel import SetModelHandler
