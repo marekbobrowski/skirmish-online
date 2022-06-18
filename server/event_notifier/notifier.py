@@ -5,6 +5,7 @@ from .queue_subscribers.health_change import HealthUpdateSubscriber
 from .queue_subscribers.text_message import TextMessageSubscriber
 from .queue_subscribers.name_update import NameUpdateSubscriber
 from .queue_subscribers.model_update import ModelUpdateSubscriber
+from .queue_subscribers.weapon_update import WeaponUpdateSubscriber
 from redis import Redis
 from direct.distributed.PyDatagram import PyDatagram
 import logging
@@ -48,6 +49,7 @@ class EventNotifier:
             TextMessageSubscriber(self),
             NameUpdateSubscriber(self),
             ModelUpdateSubscriber(self),
+            WeaponUpdateSubscriber(self),
         ]
         for subsubscriber in self.subsubscribers:
             subsubscriber.run()

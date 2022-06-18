@@ -8,6 +8,7 @@ from .CombatData import CombatData
 from .HealthUpdate import HealthUpdate
 from .NameUpdate import NameUpdate
 from .ModelUpdate import ModelUpdate
+from .WeaponUpdate import WeaponUpdate
 from .Weapon import Weapon
 from .Model import Model
 from .base import ListOf

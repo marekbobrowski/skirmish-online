@@ -1,2 +1,3 @@
 from .SetNameCommandHandler import SetNameCommandHandler
 from .SetModelCommandHandler import SetModelCommandHandler
+from .SetWeaponCommandHandler import SetWeaponCommandHandler

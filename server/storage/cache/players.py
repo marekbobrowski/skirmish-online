@@ -1,4 +1,4 @@
-from ..domain import Player, PlayerPositionUpdate, PlayerAnimationUpdate, HealthUpdate, NameUpdate, ModelUpdate
+from ..domain import Player, PlayerPositionUpdate, PlayerAnimationUpdate, HealthUpdate, NameUpdate, ModelUpdate, WeaponUpdate
 import json
 import dataclasses
 import logging
@@ -20,6 +20,7 @@ class PlayerCache:
     HEALTH_UPDATE_CHANNEL = "health_update"
     NAME_UPDATE_CHANNEL = "name_update"
     NEW_PLAYER_CHANNEL = "new_player"
+    WEAPON_UPDATE_CHANNEL = "weapon_update"
 
     def __init__(self, session):
         self.session = session
@@ -210,6 +211,16 @@ class PlayerCache:
             data,
         )
 
+    def publish_weapon_update(self, weapon_id):
+        self.session.player.weapon = weapon_id
+        self.save(self.session.player)
+        data = json.dumps(dataclasses.asdict(WeaponUpdate(self.session.player.id,
+                                                          self.session.player.weapon)))
+        self.session.redis.publish(
+            self.WEAPON_UPDATE_CHANNEL,
+            data,
+        )
+
 
     # Subscribtions for channels
 
@@ -270,5 +281,15 @@ class PlayerCache:
         """
         p = self.session.redis.pubsub()
         p.subscribe(**{self.MODEL_UPDATE_CHANNEL: subscriber})
+        thread = p.run_in_thread(sleep_time=0.25)
+        return thread
+
+    def subscribe_weapon_update(self, subscriber):
+        """
+        Creates a thread that will subscribe to the channel
+        specific for current user
+        """
+        p = self.session.redis.pubsub()
+        p.subscribe(**{self.WEAPON_UPDATE_CHANNEL: subscriber})
         thread = p.run_in_thread(sleep_time=0.25)
         return thread

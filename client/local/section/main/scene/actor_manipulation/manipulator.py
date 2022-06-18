@@ -19,6 +19,7 @@ class ActorManipulator(DirectObject):
         self.accept(Event.NEW_UNIT_CREATED, self.handle_new_unit_created)
         self.accept(Event.UNIT_ANIMATION_UPDATED, self.handle_unit_animation_updated)
         self.accept(Event.UNIT_MODEL_UPDATED, self.handle_unit_model_updated)
+        self.accept(Event.UNIT_WEAPON_UPDATED, self.handle_weapon_changed)
 
     def handle_new_unit_created(self, *args):
         unit = args[0]
@@ -38,7 +39,7 @@ class ActorManipulator(DirectObject):
         self.equip_weapon(unit, weapon)
 
     def handle_weapon_changed(self, *args):
-        unit = args
+        unit, = args
         self.change_weapon(unit, unit.weapon)
 
     def spawn_unit(self, unit):
@@ -73,13 +74,10 @@ class ActorManipulator(DirectObject):
         weapon.reparent_to(unit.hand_node)
         unit.weapon_node = weapon
 
-    def change_weapon(self, player_id, weapon_id):
-        unit = self.model.units_by_id.get(player_id, None)
-        if unit is not None:
-            unit.weapon = weapon_id
-            unit.weapon_node.detach_node()
-            unit.weapon_node = weapon_config.load(unit.weapon)
-            unit.weapon_node.reparent_to(unit.hand_node)
+    def change_weapon(self, unit, weapon):
+        unit.weapon_node.detach_node()
+        unit.weapon_node = weapon_config.load(unit.weapon)
+        unit.weapon_node.reparent_to(unit.hand_node)
 
     def update_position_task(self, unit, task):
         unit.interpolator.interpolate()
