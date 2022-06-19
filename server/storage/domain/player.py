@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass
@@ -28,6 +29,7 @@ class Player:
     animation: str
     loop: int
     weapon: int
+    ready_for_sync: bool
 
     x: float
     y: float

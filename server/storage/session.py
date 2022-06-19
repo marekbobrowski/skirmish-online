@@ -76,6 +76,7 @@ class Session:
         """
         position_update = self.player_cache.publish_position_update(position)
         if position_update is not None:
+            self.player = self.player_cache.load(self.player.id)
             self.player.update_position(position_update)
             self.player_cache.save(self.player)
 
@@ -86,5 +87,6 @@ class Session:
         animation_update = self.player_cache.publish_animation_update(
             animation,
         )
+        self.player = self.player_cache.load(self.player.id)
         self.player.update_animation(animation_update)
         self.player_cache.save(self.player)

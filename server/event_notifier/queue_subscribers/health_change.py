@@ -1,5 +1,8 @@
 from protocol import messages, domain
 import json
+import logging
+
+log = logging.getLogger(__name__)
 
 
 class HealthUpdateSubscriber:

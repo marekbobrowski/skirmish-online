@@ -18,8 +18,6 @@ class NameUpdateSubscriber:
         Subscribed method, prepares response and pushes it
         """
         data = json.loads(message["data"])
-
-        log.info(data)
         self.event_notifier.notify(
             messages.SetNameResponse.build(data),
         )

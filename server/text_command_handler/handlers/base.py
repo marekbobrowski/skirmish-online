@@ -23,7 +23,6 @@ class BaseTextCommandHandler(metaclass=MetaClass):
         pass
 
     def validate_command(self):
-        log.info(self.command_vector)
         if len(self.command_vector) <= self.LENGTH:
             raise Exception(
                 f"Not enough words in the passed <{self.command_vector}> command."

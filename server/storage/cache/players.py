@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from protocol.domain import Weapon, Model
 import random
 from server import config
+import inspect
 
 
 log = logging.getLogger(__name__)
@@ -71,6 +72,7 @@ class PlayerCache:
             h=120,
             p=0,
             r=0,
+            ready_for_sync=False
         )
         self.publish_new_player(player)
         return player
@@ -157,9 +159,6 @@ class PlayerCache:
         return position_update
 
     def publish_animation_update(self, animation):
-        """
-        Self explanatory name!!!
-        """
         animation_update = PlayerAnimationUpdate(
             **animation._json(), id=self.session.player.id
         )
@@ -174,16 +173,14 @@ class PlayerCache:
         return animation_update
 
     def publish_health_update(self, targets, hp_change) -> None:
-        """
-        Self explanatory name!!!
-        """
         affected_players = [self.load(id_) for id_ in targets]
 
         for player in affected_players:
-            player.health = max((player.health - hp_change, 0))
+            player.health = min(max((player.health - hp_change, 0)), 100)
             self.save(player)
 
         health_updates = [HealthUpdate(p.id, p.health) for p in affected_players]
+
         data = json.dumps([dataclasses.asdict(hu) for hu in health_updates])
 
         self.session.redis.publish(
@@ -221,7 +218,6 @@ class PlayerCache:
             data,
         )
 
-
     # Subscribtions for channels
 
     def subscribe(self, subscriber):
@@ -231,7 +227,7 @@ class PlayerCache:
         """
         p = self.session.redis.pubsub()
         p.subscribe(**{self.POSITION_UPDATE_CHANNEL: subscriber})
-        thread = p.run_in_thread(sleep_time=0.001)
+        thread = p.run_in_thread(sleep_time=0.1)
         return thread
 
     def subscribe_new_players(self, subscriber):
@@ -241,7 +237,7 @@ class PlayerCache:
         """
         p = self.session.redis.pubsub()
         p.subscribe(**{self.NEW_PLAYER_CHANNEL: subscriber})
-        thread = p.run_in_thread(sleep_time=0.001)
+        thread = p.run_in_thread(sleep_time=0.25)
         return thread
 
     def subscribe_animation_update(self, subscriber):
@@ -251,7 +247,7 @@ class PlayerCache:
         """
         p = self.session.redis.pubsub()
         p.subscribe(**{self.ANIMATION_UPDATE_CHANNEL: subscriber})
-        thread = p.run_in_thread(sleep_time=0.001)
+        thread = p.run_in_thread(sleep_time=0.05)
         return thread
 
     def subscribe_health_update(self, subscriber):
@@ -261,7 +257,7 @@ class PlayerCache:
         """
         p = self.session.redis.pubsub()
         p.subscribe(**{self.HEALTH_UPDATE_CHANNEL: subscriber})
-        thread = p.run_in_thread(sleep_time=0.001)
+        thread = p.run_in_thread(sleep_time=0.1)
         return thread
 
     def subscribe_name_update(self, subscriber):
@@ -271,7 +267,7 @@ class PlayerCache:
         """
         p = self.session.redis.pubsub()
         p.subscribe(**{self.NAME_UPDATE_CHANNEL: subscriber})
-        thread = p.run_in_thread(sleep_time=0.001)
+        thread = p.run_in_thread(sleep_time=0.25)
         return thread
 
     def subscribe_model_update(self, subscriber):

@@ -1,6 +1,7 @@
 from .request_handler import Handler
 from .storage.session import SessionManager
 from .event_notifier.notifier import NotifierManager
+from .regular_unit_state_update import UnitUpdaterManager
 
 from panda3d.core import QueuedConnectionManager
 from panda3d.core import QueuedConnectionListener
@@ -11,6 +12,10 @@ from panda3d.core import NetAddress
 from panda3d.core import NetDatagram
 
 from threading import Thread
+import logging
+
+
+log = logging.getLogger(__name__)
 
 
 class Server:
@@ -25,6 +30,7 @@ class Server:
         # Server model
         self.session_manager = SessionManager()
         self.notifier_manager = NotifierManager(self)
+        self.unit_updater_manager = UnitUpdaterManager(self)
 
         # Socket
         self.tcp_socket = self.manager.open_TCP_server_rendezvous(15000, 1000)
@@ -57,6 +63,7 @@ class Server:
                         new_connection,
                     )
                     self.notifier_manager.new_notifier(session, new_connection)
+                    self.unit_updater_manager.new_updater(session, new_connection)
                     self.reader.add_connection(new_connection)
 
     def listen_for_new_data(self):

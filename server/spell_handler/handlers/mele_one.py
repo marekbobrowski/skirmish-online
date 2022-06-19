@@ -13,9 +13,9 @@ class MeleOneHandler(BaseSpellHandler):
         """
         return self.session.player_position_cache.get_nearby(
             self.session.player,
-            0.15,
-            0.15,
-            0.15,
+            0.4,
+            0.4,
+            0.4,
         )
 
     def interact_with_tagets(self, targets: List[int]) -> int:
