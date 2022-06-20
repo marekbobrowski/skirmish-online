@@ -8,7 +8,7 @@ class ReadyForSyncHandler(MessageHandler):
     response_message = messages.TextMessageResponse
 
     def handle_message(self):
-        pass
+        self.session.ready_for_continuous_sync = True
 
     def build_response(self) -> messages.TextMessageResponse:
         message = messages.TextMessageResponse.build(

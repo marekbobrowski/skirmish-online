@@ -58,6 +58,7 @@ class EventNotifier:
         """
         Method called by sub notifiers to send message
         """
-        datagram = PyDatagram()
-        message.dump(datagram)
-        self.server.writer.send(datagram, self.connection)
+        if self.session.ready_for_continuous_sync:
+            datagram = PyDatagram()
+            message.dump(datagram)
+            self.server.writer.send(datagram, self.connection)

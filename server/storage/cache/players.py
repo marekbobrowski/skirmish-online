@@ -72,7 +72,6 @@ class PlayerCache:
             h=120,
             p=0,
             r=0,
-            ready_for_sync=False
         )
         self.publish_new_player(player)
         return player

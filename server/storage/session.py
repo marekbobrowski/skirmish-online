@@ -50,6 +50,7 @@ class Session:
         self.player_position_cache = PlayerPositionCache(self)
         self.spell_cache = SpellCache(self)
         self.text_message_cache = TextMessageCache(self)
+        self.ready_for_continuous_sync = False
 
     def close(self):
         pass
