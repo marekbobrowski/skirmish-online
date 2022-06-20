@@ -1,7 +1,7 @@
 from .request_handler import Handler
 from .storage.session import SessionManager
 from .event_notifier.notifier import NotifierManager
-from .regular_unit_state_update import UnitUpdaterManager
+from .tasking import TaskManager
 
 from panda3d.core import QueuedConnectionManager
 from panda3d.core import QueuedConnectionListener
@@ -30,7 +30,7 @@ class Server:
         # Server model
         self.session_manager = SessionManager()
         self.notifier_manager = NotifierManager(self)
-        self.unit_updater_manager = UnitUpdaterManager(self)
+        self.unit_updater_manager = TaskManager(self)
 
         # Socket
         self.tcp_socket = self.manager.open_TCP_server_rendezvous(15000, 1000)

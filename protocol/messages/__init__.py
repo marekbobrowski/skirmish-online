@@ -2,7 +2,7 @@ from .Spell import SpellRequest
 from .Animation import AnimationRequest, AnimationResponse
 from .AskForPass import AskForPass
 from .CombatData import CombatDataResponse
-from .Disconnection import Disconnection
+from .Disconnect import DisconnectRequest
 from .HealthUpdate import HealthUpdateResponse
 from .NewPlayer import NewPlayerResponse
 from .PosHPR import PosHPRRequest, PosHPRResponse
@@ -13,4 +13,5 @@ from .NameUpdate import SetNameResponse
 from .Teleport import Teleport
 from .TextMessage import TextMessageRequest, TextMessageResponse
 from .WorldState import WorldStateRequest, WorldStateResponse
+from .Disconnect import DisconnectRequest, DisconnectResponse
 from .base import MessagesBank, MessageType

@@ -24,7 +24,10 @@ class Client:
             self.net_client.send_ready_for_updates()
             self.net_client.begin_sync_with_server()
 
-            core.instance.run()
+            try:
+                core.instance.run()
+            except:
+                print("Disconnecting.")
 
     def basic_configuration(self):
         core.instance.disable_mouse()
