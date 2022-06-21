@@ -13,6 +13,7 @@ class Event:
     UNIT_NAME_RECEIVED = "unit-name-received"
     UNIT_MODEL_RECEIVED = "unit-model-received"
     UNIT_WEAPON_RECEIVED = "unit-weapon-received"
+    UNIT_DISCONNECTED = "unit-disconnected"
     # -----------------------------------------------
 
     # other data received from server

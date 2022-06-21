@@ -17,6 +17,7 @@ class FloatingBars(DirectObject):
         self.accept(Event.NEW_UNIT_CREATED, self.handle_local_new_unit)
         self.accept(Event.UNIT_HP_UPDATED, self.handle_unit_hp_updated)
         self.accept(Event.UNIT_NAME_UPDATED, self.handle_unit_name_updated)
+        self.accept(Event.UNIT_DISCONNECTED, self.handle_unit_disconnected)
 
     def handle_local_new_unit(self, *args):
         unit = args[0]
@@ -30,6 +31,20 @@ class FloatingBars(DirectObject):
     def handle_unit_name_updated(self, *args):
         unit = args[0]
         self.update_name_label(unit)
+
+    def handle_unit_disconnected(self, *args):
+        unit_id = args[0]
+        self.delete_label_and_bar(unit_id)
+
+    def delete_label_and_bar(self, unit_id):
+        bar = self.bars.get(unit_id, None)
+        label = self.labels.get(unit_id, None)
+        if bar is not None:
+            bar.destroy()
+            del self.bars[unit_id]
+        if label is not None:
+            label.destroy()
+            del self.labels[unit_id]
 
     def update_health_bar(self, unit):
         bar = self.bars.get(unit.id, None)

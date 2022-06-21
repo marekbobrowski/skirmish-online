@@ -14,4 +14,5 @@ from .Teleport import Teleport
 from .TextMessage import TextMessageRequest, TextMessageResponse
 from .WorldState import WorldStateRequest, WorldStateResponse
 from .Disconnect import DisconnectRequest, DisconnectResponse
+from .ConnectionCheckResponse import ConnectionCheckResponse, ConnectionCheckRequest
 from .base import MessagesBank, MessageType

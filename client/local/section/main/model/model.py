@@ -21,6 +21,7 @@ class MainSectionModel(DirectObject):
         self.accept(
             Event.MY_ANIMATION_CHANGE_ATTEMPT, self.handle_my_animation_change_attempt
         )
+        self.accept(Event.UNIT_DISCONNECTED, self.handle_unit_disconnected)
 
     def load(self, state: WorldState) -> None:
         self.player_id = state.player.id
@@ -104,3 +105,11 @@ class MainSectionModel(DirectObject):
             return
         unit.weapon = weapon_id
         core.instance.messenger.send(Event.UNIT_WEAPON_UPDATED, sentArgs=[unit])
+
+    def handle_unit_disconnected(self, *args):
+        unit_id = args[0]
+        unit = self.units_by_id.get(unit_id, None)
+        unit.actor.delete()
+        del unit
+
+

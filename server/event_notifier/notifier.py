@@ -6,6 +6,10 @@ from .queue_subscribers.text_message import TextMessageSubscriber
 from .queue_subscribers.name_update import NameUpdateSubscriber
 from .queue_subscribers.model_update import ModelUpdateSubscriber
 from .queue_subscribers.weapon_update import WeaponUpdateSubscriber
+from .queue_subscribers.disconnect import DisconnectSubscriber
+from server.connection_dependant.connection_dependant_mgr import ConnectionDependantManager
+from server.connection_dependant.connection_dependant import ConnectionDependantObj
+
 from redis import Redis
 from direct.distributed.PyDatagram import PyDatagram
 import logging
@@ -14,22 +18,23 @@ import logging
 log = logging.getLogger(__name__)
 
 
-class NotifierManager:
+class NotifierManager(ConnectionDependantManager):
     def __init__(self, server):
         """
-        Manager, accomodates all notifiers
+        Manager, accommodates all notifiers
         """
         self.server = server
-        self.handers = {}
+        self.notifiers = {}
+        super().__init__(per_connection_dict=self.notifiers)
 
     def new_notifier(self, session, connection):
         """
         Produce new notifier, for session and connection notifying new user
         """
-        self.handers[connection] = EventNotifier(self.server, session, connection)
+        self.notifiers[connection] = EventNotifier(self.server, session, connection)
 
 
-class EventNotifier:
+class EventNotifier(ConnectionDependantObj):
     def __init__(self, server, session, connection):
         """
         EventNotifier creates sub notifiers, which
@@ -50,6 +55,7 @@ class EventNotifier:
             NameUpdateSubscriber(self),
             ModelUpdateSubscriber(self),
             WeaponUpdateSubscriber(self),
+            DisconnectSubscriber(self)
         ]
         for subsubscriber in self.subsubscribers:
             subsubscriber.run()
@@ -62,3 +68,9 @@ class EventNotifier:
             datagram = PyDatagram()
             message.dump(datagram)
             self.server.writer.send(datagram, self.connection)
+
+    def stop_listening_threads(self):
+        """
+        We don't store any threads in this class.
+        """
+        pass

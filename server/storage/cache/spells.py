@@ -1,12 +1,14 @@
 from ..domain import SpellUpdate
+from server.event.event_user import EventUser
 import json
 import dataclasses
 
 
-class SpellCache:
+class SpellCache(EventUser):
     SPELL_UPDATE_CHANNEL = "spell_update_"
 
     def __init__(self, session):
+        super().__init__()
         self.session = session
 
     @classmethod
@@ -40,4 +42,5 @@ class SpellCache:
             **{self.spell_update_channel_for_session(self.session.id): subscriber}
         )
         thread = p.run_in_thread(sleep_time=0.001)
+        self.listening_threads.append(thread)
         return thread

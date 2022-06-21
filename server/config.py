@@ -31,3 +31,5 @@ help = (
 welcome_msg += help
 
 position_update_delay = 100
+
+connection_check_timeout = 2

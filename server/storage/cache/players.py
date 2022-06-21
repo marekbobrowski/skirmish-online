@@ -1,4 +1,6 @@
-from ..domain import Player, PlayerPositionUpdate, PlayerAnimationUpdate, HealthUpdate, NameUpdate, ModelUpdate, WeaponUpdate
+from ..domain import Player, PlayerPositionUpdate, PlayerAnimationUpdate, HealthUpdate, NameUpdate, ModelUpdate, WeaponUpdate, Disconnection
+from server.event.event_user import EventUser
+from server.event.event import Event
 import json
 import dataclasses
 import logging
@@ -6,13 +8,12 @@ from datetime import datetime, timedelta
 from protocol.domain import Weapon, Model
 import random
 from server import config
-import inspect
 
 
 log = logging.getLogger(__name__)
 
 
-class PlayerCache:
+class PlayerCache(EventUser):
     SET_KEY = "players"
     PREFIX = "player_"
     POSITION_UPDATE_CHANNEL = "position_update"
@@ -22,10 +23,13 @@ class PlayerCache:
     NAME_UPDATE_CHANNEL = "name_update"
     NEW_PLAYER_CHANNEL = "new_player"
     WEAPON_UPDATE_CHANNEL = "weapon_update"
+    DISCONNECT_CHANNEL = "disconnect_channel"
 
     def __init__(self, session):
+        super().__init__()
         self.session = session
         self.last_position_update = datetime.now()
+        self.CONNECTION_CHECK_CHANNEL = "connection_check_" + self.session.id
 
     def key(self, id_=None):
         """
@@ -83,6 +87,13 @@ class PlayerCache:
         self.session.redis.set(
             self.key(player.id), json.dumps(dataclasses.asdict(player))
         )
+
+    def delete(self):
+        """
+        Delete player from redis cache.
+        """
+        self.session.redis.delete(self.key(self.session.player.id))
+        self.session.redis.srem(self.SET_KEY, self.session.player.id)
 
     def all_player_ids(self):
         """
@@ -217,6 +228,19 @@ class PlayerCache:
             data,
         )
 
+    def publish_disconnect(self):
+        data = json.dumps(dataclasses.asdict(Disconnection(self.session.player.id)))
+        self.session.redis.publish(
+            self.DISCONNECT_CHANNEL,
+            data,
+        )
+
+    def raise_connection_check_event(self):
+        self.session.redis.publish(
+            self.CONNECTION_CHECK_CHANNEL,
+            json.dumps("")
+        )
+
     # Subscribtions for channels
 
     def subscribe(self, subscriber):
@@ -227,6 +251,7 @@ class PlayerCache:
         p = self.session.redis.pubsub()
         p.subscribe(**{self.POSITION_UPDATE_CHANNEL: subscriber})
         thread = p.run_in_thread(sleep_time=0.1)
+        self.listening_threads.append(thread)
         return thread
 
     def subscribe_new_players(self, subscriber):
@@ -237,6 +262,7 @@ class PlayerCache:
         p = self.session.redis.pubsub()
         p.subscribe(**{self.NEW_PLAYER_CHANNEL: subscriber})
         thread = p.run_in_thread(sleep_time=0.25)
+        self.listening_threads.append(thread)
         return thread
 
     def subscribe_animation_update(self, subscriber):
@@ -247,6 +273,7 @@ class PlayerCache:
         p = self.session.redis.pubsub()
         p.subscribe(**{self.ANIMATION_UPDATE_CHANNEL: subscriber})
         thread = p.run_in_thread(sleep_time=0.05)
+        self.listening_threads.append(thread)
         return thread
 
     def subscribe_health_update(self, subscriber):
@@ -257,6 +284,7 @@ class PlayerCache:
         p = self.session.redis.pubsub()
         p.subscribe(**{self.HEALTH_UPDATE_CHANNEL: subscriber})
         thread = p.run_in_thread(sleep_time=0.1)
+        self.listening_threads.append(thread)
         return thread
 
     def subscribe_name_update(self, subscriber):
@@ -267,6 +295,7 @@ class PlayerCache:
         p = self.session.redis.pubsub()
         p.subscribe(**{self.NAME_UPDATE_CHANNEL: subscriber})
         thread = p.run_in_thread(sleep_time=0.25)
+        self.listening_threads.append(thread)
         return thread
 
     def subscribe_model_update(self, subscriber):
@@ -277,6 +306,7 @@ class PlayerCache:
         p = self.session.redis.pubsub()
         p.subscribe(**{self.MODEL_UPDATE_CHANNEL: subscriber})
         thread = p.run_in_thread(sleep_time=0.25)
+        self.listening_threads.append(thread)
         return thread
 
     def subscribe_weapon_update(self, subscriber):
@@ -287,4 +317,27 @@ class PlayerCache:
         p = self.session.redis.pubsub()
         p.subscribe(**{self.WEAPON_UPDATE_CHANNEL: subscriber})
         thread = p.run_in_thread(sleep_time=0.25)
+        self.listening_threads.append(thread)
+        return thread
+
+    def subscribe_connection_check(self, subscriber):
+        """
+        Creates a thread that will subscribe to the channel
+        specific for current user
+        """
+        p = self.session.redis.pubsub()
+        p.subscribe(**{self.CONNECTION_CHECK_CHANNEL: subscriber})
+        thread = p.run_in_thread(sleep_time=0.25)
+        self.listening_threads.append(thread)
+        return thread
+
+    def subscribe_disconnect(self, subscriber):
+        """
+        Creates a thread that will subscribe to the channel
+        specific for current user
+        """
+        p = self.session.redis.pubsub()
+        p.subscribe(**{self.DISCONNECT_CHANNEL: subscriber})
+        thread = p.run_in_thread(sleep_time=0.25)
+        self.listening_threads.append(thread)
         return thread

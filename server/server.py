@@ -2,6 +2,8 @@ from .request_handler import Handler
 from .storage.session import SessionManager
 from .event_notifier.notifier import NotifierManager
 from .tasking import TaskManager
+from .event.event_user import EventUser
+from .event.event import Event
 
 from panda3d.core import QueuedConnectionManager
 from panda3d.core import QueuedConnectionListener
@@ -12,14 +14,18 @@ from panda3d.core import NetAddress
 from panda3d.core import NetDatagram
 
 from threading import Thread
+import time
+import json
 import logging
 
 
 log = logging.getLogger(__name__)
 
 
-class Server:
+class Server(EventUser):
     def __init__(self):
+        super().__init__()
+
         # Support objects
         self.manager = QueuedConnectionManager()
         self.listener = QueuedConnectionListener(self.manager, 0)
@@ -30,11 +36,14 @@ class Server:
         # Server model
         self.session_manager = SessionManager()
         self.notifier_manager = NotifierManager(self)
-        self.unit_updater_manager = TaskManager(self)
+        self.task_manager = TaskManager(self)
+        self.connections = []
 
         # Socket
         self.tcp_socket = self.manager.open_TCP_server_rendezvous(15000, 1000)
         self.listener.add_connection(self.tcp_socket)
+
+        self.accept_event(Event.CLIENT_DISCONNECTION_PUBLISHED, self.close_connection)
 
     def run(self):
         """
@@ -62,8 +71,10 @@ class Server:
                     session = self.session_manager.new_session(
                         new_connection,
                     )
+
+                    self.connections.append(new_connection)
                     self.notifier_manager.new_notifier(session, new_connection)
-                    self.unit_updater_manager.new_updater(session, new_connection)
+                    self.task_manager.new_session_task_manager(session, new_connection)
                     self.reader.add_connection(new_connection)
 
     def listen_for_new_data(self):
@@ -81,3 +92,18 @@ class Server:
                         connection,
                         session,
                     )
+
+    def close_connection(self, event_data):
+        data = json.loads(event_data["data"])
+        connection_hash = data["connection_hash"]
+        connection = self.find_connection_by_hash(connection_hash)
+        self.manager.close_connection(connection)
+        self.connections.remove(connection)
+
+    def find_connection_by_hash(self, connection_hash):
+        for connection in self.connections:
+            if hash(connection) == connection_hash:
+                return connection
+
+
+

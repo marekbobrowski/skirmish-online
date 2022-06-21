@@ -10,4 +10,5 @@ class DisconnectRequest(Message):
 
 class DisconnectResponse(Message):
     ID = UInt8(58)
+    SCHEMA = Disconnect
     TYPE = MessageType.response

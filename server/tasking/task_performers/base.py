@@ -5,20 +5,25 @@ from time import sleep
 
 class TaskPerformerBase:
     INTERVAL: int = 5
-    AMOUNT: int = 5
 
-    def __init__(self, session):
+    def __init__(self, session, connection, server):
         self.session = session
+        self.connection = connection
+        self.server = server
         self.thread = None
+        self._continue = True
 
     @abstractmethod
     def task_tick(self):
         pass
 
     def perform_task(self):
-        while True:
-            self.task_tick()
+        while self._continue:
             sleep(self.INTERVAL)
+            self.task_tick()
+
+    def stop_task_thread(self):
+        self.thread.stop()
 
     def start_task(self):
         """

@@ -14,7 +14,7 @@ log = logging.getLogger(__name__)
 
 
 class Handler:
-    def __init__(self, manager: QueuedConnectionManager):
+    def __init__(self, net_client):
         """
         Base handler for new data.
 
@@ -25,7 +25,7 @@ class Handler:
         In order to handle new massages write additional handlers in message
         handlers submodule.
         """
-        self.manager = manager
+        self.net_client = net_client
         self.message_parser = MessageParser()
 
     def handle_data(self, datagram: PyDatagram) -> None:
@@ -38,7 +38,9 @@ class Handler:
         # parse message
         try:
             message = self.message_parser(iterator, MessageType.response)
-            self.handle_message(message)
+            response = self.handle_message(message)
+            self.handle_response(response)
+
         except KeyError as e:
             log.exception(e)
             log.error("Unsupported message.")
@@ -55,6 +57,17 @@ class Handler:
             log.error("Unsupported operation.")
             return
         return handler()
+
+    def handle_response(self, response) -> None:
+        """
+        Send response to message, if any
+        """
+        if response is None:
+            return
+
+        response_datagram = PyDatagram()
+        response.dump(response_datagram)
+        self.net_client.writer.send(response_datagram, self.net_client.server_connection)
 
 
 # class Handler:

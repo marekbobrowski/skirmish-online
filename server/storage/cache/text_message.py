@@ -2,15 +2,17 @@ from ..domain import TextMessage
 import json
 import dataclasses
 import logging
+from server.event.event_user import EventUser
 
 
 log = logging.getLogger(__name__)
 
 
-class TextMessageCache:
+class TextMessageCache(EventUser):
     TEXT_MESSAGE_CHANNEL = "text_message_"
 
     def __init__(self, session):
+        super().__init__()
         self.session = session
 
     @classmethod
@@ -44,4 +46,5 @@ class TextMessageCache:
             **{self.text_message_channel_for_session(self.session.id): subscriber}
         )
         thread = p.run_in_thread(sleep_time=0.001)
+        self.listening_threads.append(thread)
         return thread

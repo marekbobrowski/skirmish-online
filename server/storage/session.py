@@ -2,6 +2,9 @@ from redis import Redis
 import uuid
 import logging
 import json
+from server.connection_dependant.connection_dependant_mgr import ConnectionDependantManager
+from server.connection_dependant.connection_dependant import ConnectionDependantObj
+from server.event.event_user import EventUser
 from .cache.sessions import SessionCache
 from .cache.players import PlayerCache
 from .cache.player_position import PlayerPositionCache
@@ -12,12 +15,13 @@ from .cache.text_message import TextMessageCache
 log = logging.getLogger(__name__)
 
 
-class SessionManager:
+class SessionManager(ConnectionDependantManager):
     def __init__(self):
         """
         SessionManager is a container for all active sessions
         """
         self.sessions = {}
+        super().__init__(self.sessions)
 
     def for_connection(self, connection):
         """
@@ -33,8 +37,12 @@ class SessionManager:
         self.sessions[connection] = session
         return session
 
+    def stop_listening_threads(self):
+        for session in self.sessions.values():
+            session.stop_listening_threads()
 
-class Session:
+
+class Session(ConnectionDependantObj):
     def __init__(self):
         """
         Creates empty session
@@ -52,8 +60,10 @@ class Session:
         self.text_message_cache = TextMessageCache(self)
         self.ready_for_continuous_sync = False
 
-    def close(self):
-        pass
+    def stop_listening_threads(self):
+        for member in self.__dict__.values():
+            if isinstance(member, EventUser):
+                member.stop_listening_threads()
 
     def dump(self):
         """
@@ -91,3 +101,4 @@ class Session:
         self.player = self.player_cache.load(self.player.id)
         self.player.update_animation(animation_update)
         self.player_cache.save(self.player)
+
