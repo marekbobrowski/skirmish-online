@@ -78,7 +78,7 @@ class ChatBubble:
             text_font=font,
         )
         self.bubble_frame = DirectFrame(
-            pos=(0, 0, 0.67),
+            pos=(0, 0.01, 0.67),
             scale=0.1,
             parent=unit.base_node,
             frameColor=(0, 0, 0, 0.5),
