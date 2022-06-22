@@ -11,4 +11,5 @@ class HealthRegenerator(TaskPerformerBase):
     def task_tick(self):
         if self.session.player is not None:
             player_id_list = [self.session.player.id]
-            self.session.player_cache.publish_health_update(player_id_list, -self.AMOUNT)
+            if not self.session.closed:
+                self.session.player_cache.publish_health_update(player_id_list, -self.AMOUNT)

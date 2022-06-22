@@ -59,8 +59,10 @@ class Session(ConnectionDependantObj):
         self.spell_cache = SpellCache(self)
         self.text_message_cache = TextMessageCache(self)
         self.ready_for_continuous_sync = False
+        self.closed = False
 
     def stop_listening_threads(self):
+        self.closed = True
         for member in self.__dict__.values():
             if isinstance(member, EventUser):
                 member.stop_listening_threads()

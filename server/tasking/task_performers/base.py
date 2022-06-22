@@ -23,7 +23,8 @@ class TaskPerformerBase:
             self.task_tick()
 
     def stop_task_thread(self):
-        self.thread.stop()
+        pass
+        # self.thread.stop()
 
     def start_task(self):
         """
