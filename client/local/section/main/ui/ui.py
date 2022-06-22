@@ -5,6 +5,7 @@ from .dmg_text import DmgText
 from .combat_log import CombatLog
 from .cooldown_panel import CooldownPanel
 from .floating_bars import FloatingBars
+from .chat_bubbles import ChatBubbles
 
 
 class MainSectionUi:
@@ -15,6 +16,9 @@ class MainSectionUi:
         self.dmg_text = DmgText(self.model.units_by_id)
         self.combat_log = CombatLog(self.node, self.model.units_by_id)
         self.cooldown_panel = CooldownPanel(self.node, self.model.units_by_id)
+
+        # UI that is reparented to 3D elements
+        self.chat_bubbles = ChatBubbles(self.model)
         self.floating_bars = FloatingBars(self.model)
 
     def show(self) -> None:

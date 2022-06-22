@@ -112,4 +112,7 @@ class MainSectionModel(DirectObject):
         unit.actor.delete()
         del unit
 
-
+    def get_unit_by_name(self, name):
+        for unit in self.units_by_id.values():
+            if unit.name == name:
+                return unit
