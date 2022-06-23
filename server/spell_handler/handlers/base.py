@@ -33,6 +33,7 @@ class BaseSpellHandler(metaclass=MetaClass):
         targets = self.calculate_targets()
         hp_change = self.interact_with_tagets(targets)
         self.publish_health_update(targets, hp_change)
+        self.session.player_cache.publish_mana_update([self.session.player.id], 5)
         return self.produce_response(targets, hp_change)
 
     def valid(self) -> bool:

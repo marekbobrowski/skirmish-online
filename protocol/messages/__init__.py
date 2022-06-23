@@ -4,6 +4,7 @@ from .AskForPass import AskForPass
 from .CombatData import CombatDataResponse
 from .Disconnect import DisconnectRequest
 from .HealthUpdate import HealthUpdateResponse
+from .ManaUpdate import ManaUpdateResponse
 from .NewPlayer import NewPlayerResponse
 from .PosHPR import PosHPRRequest, PosHPRResponse
 from .ReadyForSync import ReadyForSyncRequest

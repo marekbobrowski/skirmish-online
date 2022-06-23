@@ -15,6 +15,7 @@ class Unit:
     id: int = -1
     name: str = "Unknown"
     health: int = 0
+    mana: int = 50
     model: Optional[int] = None
     animation: Optional[str] = None
     weapon: Optional[str] = None

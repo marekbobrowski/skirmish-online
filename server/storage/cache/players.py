@@ -1,4 +1,4 @@
-from ..domain import Player, PlayerPositionUpdate, PlayerAnimationUpdate, HealthUpdate, NameUpdate, ModelUpdate, WeaponUpdate, Disconnection
+from ..domain import Player, PlayerPositionUpdate, PlayerAnimationUpdate, HealthUpdate, NameUpdate, ModelUpdate, WeaponUpdate, Disconnection, ManaUpdate
 from server.event.event_user import EventUser
 from server.event.event import Event
 import json
@@ -20,6 +20,7 @@ class PlayerCache(EventUser):
     MODEL_UPDATE_CHANNEL = "model_update"
     ANIMATION_UPDATE_CHANNEL = "animation_update"
     HEALTH_UPDATE_CHANNEL = "health_update"
+    MANA_UPDATE_CHANNEL = "mana_update"
     NAME_UPDATE_CHANNEL = "name_update"
     NEW_PLAYER_CHANNEL = "new_player"
     WEAPON_UPDATE_CHANNEL = "weapon_update"
@@ -66,6 +67,7 @@ class PlayerCache(EventUser):
             id=id_,
             name=f"name{id_}",
             health=50,
+            mana=50,
             model=random.choice([m.value for m in Model]),
             animation="stand",
             loop=1,
@@ -198,6 +200,22 @@ class PlayerCache(EventUser):
             data,
         )
 
+    def publish_mana_update(self, targets, mana_change) -> None:
+        affected_players = [self.load(id_) for id_ in targets]
+
+        for player in affected_players:
+            player.mana = min(max((player.mana - mana_change, 0)), 100)
+            self.save(player)
+
+        mana_updates = [ManaUpdate(p.id, p.mana) for p in affected_players]
+
+        data = json.dumps([dataclasses.asdict(hu) for hu in mana_updates])
+
+        self.session.redis.publish(
+            self.MANA_UPDATE_CHANNEL,
+            data,
+        )
+
     def publish_name_update(self, name):
         self.session.player.name = name
         self.save(self.session.player)
@@ -283,6 +301,17 @@ class PlayerCache(EventUser):
         """
         p = self.session.redis.pubsub()
         p.subscribe(**{self.HEALTH_UPDATE_CHANNEL: subscriber})
+        thread = p.run_in_thread(sleep_time=0.1)
+        self.listening_threads.append(thread)
+        return thread
+
+    def subscribe_mana_update(self, subscriber):
+        """
+        Creates a thread that will subscribe to the channel
+        specific for current user
+        """
+        p = self.session.redis.pubsub()
+        p.subscribe(**{self.MANA_UPDATE_CHANNEL: subscriber})
         thread = p.run_in_thread(sleep_time=0.1)
         self.listening_threads.append(thread)
         return thread

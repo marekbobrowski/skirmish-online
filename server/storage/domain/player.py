@@ -25,6 +25,7 @@ class Player:
     id: int
     name: str
     health: int
+    mana: int
     model: int
     animation: str
     loop: int

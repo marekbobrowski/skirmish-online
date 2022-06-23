@@ -2,6 +2,7 @@ from .queue_subscribers.positon_update import PositionUpdateSubscriber
 from .queue_subscribers.new_player import NewPlayerSubscriber
 from .queue_subscribers.animation_update import AnimationUpdateSubscriber
 from .queue_subscribers.health_change import HealthUpdateSubscriber
+from .queue_subscribers.mana_change import ManaUpdateSubscriber
 from .queue_subscribers.text_message import TextMessageSubscriber
 from .queue_subscribers.name_update import NameUpdateSubscriber
 from .queue_subscribers.model_update import ModelUpdateSubscriber
@@ -51,6 +52,7 @@ class EventNotifier(ConnectionDependantObj):
             NewPlayerSubscriber(self),
             AnimationUpdateSubscriber(self),
             HealthUpdateSubscriber(self),
+            ManaUpdateSubscriber(self),
             TextMessageSubscriber(self),
             NameUpdateSubscriber(self),
             ModelUpdateSubscriber(self),

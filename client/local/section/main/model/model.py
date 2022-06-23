@@ -14,6 +14,7 @@ class MainSectionModel(DirectObject):
         self.accept(Event.NEW_UNIT_DATA_RECEIVED, self.handle_new_unit_data_received)
         self.accept(Event.UNIT_POS_ROT_RECEIVED, self.handle_unit_pos_rot_received)
         self.accept(Event.UNIT_HEALTH_RECEIVED, self.handle_unit_health_received)
+        self.accept(Event.UNIT_MANA_RECEIVED, self.handle_unit_mana_received)
         self.accept(Event.UNIT_NAME_RECEIVED, self.handle_unit_name_received)
         self.accept(Event.UNIT_ANIMATION_RECEIVED, self.handle_unit_animation_received)
         self.accept(Event.UNIT_MODEL_RECEIVED, self.handle_unit_model_received)
@@ -61,6 +62,18 @@ class MainSectionModel(DirectObject):
                 continue
             unit.health = new_hp
             core.instance.messenger.send(Event.UNIT_HP_UPDATED, sentArgs=[unit])
+
+    def handle_unit_mana_received(self, *args):
+        mana_info = args[0]
+
+        for obj in mana_info:
+            new_mana = obj.mana
+            unit_id = obj.id
+            unit = self.units_by_id.get(unit_id, None)
+            if unit is None:
+                continue
+            unit.mana = new_mana
+            core.instance.messenger.send(Event.UNIT_MANA_UPDATED, sentArgs=[unit])
 
     def handle_unit_name_received(self, *args):
         unit_id, name = args

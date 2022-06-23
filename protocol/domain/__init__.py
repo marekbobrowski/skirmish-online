@@ -6,6 +6,7 @@ from .WorldState import WorldState
 from .Spell import Spell, Spells
 from .CombatData import CombatData
 from .HealthUpdate import HealthUpdate
+from .ManaUpdate import ManaUpdate
 from .NameUpdate import NameUpdate
 from .ModelUpdate import ModelUpdate
 from .WeaponUpdate import WeaponUpdate

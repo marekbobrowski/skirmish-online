@@ -10,6 +10,7 @@ class Event:
     UNIT_POS_ROT_RECEIVED = "unit-pos-rot-received"
     UNIT_ANIMATION_RECEIVED = "unit-animation-received"
     UNIT_HEALTH_RECEIVED = "unit-health-received"
+    UNIT_MANA_RECEIVED = "unit-mana-received"
     UNIT_NAME_RECEIVED = "unit-name-received"
     UNIT_MODEL_RECEIVED = "unit-model-received"
     UNIT_WEAPON_RECEIVED = "unit-weapon-received"
@@ -28,6 +29,7 @@ class Event:
     # -----------------------------------------------
     NEW_UNIT_CREATED = "new-unit-created"
     UNIT_HP_UPDATED = "unit-hp-updated"
+    UNIT_MANA_UPDATED = "unit-mana-updated"
     UNIT_NAME_UPDATED = "unit-name-updated"
     UNIT_POS_ROT_UPDATED = "unit-pos-rot-updated"
     UNIT_ANIMATION_UPDATED = "unit-animation-updated"
