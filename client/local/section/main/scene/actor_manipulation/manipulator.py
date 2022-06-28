@@ -1,13 +1,14 @@
-from client.local.model_config.actor_config import actor_config
-from client.local.model_config.weapon_config import weapon_config
 from direct.task.Task import Task
 from client.local.section.main.scene.actor_manipulation.unit_interpolator import (
     UnitInterpolator,
 )
-from client.local.model_config.actor_config.animation import Animation
+from client.local.section.main.scene.actor_manipulation.anim_mgr import AnimationManager
 from client.local import core
 from client.event import Event
 from direct.showbase.DirectObject import DirectObject
+from client.local.model.unit_model_bank import UnitModelBank
+from client.local.model.weapon_model_bank import WeaponModelBank
+from client.local.animation.bank import AnimationBank
 
 
 class ActorManipulator(DirectObject):
@@ -27,26 +28,31 @@ class ActorManipulator(DirectObject):
 
     def handle_unit_animation_updated(self, *args):
         unit, loop = args
-        self.change_animation(unit, unit.animation, loop)
+        self.change_animation(unit, unit.animation_str, loop)
 
     def handle_unit_model_updated(self, *args):
         unit = args[0]
         unit.actor.removePart("modelRoot")
-        unit.actor = actor_config.load(unit.model)
+        unit.actor = UnitModelBank.get_by_id(unit.model_id)()
+        unit.anim_mgr = AnimationManager(unit.actor)
         unit.actor.reparent_to(unit.base_node)
-        self.change_animation(unit, Animation.STAND, 1)
-        weapon = weapon_config.load(unit.weapon)
+        self.change_animation(unit, unit.animation_str, 0)
+        weapon = WeaponModelBank.get_by_id(unit.weapon_id)()
+        print(type(weapon))
         self.equip_weapon(unit, weapon)
 
     def handle_weapon_changed(self, *args):
         unit, = args
-        self.change_weapon(unit, unit.weapon)
+        # self.change_weapon(unit, unit.weapon_id)
+        weapon = WeaponModelBank.get_by_id(unit.weapon_id)()
+        self.equip_weapon(unit, weapon)
 
     def spawn_unit(self, unit):
-        unit.actor = actor_config.load(unit.model)
-        weapon = weapon_config.load(unit.weapon)
+        unit.actor = UnitModelBank.get_by_id(unit.model_id)()
+        unit.anim_mgr = AnimationManager(unit.actor)
+        weapon = WeaponModelBank.get_by_id(unit.weapon_id)()
         self.equip_weapon(unit, weapon)
-        self.change_animation(unit, unit.animation, 1)
+        self.change_animation(unit, unit.animation_str, 1)
         unit.base_node = self.node.attach_new_node("actor base node")
         unit.base_node.set_pos_hpr(unit.x, unit.y, unit.z, unit.h, unit.p, unit.r)
         unit.actor.reparent_to(unit.base_node)
@@ -63,20 +69,17 @@ class ActorManipulator(DirectObject):
         unit.base_node.set_pos_hpr(x, y, z, h, p, r)
 
     def change_animation(self, unit, animation, loop):
-        animation = actor_config.get_anim_name(unit.model, animation)
-        if loop:
-            unit.actor.loop(animation)
-        else:
-            unit.actor.play(animation)
+        unit.anim_mgr.consider_animation(AnimationBank.get_animation_by_string(animation))
 
     def equip_weapon(self, unit, weapon):
+        print('no chlopie')
         unit.hand_node = unit.actor.expose_joint(None, "modelRoot", "Weapon_R_Bone")
         weapon.reparent_to(unit.hand_node)
         unit.weapon_node = weapon
 
     def change_weapon(self, unit, weapon):
         unit.weapon_node.detach_node()
-        unit.weapon_node = weapon_config.load(unit.weapon)
+        unit.weapon_node = WeaponModelBank.get_by_id(unit.weapon_id)()
         unit.weapon_node.reparent_to(unit.hand_node)
 
     def update_position_task(self, unit, task):

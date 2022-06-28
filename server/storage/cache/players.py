@@ -227,20 +227,20 @@ class PlayerCache(EventUser):
         )
 
     def publish_model_update(self, model):
-        self.session.player.model = model
+        self.session.player.model_id = model
         self.save(self.session.player)
         data = json.dumps(dataclasses.asdict(ModelUpdate(self.session.player.id,
-                                                         self.session.player.model)))
+                                                         self.session.player.model_id)))
         self.session.redis.publish(
             self.MODEL_UPDATE_CHANNEL,
             data,
         )
 
     def publish_weapon_update(self, weapon_id):
-        self.session.player.weapon = weapon_id
+        self.session.player.weapon_id = weapon_id
         self.save(self.session.player)
         data = json.dumps(dataclasses.asdict(WeaponUpdate(self.session.player.id,
-                                                          self.session.player.weapon)))
+                                                          self.session.player.weapon_id)))
         self.session.redis.publish(
             self.WEAPON_UPDATE_CHANNEL,
             data,

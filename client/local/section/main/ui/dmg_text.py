@@ -1,5 +1,5 @@
 from client.local import core
-from client.local.assets import asset_names as assets
+from client.local.font import MainFont
 from client.event import Event
 
 from random import uniform
@@ -31,7 +31,7 @@ class DmgText(DirectObject):
                 self.create_randomly_placed_text(unit.base_node, args[1])
 
     def create_randomly_placed_text(self, node, value):
-        font = core.instance.loader.load_font(assets.main_font)
+        font = MainFont()
         text_node = node.attach_new_node("text node")
         text_node.set_pos(
             uniform(-self.init_displacement, self.init_displacement),

@@ -1,9 +1,8 @@
 from client.local import core
-from client.local.model_config.actor_config import actor_config
 from client.local.section.main.control.camera_control import CameraControl
 from client.local.section.main.control.node_control import NodeControl
 from client.event import Event
-from client.local.model_config.actor_config.animation import Animation
+from client.local import animation
 
 from direct.task.Task import Task
 from panda3d.core import WindowProperties, Vec3
@@ -311,32 +310,14 @@ class Control:
 
     def update_animation(self):
         f = core.instance.task_mgr.hasTaskNamed
-        if f("MoveRight"):
-            if self.unit.actor.get_current_anim() != actor_config.get_anim_name(
-                self.unit.model, Animation.RUN
-            ):
+        if f("MoveRight") or f("MoveLeft") or f("MoveForward") or f("MoveBackward"):
+            if self.unit.actor.get_current_anim_uf() != animation.Run():
                 core.instance.messenger.send(
-                    event=Event.MY_ANIMATION_CHANGE_ATTEMPT, sentArgs=[Animation.RUN, 1]
-                )
-        elif f("MoveLeft"):
-            if self.unit.actor.get_current_anim() != actor_config.get_anim_name(
-                self.unit.model, Animation.RUN
-            ):
-                core.instance.messenger.send(
-                    event=Event.MY_ANIMATION_CHANGE_ATTEMPT, sentArgs=[Animation.RUN, 1]
-                )
-        elif f("MoveForward") or f("MoveBackward"):
-            if self.unit.actor.get_current_anim() != actor_config.get_anim_name(
-                self.unit.model, Animation.RUN
-            ):
-                core.instance.messenger.send(
-                    event=Event.MY_ANIMATION_CHANGE_ATTEMPT, sentArgs=[Animation.RUN, 1]
+                    event=Event.MY_ANIMATION_CHANGE_ATTEMPT, sentArgs=[animation.Run(), 1]
                 )
         else:
-            if self.unit.actor.get_current_anim() != actor_config.get_anim_name(
-                self.unit.model, Animation.STAND
-            ):
+            if self.unit.actor.get_current_anim_uf() != animation.Stand():
                 core.instance.messenger.send(
                     event=Event.MY_ANIMATION_CHANGE_ATTEMPT,
-                    sentArgs=[Animation.STAND, 1],
+                    sentArgs=[animation.Stand(), 1],
                 )

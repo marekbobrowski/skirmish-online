@@ -78,7 +78,7 @@ class BaseSpellHandler(metaclass=MetaClass):
     @abstractmethod
     def interact_with_tagets(self, targets: List[int]) -> int:
         """
-        Does action on other targets and calculates hp change
+        Does animation on other targets and calculates hp change
         """
         pass
 

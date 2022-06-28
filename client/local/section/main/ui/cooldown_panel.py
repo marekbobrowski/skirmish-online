@@ -1,6 +1,7 @@
 from client.local import core
-from client.local.assets import asset_names as assets
+from client.local.font import base
 from client.event import Event
+from client.local.font import MainFont
 
 from direct.showbase.DirectObject import DirectObject
 from direct.gui.DirectGui import DirectFrame, DirectLabel
@@ -46,7 +47,7 @@ class CooldownPanel(DirectObject):
 
         self.frame = DirectFrame(parent=self.node, frameColor=frame_color)
 
-        font = core.instance.loader.load_font(assets.main_font)
+        font = MainFont()
         # font.set_pixels_per_unit(100)
 
         self.text_nodes = []

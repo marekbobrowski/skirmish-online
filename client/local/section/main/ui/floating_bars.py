@@ -1,6 +1,7 @@
 from client.local import core
-from client.local.assets import asset_names
 from client.event import Event
+from client.local.font import base
+from client.local.font import MainFont
 
 from ..model.model import MainSectionModel
 
@@ -89,7 +90,7 @@ class FloatingBar:
         self.mana_bar.set_scale(0.13)
         self.mana_bar.set_compass(core.instance.camera)
 
-        font = core.instance.loader.load_font(asset_names.main_font)
+        font = MainFont()
         self.name_label = DirectLabel(
             text=unit.name,
             pos=(0, 0, 0.53),
@@ -103,4 +104,6 @@ class FloatingBar:
         self.name_label.set_compass(core.instance.camera)
 
     def destroy(self):
-        self.node.destroy()
+        self.mana_bar.destroy()
+        self.health_bar.destroy()
+        self.name_label.destroy()

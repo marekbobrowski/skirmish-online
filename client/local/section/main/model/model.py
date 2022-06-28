@@ -88,14 +88,14 @@ class MainSectionModel(DirectObject):
         unit = self.units_by_id.get(unit_id, None)
         if unit is None:
             return
-        unit.animation = anim
+        unit.animation_str = anim
         core.instance.messenger.send(
             Event.UNIT_ANIMATION_UPDATED, sentArgs=[unit, loop]
         )
 
     def handle_my_animation_change_attempt(self, *args):
         anim, loop = args
-        self.player_unit.animation = anim
+        self.player_unit.animation_str = anim
         core.instance.messenger.send(
             Event.UNIT_ANIMATION_UPDATED, sentArgs=[self.player_unit, loop]
         )
@@ -106,7 +106,7 @@ class MainSectionModel(DirectObject):
             model_id,
         ) = args
         unit = self.units_by_id.get(unit_id, None)
-        unit.model = model_id
+        unit.model_id = model_id
         if unit is None:
             return
         core.instance.messenger.send(Event.UNIT_MODEL_UPDATED, sentArgs=[unit])

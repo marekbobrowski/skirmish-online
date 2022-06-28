@@ -1,5 +1,5 @@
 from client.local import core
-from client.local.assets import asset_names
+from client.local.font import MainFont
 from client.event import Event
 
 from ..model.model import MainSectionModel
@@ -64,7 +64,7 @@ class ChatBubbles(DirectObject):
 class ChatBubble:
     def __init__(self, text, unit):
         self.creation_time = datetime.now()
-        font = core.instance.loader.load_font(asset_names.main_font)
+        font = MainFont()
         frame_padding = 0.3
         half_frame_length = len(text) * 0.1 + frame_padding
         self.bubble_text = DirectLabel(

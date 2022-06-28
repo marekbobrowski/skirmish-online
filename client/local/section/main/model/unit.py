@@ -1,5 +1,6 @@
 from direct.actor.Actor import Actor
 from protocol.domain import Player
+from client.local.model.actor.base import ConfiguredActor
 from dataclasses import dataclass
 from typing import Optional, Any
 
@@ -16,13 +17,14 @@ class Unit:
     name: str = "Unknown"
     health: int = 0
     mana: int = 50
-    model: Optional[int] = None
-    animation: Optional[str] = None
-    weapon: Optional[str] = None
+    actor: Optional[ConfiguredActor] = None
+    model_id: Optional[int] = None
+    animation_str: Optional[str] = None
+    weapon_id: Optional[str] = None
     base_node: Optional[Any] = None
     weapon_node: Optional[Any] = None
-    actor: Optional[Actor] = None
     interpolator: Optional[Any] = None
+    anim_mgr: Optional[Any] = None
 
     @classmethod
     def from_player(cls, player):
@@ -34,9 +36,9 @@ class Unit:
             "id": player.id,
             "name": player.name,
             "health": player.health,
-            "model": player.model,
-            "animation": player.animation,
-            "weapon": player.weapon,
+            "model_id": player.model,
+            "animation_str": player.animation,
+            "weapon_id": player.weapon,
             "x": player.x,
             "y": player.y,
             "z": player.z,
