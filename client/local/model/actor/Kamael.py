@@ -5,6 +5,7 @@ from client.local.animation import Stand, Run, MeleeAttack1, MeleeAttack2, Magic
 class Kamael(ConfiguredActor):
 
     MODEL_PATH = "local/assets/characters/kamael.gltf"
+    HEIGHT = 0.57
     ANIMATION_MAPPING = {
         Stand(): "wait_2HS_MKamael",
         Run(): "run_2HS_MKamael",

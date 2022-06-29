@@ -5,6 +5,7 @@ from client.local.animation import Stand, Run, MeleeAttack1, MeleeAttack2, Magic
 class Elf(ConfiguredActor):
 
     MODEL_PATH = "local/assets/characters/elf.gltf"
+    HEIGHT = 0.53
     ANIMATION_MAPPING = {
         Stand(): "wait_2HS_FElf",
         Run(): "run_2HS_FElf",

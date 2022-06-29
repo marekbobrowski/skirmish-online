@@ -19,6 +19,7 @@ class FloatingBars(DirectObject):
         self.accept(Event.UNIT_MANA_UPDATED, self.handle_unit_mana_updated)
         self.accept(Event.UNIT_NAME_UPDATED, self.handle_unit_name_updated)
         self.accept(Event.UNIT_DISCONNECTED, self.handle_unit_disconnected)
+        self.accept(Event.UNIT_MODEL_UPDATED, self.handle_unit_model_updated)
 
     def handle_local_new_unit(self, *args):
         unit = args[0]
@@ -41,6 +42,10 @@ class FloatingBars(DirectObject):
         unit_id = args[0]
         self.delete_bar(unit_id)
 
+    def handle_unit_model_updated(self, *args):
+        unit = args[0]
+        self.update_vertical_position(unit)
+
     def delete_bar(self, unit_id):
         bar = self.floating_bars.get(unit_id, None)
         if bar is not None:
@@ -62,6 +67,11 @@ class FloatingBars(DirectObject):
         if bar is not None:
             bar.name_label["text"] = unit.name
 
+    def update_vertical_position(self, unit):
+        bar = self.floating_bars.get(unit.id)
+        if bar is not None:
+            bar.update_vertical_position()
+
     def create_bar(self, unit):
         new_bar = FloatingBar(unit)
         self.floating_bars[unit.id] = new_bar
@@ -69,10 +79,13 @@ class FloatingBars(DirectObject):
 
 class FloatingBar:
     def __init__(self, unit):
+        self.unit = unit
         self.node = unit.base_node.attach_new_node("floating bar node")
+        self.node.set_pos(0, 0, unit.actor.HEIGHT)
+
         self.health_bar = DirectWaitBar(
             value=unit.health,
-            pos=(0, 0, 0.5),
+            parent=self.node,
             frameColor=(1, 0, 0, 0.3),
             barColor=(0, 1, 0, 1),
         )
@@ -82,7 +95,8 @@ class FloatingBar:
 
         self.mana_bar = DirectWaitBar(
             value=unit.mana,
-            pos=(0, 0, 0.47),
+            pos=(0, 0, -0.03),
+            parent=self.node,
             frameColor=(0, 0, 0, 0.3),
             barColor=(0, 0, 1, 1),
         )
@@ -93,7 +107,7 @@ class FloatingBar:
         font = MainFont()
         self.name_label = DirectLabel(
             text=unit.name,
-            pos=(0, 0, 0.53),
+            pos=(0, 0, 0.03),
             scale=0.04,
             parent=self.node,
             text_bg=(0, 0, 0, 0),
@@ -103,7 +117,11 @@ class FloatingBar:
         )
         self.name_label.set_compass(core.instance.camera)
 
+    def update_vertical_position(self):
+        self.node.set_pos(0, 0, self.unit.actor.HEIGHT)
+
     def destroy(self):
         self.mana_bar.destroy()
         self.health_bar.destroy()
         self.name_label.destroy()
+

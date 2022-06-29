@@ -5,6 +5,7 @@ from client.local.animation import Stand, Run, MeleeAttack1, MeleeAttack2, Magic
 class Dwarf(ConfiguredActor):
 
     MODEL_PATH = "local/assets/characters/dwarf-f.gltf"
+    HEIGHT = 0.5
     ANIMATION_MAPPING = {
         Stand(): "wait_2HS_FDwarf",
         Run(): "run_2HS_FDwarf",

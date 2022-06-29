@@ -9,6 +9,7 @@ class ConfiguredActor(Actor):
     Enhanced Panda3D Actor with additional configuration for specific animated models.
     """
     MODEL_PATH: str = None
+    HEIGHT: float = None
     ANIMATION_MAPPING: dict = {}
     """
     Connects animation names in universal format with their embedded names (for this specified model).
