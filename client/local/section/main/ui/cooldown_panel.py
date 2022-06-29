@@ -12,6 +12,9 @@ from panda3d.core import TextNode
 class CooldownPanel(DirectObject):
     def __init__(self, node, units):
         DirectObject.__init__(self)
+        self.accept("aspectRatioChanged", self.aspect_ratio_change_update)
+        self.accept(Event.SET_SPELL_RECEIVED, self.handle_set_spell)
+        self.accept(Event.COMBAT_DATA_RECEIVED, self.handle_combat_data_received)
         self.node = node.attach_new_node("combat log node")
         self.units = units
 
@@ -41,7 +44,7 @@ class CooldownPanel(DirectObject):
         ]
 
         # number of lines displayable in the terminal
-        n_lines = 5
+        n_lines = 4
 
         # -- set up console components -- #
 
@@ -77,45 +80,59 @@ class CooldownPanel(DirectObject):
                     parent=self.text_nodes[i],
                 )
             )
-
-        self.accept("aspectRatioChanged", self.aspect_ratio_change_update)
-        self.accept(Event.SET_SPELL_RECEIVED, self.handle_set_spell)
-        self.accept(Event.TRIGGER_COOLDOWN_RECEIVED, self.handle_trigger_cooldown)
-
         self.update_view()
+        self.set_cooldown_tracking(0, "Spell 1", 1)
+        self.set_cooldown_tracking(1, "Spell 2", 2)
+        self.set_cooldown_tracking(2, "Spell 3", 3)
+        self.set_cooldown_tracking(3, "Spell 4", 4)
 
     def set_cooldown_tracking(self, slot_number, spell_name, spell_cooldown):
         self.spell_names[slot_number] = spell_name
         self.cooldowns[slot_number] = [spell_cooldown, spell_cooldown]
         task = Task(self.update_cooldown_view, "update cooldown view")
-        core.instance.task_mgr.add(task, extraArgs=[task, slot_number])
+        core.instance.task_mgr.add(task, extraArgs=[task, slot_number, spell_cooldown])
 
     def handle_set_spell(self, args):
         self.set_cooldown_tracking(
             args.spell_number, args.spell_name, args.spell_cooldown
         )
 
-    def handle_trigger_cooldown(self, args):
+    def handle_combat_data_received(self, *args):
+        spell_id = args[0]
+        hp_change = args[1]
+        if hp_change == 0:
+            return
 
+        # trigger cooldown for the spell
         task = Task(self.update_cooldown_view, "update cooldown view")
-        core.instance.task_mgr.add(task, extraArgs=[task, args.slot_number])
+        core.instance.task_mgr.add(task, extraArgs=[task, spell_id, self.cooldowns[spell_id][0]])
 
-    def update_cooldown_view(self, task, slot_number):
-        diff = self.cooldowns[slot_number][0] - task.time
+        # trigger global cooldown
+        # so that spells aren't used more often than 1 second
+        for i in range(len(self.cooldowns)):
+            if i != spell_id:
+                total, remaining = self.cooldowns[i]
+                if remaining < 1:
+                    task = Task(self.update_cooldown_view, "update cooldown view")
+                    self.cooldowns[i][1] = 1
+                    core.instance.task_mgr.add(task, extraArgs=[task, i, 1])
+
+    def update_cooldown_view(self, task, slot_number, cooldown):
+        diff = cooldown - task.time
         if diff > 0:
             self.cooldowns[slot_number][1] = diff
-            self.gowno(slot_number)
+            self.zabawny_bogdan(slot_number, cooldown)
             self.update_view()
             return Task.cont
         return Task.done
 
-    def gowno(self, slot_number):
+    def zabawny_bogdan(self, slot_number, cooldown):
         self.lines[slot_number] = (
             self.spell_names[slot_number]
             + " "
             + "|"
             * int(
-                (1 - self.cooldowns[slot_number][1] / self.cooldowns[slot_number][0])
+                (1 - self.cooldowns[slot_number][1] / cooldown)
                 * 80
             )
         )

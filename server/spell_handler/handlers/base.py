@@ -32,7 +32,7 @@ class BaseSpellHandler(metaclass=MetaClass):
             return
         if not self.session.spell_cache.is_spell_ready(self.spell_data.spell):
             return self.produce_response([], 0)
-        self.session.spell_cache.trigger_spell(self.spell_data.spell)
+        self.session.spell_cache.trigger_spell_cooldown(self.spell_data.spell)
         self.publish_spell_update()
         self.publish_animation_update()
         targets = self.calculate_targets()

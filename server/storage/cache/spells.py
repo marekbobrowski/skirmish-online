@@ -11,16 +11,23 @@ log = logging.getLogger(__name__)
 class SpellCache(EventUser):
     HMSET_PREFIX = "player_trigger_times_"
     SPELL_UPDATE_CHANNEL = "spell_update_"
+    GLOBAL_COOLDOWN = 1
     COOLDOWN_TIME_PER_SPELL_ID = {
         0: 1.0,
-        1: 1.0,
-        2: 1.0,
-        3: 1.0
+        1: 2.0,
+        2: 3.0,
+        3: 4.0
     }
 
     def __init__(self, session):
         super().__init__()
         self.session = session
+        self.temp_cooldown_per_id = {
+            0: 1.0,
+            1: 2.0,
+            2: 3.0,
+            3: 4.0
+        }
 
     def key(self):
         """
@@ -89,14 +96,26 @@ class SpellCache(EventUser):
         decoded_dict_ = {int(k.decode()): float(v.decode()) for k, v in dict_.items()}
         return decoded_dict_
 
-    def trigger_spell(self, spell_id: int) -> None:
+    def trigger_spell_cooldown(self, spell_id: int) -> None:
         """
         Updates trigger time of the spell.
         """
         times = self.load_trigger_times()
         assert spell_id in times, spell_id
+        self.trigger_global_cooldown(times)
         times[spell_id] = datetime.now().timestamp()
+        self.temp_cooldown_per_id[spell_id] = self.COOLDOWN_TIME_PER_SPELL_ID[spell_id]
         self.store_trigger_times(times)
+
+    def trigger_global_cooldown(self, times: dict) -> None:
+        now = datetime.now()
+        for spell_id, trigger_time in times.items():
+            trigger_time = datetime.fromtimestamp(trigger_time)
+            cooldown_elapsed = now - trigger_time
+            remaining_time = timedelta(seconds=self.temp_cooldown_per_id[spell_id]) - cooldown_elapsed
+            if remaining_time < timedelta(seconds=self.GLOBAL_COOLDOWN):
+                self.temp_cooldown_per_id[spell_id] = self.GLOBAL_COOLDOWN
+                times[spell_id] = now.timestamp()
 
     def is_spell_ready(self, spell_id: int) -> None:
         times = self.load_trigger_times()
@@ -104,4 +123,4 @@ class SpellCache(EventUser):
         trigger_time = datetime.fromtimestamp(trigger_time)
         if trigger_time is None:
             return False
-        return datetime.now() - trigger_time > timedelta(seconds=self.COOLDOWN_TIME_PER_SPELL_ID[spell_id])
+        return datetime.now() - trigger_time > timedelta(seconds=self.temp_cooldown_per_id[spell_id])
