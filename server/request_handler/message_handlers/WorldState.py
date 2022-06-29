@@ -20,6 +20,7 @@ class WorldStateHandler(MessageHandler):
         id_ = max({p.id for p in current_players} | {-1}) + 1
 
         self.session.for_player(id_)
+        self.session.spell_cache.initialize_trigger_times()
 
         message = messages.WorldStateResponse.build(
             player=self.session.player,
