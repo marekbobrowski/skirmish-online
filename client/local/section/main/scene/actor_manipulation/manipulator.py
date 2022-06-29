@@ -38,14 +38,13 @@ class ActorManipulator(DirectObject):
         unit.actor.reparent_to(unit.base_node)
         self.change_animation(unit, unit.animation_str, 0)
         weapon = WeaponModelBank.get_by_id(unit.weapon_id)()
-        print(type(weapon))
         self.equip_weapon(unit, weapon)
 
     def handle_weapon_changed(self, *args):
         unit, = args
-        # self.change_weapon(unit, unit.weapon_id)
-        weapon = WeaponModelBank.get_by_id(unit.weapon_id)()
-        self.equip_weapon(unit, weapon)
+        self.change_weapon(unit, unit.weapon_id)
+        # weapon = WeaponModelBank.get_by_id(unit.weapon_id)()
+        # self.equip_weapon(unit, weapon)
 
     def spawn_unit(self, unit):
         unit.actor = UnitModelBank.get_by_id(unit.model_id)()
@@ -72,7 +71,6 @@ class ActorManipulator(DirectObject):
         unit.anim_mgr.consider_animation(AnimationBank.get_animation_by_string(animation))
 
     def equip_weapon(self, unit, weapon):
-        print('no chlopie')
         unit.hand_node = unit.actor.expose_joint(None, "modelRoot", "Weapon_R_Bone")
         weapon.reparent_to(unit.hand_node)
         unit.weapon_node = weapon

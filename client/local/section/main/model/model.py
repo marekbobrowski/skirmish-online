@@ -116,7 +116,7 @@ class MainSectionModel(DirectObject):
         unit = self.units_by_id.get(unit_id, None)
         if unit is None:
             return
-        unit.weapon = weapon_id
+        unit.weapon_id = weapon_id
         core.instance.messenger.send(Event.UNIT_WEAPON_UPDATED, sentArgs=[unit])
 
     def handle_unit_disconnected(self, *args):
