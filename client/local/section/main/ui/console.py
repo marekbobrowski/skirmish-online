@@ -5,6 +5,8 @@ from direct.showbase.DirectObject import DirectObject
 from direct.gui.DirectGui import DirectFrame, DirectEntry, DirectLabel
 from panda3d.core import TextNode
 from .command_executor import CommandExecutor
+from typing import List
+from .utils.frame import Frame, Anchor
 
 
 class Console(DirectObject):
@@ -39,7 +41,13 @@ class Console(DirectObject):
 
         # -- set up console components -- #
 
-        self.frame = DirectFrame(parent=self.node, frameColor=frame_color)
+        # self.frame = Frame(node=node,
+        #                    anchor=Anchor.LEFT_BOTTOM,
+        #                    color=(0, 0, 0, 0.6),
+        #                    x_offset=0.05,
+        #                    y_offset=0.05,
+        #                    width=0.25,
+        #                    height=0.2)
 
         font = MainFont()
         font.set_pixels_per_unit(100)
@@ -107,12 +115,6 @@ class Console(DirectObject):
         self.entry["focus"] = True
 
     def aspect_ratio_change_update(self):
-        self.frame["frameSize"] = (
-            0,
-            core.instance.win.get_x_size() * self.width,
-            core.instance.win.get_y_size() * -self.height,
-            0,
-        )
         self.node.set_pos(0, 0, -(1 - self.height) * core.instance.win.get_y_size())
 
         self.entry_node.set_pos(
@@ -153,10 +155,15 @@ class Console(DirectObject):
 
     def add_msg(self, name, time, msg):
         if name is None:
-            self.add_lines(msg.splitlines())
+            lines = msg.splitlines()
         else:
-            self.add_lines([f"[{time}] {name}: {msg}"])
+            lines = [f"[{time}] {name}: {msg}"]
+        for line in lines:
+            self.add_lines(self.split_into_smaller_lines(line, chars_per_line=40))
         self.update_view()
+
+    def split_into_smaller_lines(self, string: str, chars_per_line: int) -> List[str]:
+        return [string[i:i+chars_per_line] for i in range(0, len(string), chars_per_line)]
 
     def add_lines(self, lines):
         """
