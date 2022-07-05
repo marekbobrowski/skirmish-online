@@ -4,6 +4,7 @@ from direct.showbase.DirectObject import DirectObject
 from ..utils.frame import Frame, Anchor
 from client.local.section.main.ui.action_bar.cooldown_trackers.base import CooldownTrackerBase
 from .cooldown_trackers import TrackerSpell1, TrackerSpell2, TrackerSpell3, TrackerSpell4
+from .slot import SpellSlot
 from direct.task.Task import Task
 
 
@@ -30,29 +31,18 @@ class ActionBar(DirectObject):
         padding = 0.003
         y_offset = 0.049
         self.spell_slots = []
-        slot_classes = [TrackerSpell1, TrackerSpell2, TrackerSpell3, TrackerSpell4]
+        tracker_classes = [TrackerSpell1, TrackerSpell2, TrackerSpell3, TrackerSpell4]
         for i in range(self.N_SLOTS):
-            if i in range(0, len(slot_classes)):
-                self.spell_slots.append(slot_classes[i](node=self.frame.node,
-                                                        x_offset=x_offset,
-                                                        y_offset=y_offset,
-                                                        parent_frame=None))
+            if i in range(0, len(tracker_classes)):
+                tracker_cls = tracker_classes[i]
             else:
-                self.spell_slots.append(CooldownTrackerBase(node=self.frame.node,
-                                                            x_offset=x_offset,
-                                                            y_offset=y_offset,
-                                                            parent_frame=None))
-            # self.spell_slots.append(SpellSlot2(node=self.frame.node,
-            #                                       x_offset=x_offset,
-            #                                       y_offset=y_offset + 2 * padding,
-            #                                       parent_frame=None))
+                tracker_cls = None
+            self.spell_slots.append(SpellSlot(node=self.frame.node,
+                                              tracker_cls=tracker_cls,
+                                              x_offset=x_offset,
+                                              y_offset=y_offset,
+                                              parent_frame=None))
             x_offset += spell_slot_width + padding
-
-        if type(self) != CooldownTrackerBase:
-            self.set_cooldown_tracking(0, 1)
-            self.set_cooldown_tracking(1, 2)
-            self.set_cooldown_tracking(2, 3)
-            self.set_cooldown_tracking(3, 4)
 
     def set_cooldown_tracking(self, slot_number, spell_cooldown):
         slot = self.spell_slots[slot_number]
@@ -71,12 +61,12 @@ class ActionBar(DirectObject):
 
         # trigger cooldown for the spell
         task = Task(slot.update_cooldown_view, "update cooldown view")
-        core.instance.task_mgr.add(task, extraArgs=[task, slot.default_cooldown])
+        core.instance.task_mgr.add(task, extraArgs=[task, slot.tracker_cls.DEFAULT_COOLDOWN])
 
         # trigger global cooldown
         # so that spells aren't used more often than 1 second
         for i, slot in enumerate(self.spell_slots):
-            if i != spell_id and not type(self.spell_slots[i]) == CooldownTrackerBase:
+            if i != spell_id and slot.tracker_cls is not None:
                 if slot.remaining_time < 1:
                     task = Task(slot.update_cooldown_view, "update cooldown view")
                     slot.remaining_time = 1

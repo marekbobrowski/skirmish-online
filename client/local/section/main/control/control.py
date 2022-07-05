@@ -3,15 +3,16 @@ from client.local.section.main.control.camera_control import CameraControl
 from client.local.section.main.control.node_control import NodeControl
 from client.event import Event
 from client.local import animation
-
+from direct.showbase.DirectObject import DirectObject
 from direct.task.Task import Task
 from panda3d.core import WindowProperties, Vec3
 
 import datetime
 
 
-class Control:
+class Control(DirectObject):
     def __init__(self, unit, camera):
+        super().__init__()
         self.actor_control = None
         self.camera_control = None
         self.mouse_sensitivity = 0.5
@@ -66,11 +67,11 @@ class Control:
             )
             self.camera_control.zoom_out(10)
         for event, handler in self.event_handler_mapping.items():
-            core.instance.accept(event, handler)
+            self.accept(event, handler)
 
     def disable(self):
         for event, handler in self.event_handler_mapping.items():
-            core.instance.ignore(event)
+            self.ignore(event)
 
     def w_handler(self):
         self.w_pressed = True
@@ -260,7 +261,8 @@ class Control:
         core.instance.messenger.send(event=Event.MY_SPELL_ATTEMPT, sentArgs=[3])
 
     def c_handler(self):
-        core.instance.messenger.send(event=Event.MY_SPELL_ATTEMPT, sentArgs=[4])
+        pass
+        # core.instance.messenger.send(event=Event.MY_SPELL_ATTEMPT, sentArgs=[4])
 
     def esc_handler(self):
         pass

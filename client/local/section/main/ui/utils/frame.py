@@ -1,8 +1,9 @@
 from client.local import core
 from client.event import Event
 from direct.showbase.DirectObject import DirectObject
-from direct.gui.DirectGui import DirectFrame, DirectEntry, DirectLabel
+from direct.gui.DirectGui import DirectFrame, DirectEntry, DirectLabel, DGG
 from panda3d.core import TextNode
+from client.local.font import MainFont
 
 
 class Anchor:
@@ -14,16 +15,24 @@ class Frame(DirectObject):
     """
     Wrapper for DirectFrame that scales/moves accordingly to the window size (for Pixel2d root).
     """
-    def __init__(self, node, anchor, color, x_offset, y_offset, width, height, parent_frame=None, image=None, hpr=(0,0,0), image_hpr=(0,0,0), scale=1):
+    def __init__(self, node, anchor, color, x_offset, y_offset, width, height, parent_frame=None, image=None, hpr=(0,0,0), image_hpr=(0,0,0), scale=1, text=""):
         DirectObject.__init__(self)
         self.anchor = anchor
         self.node = node.attach_new_node(f"frame {self}")
+        self.text_x_offset = 0.004
+        self.text_y_offset = 0.016
+        self.text_scale = 0.01
         self.frame = DirectFrame(
             hpr=hpr,
             parent=self.node,
             frameColor=color,
             frameTexture=image,
-            image_hpr=image_hpr
+            image_hpr=image_hpr,
+            text=text,
+            text_roll=180,
+            text_scale=20,
+            text_font=MainFont(),
+            text_fg=(1, 1, 1, 1),
         )
         self.x_offset = x_offset
         self.y_offset = y_offset
@@ -55,7 +64,8 @@ class Frame(DirectObject):
             height_px,
             0,
         )
-
+        self.frame["text_pos"] = (reference_width * self.text_x_offset, reference_height * self.text_y_offset, 0)
+        self.frame["text_scale"] = reference_width * self.text_scale
         if self.anchor == Anchor.CENTER:
             self.node.set_pos(center - width_px / 2, 0, -reference_height * (1 - self.y_offset))
         elif self.anchor == Anchor.LEFT_BOTTOM:
