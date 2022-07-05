@@ -34,21 +34,24 @@ class Console(DirectObject):
         foreground_color = (1, 1, 1, 1)
 
         # number of lines displayable in the terminal
-        n_lines = 40
+        n_lines = 9
 
         # distance of the '>' symbol from the entry
         self.input_symbol_offset = 0.0005
 
         # -- set up console components -- #
 
-        # self.frame = Frame(node=node,
-        #                    anchor=Anchor.LEFT_BOTTOM,
-        #                    color=(0, 0, 0, 0.6),
-        #                    x_offset=0.05,
-        #                    y_offset=0.05,
-        #                    width=0.25,
-        #                    height=0.2)
+        self.frame = Frame(node=node,
+                           anchor=Anchor.LEFT_BOTTOM,
+                           color=(0, 0, 0, 0.6),
+                           x_offset=0.03,
+                           y_offset=0.041,
+                           width=0.3,
+                           height=0.21)
 
+        self.frame.frame.set_bin('fixed', 30)
+
+        #
         font = MainFont()
         font.set_pixels_per_unit(100)
 

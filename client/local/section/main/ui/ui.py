@@ -15,7 +15,7 @@ class MainSectionUi:
         self.node = core.instance.pixel2d.attach_new_node("interface node")
         self.console = Console(self.node)
         self.dmg_text = DmgText(self.model.units_by_id)
-        # self.combat_log = CombatLog(self.node, self.model.units_by_id)
+        self.combat_log = CombatLog(self.node, self.model.units_by_id)
         # self.cooldown_panel = CooldownPanel(self.node, self.model.units_by_id)
         self.action_bar = ActionBar(self.node)
 

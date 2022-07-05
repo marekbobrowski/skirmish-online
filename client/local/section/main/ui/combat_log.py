@@ -6,6 +6,7 @@ from client.local.font import MainFont
 from direct.showbase.DirectObject import DirectObject
 from direct.gui.DirectGui import DirectFrame, DirectLabel
 from panda3d.core import TextNode
+from .utils.frame import Frame, Anchor
 
 
 class CombatLog(DirectObject):
@@ -22,7 +23,7 @@ class CombatLog(DirectObject):
         # --- entry & output text params --- #
 
         # offset from the corner
-        self.corner_x_offset = 0.8
+        self.corner_x_offset = 0.67
         self.corner_y_offset = 0.04
 
         self.between_line_dist = 0.045
@@ -34,11 +35,19 @@ class CombatLog(DirectObject):
         foreground_color = (1, 1, 1, 1)
 
         # number of lines displayable in the terminal
-        n_lines = 40
+        n_lines = 9
 
         # -- set up console components -- #
 
-        self.frame = DirectFrame(parent=self.node, frameColor=frame_color)
+        self.frame = Frame(node=node,
+                           anchor=Anchor.LEFT_BOTTOM,
+                           color=(0, 0, 0, 0.6),
+                           x_offset=0.67,
+                           y_offset=0.041,
+                           width=0.3,
+                           height=0.21)
+
+        self.frame.frame.set_bin('fixed', 30)
 
         font = MainFont()
         # font.set_pixels_per_unit(100)
@@ -70,12 +79,6 @@ class CombatLog(DirectObject):
         self.accept(Event.COMBAT_DATA_RECEIVED, self.handle_received_combat_data)
 
     def aspect_ratio_change_update(self):
-        self.frame["frameSize"] = (
-            0,
-            core.instance.win.get_x_size() * self.width,
-            core.instance.win.get_y_size() * -self.height,
-            0,
-        )
         self.node.set_pos(0, 0, -(1 - self.height) * core.instance.win.get_y_size())
         line_y = 0
         for text_node in reversed(self.text_nodes):

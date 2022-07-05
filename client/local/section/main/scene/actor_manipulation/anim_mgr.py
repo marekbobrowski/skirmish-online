@@ -2,7 +2,6 @@ from client.local.animation.base import AnimationBase
 from client.local.model.actor import ConfiguredActor
 from direct.task.Task import Task
 from client.local import core
-from typing import Type
 
 
 class AnimationManager:
