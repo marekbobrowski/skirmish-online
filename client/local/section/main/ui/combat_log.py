@@ -10,6 +10,11 @@ from .utils.frame import Frame, Anchor
 
 
 class CombatLog(DirectObject):
+    MULTIPLY_FACTOR = 412
+    """
+    We multiply displayed damage for "cooler" effect.
+    """
+
     def __init__(self, node, units):
         DirectObject.__init__(self)
         self.node = node.attach_new_node("combat log node")
@@ -103,7 +108,7 @@ class CombatLog(DirectObject):
         target_ids = args[3]
         for target_id in target_ids:
             lines.append(
-                f"{self.units.get(args[2]).name} -> {self.units.get(target_id).name} {args[1]}"
+                f"{self.units.get(args[2]).name} -> {self.units.get(target_id).name} {args[1] * self.MULTIPLY_FACTOR}"
             )
         self.add_lines(lines)
         self.update_view()

@@ -1,6 +1,7 @@
 from .base import BaseSpellHandler
 from typing import List
 from protocol.domain import Spells, AnimationName
+import random
 
 
 class MeleThreeHandler(BaseSpellHandler):
@@ -22,4 +23,4 @@ class MeleThreeHandler(BaseSpellHandler):
         """
         Does animation on other targets and calculates hp change
         """
-        return 20
+        return random.randint(30, 37)

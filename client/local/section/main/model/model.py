@@ -6,6 +6,7 @@ from client.local import core
 
 
 class MainSectionModel(DirectObject):
+
     def __init__(self):
         DirectObject.__init__(self)
         self.player_id = None

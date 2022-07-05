@@ -11,6 +11,11 @@ from panda3d.core import Vec3
 
 
 class DmgText(DirectObject):
+    MULTIPLY_FACTOR = 412
+    """
+    We multiply displayed damage for "cooler" effect.
+    """
+
     def __init__(self, units_by_id):
         DirectObject.__init__(self)
         self.units_by_id = units_by_id
@@ -39,10 +44,10 @@ class DmgText(DirectObject):
             uniform(self.init_displacement, self.init_displacement),
         )
 
-        scale = value / self.big_dmg_assumption * self.scale_factor
+        scale = 0.15
 
         text = DirectLabel(
-            text=str(value),
+            text=str(value * self.MULTIPLY_FACTOR),
             scale=scale,
             parent=text_node,
             text_bg=(0, 0, 0, 0),
