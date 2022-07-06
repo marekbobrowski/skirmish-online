@@ -63,12 +63,17 @@ class PlayerCache(EventUser):
         """
         Creates new user from id_
         """
+
+        model = random.choice([m.value for m in Model])
+        name = {0: "Dark Elf", 1: "Elf", 2: "Kamael", 3: "Dwarf"}[model]
+        name = f"{name} [{id_}]"
+
         player = Player(
             id=id_,
-            name=f"name{id_}",
             health=50,
             mana=50,
-            model=random.choice([m.value for m in Model]),
+            model=model,
+            name=name,
             animation="stand",
             loop=1,
             weapon=random.choice([w.value for w in Weapon]),
