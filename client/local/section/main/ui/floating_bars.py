@@ -99,6 +99,7 @@ class FloatingBar:
             parent=self.node,
             frameColor=(0, 0, 0, 0.3),
             barColor=(0, 0, 1, 1),
+            frameSize=(-1, 1, 0.05, 0.15)
         )
         self.mana_bar.reparent_to(self.node)
         self.mana_bar.set_scale(0.13)
