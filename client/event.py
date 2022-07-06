@@ -6,7 +6,6 @@ class Event:
     # raw data about unit received from server
     # -----------------------------------------------
     NEW_UNIT_DATA_RECEIVED = "new-unit-data-received"
-
     UNIT_POS_ROT_RECEIVED = "unit-pos-rot-received"
     UNIT_ANIMATION_RECEIVED = "unit-animation-received"
     UNIT_HEALTH_RECEIVED = "unit-health-received"
@@ -43,4 +42,5 @@ class Event:
     MY_POS_ROT_CHANGED = "my-pos-rot-changed"
     MY_SPELL_ATTEMPT = "my-spell-attempt"
     COMMAND_TO_SERVER_ENTERED = "local-command-to-server-entered"
+    COMBAT_DATA_PARSED = "combat-data-parsed"
     # -----------------------------------------------

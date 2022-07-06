@@ -8,6 +8,7 @@ from .queue_subscribers.name_update import NameUpdateSubscriber
 from .queue_subscribers.model_update import ModelUpdateSubscriber
 from .queue_subscribers.weapon_update import WeaponUpdateSubscriber
 from .queue_subscribers.disconnect import DisconnectSubscriber
+from .queue_subscribers.combat_data import CombatDataSubscriber
 from server.connection_dependant.connection_dependant_mgr import ConnectionDependantManager
 from server.connection_dependant.connection_dependant import ConnectionDependantObj
 
@@ -57,7 +58,8 @@ class EventNotifier(ConnectionDependantObj):
             NameUpdateSubscriber(self),
             ModelUpdateSubscriber(self),
             WeaponUpdateSubscriber(self),
-            DisconnectSubscriber(self)
+            DisconnectSubscriber(self),
+            CombatDataSubscriber(self)
         ]
         for subsubscriber in self.subsubscribers:
             subsubscriber.run()

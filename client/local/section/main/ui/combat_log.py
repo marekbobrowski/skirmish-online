@@ -81,7 +81,7 @@ class CombatLog(DirectObject):
             )
 
         self.accept("aspectRatioChanged", self.aspect_ratio_change_update)
-        self.accept(Event.COMBAT_DATA_RECEIVED, self.handle_received_combat_data)
+        self.accept(Event.COMBAT_DATA_PARSED, self.handle_combat_data_parsed)
 
     def aspect_ratio_change_update(self):
         self.node.set_pos(0, 0, -(1 - self.height) * core.instance.win.get_y_size())
@@ -103,12 +103,15 @@ class CombatLog(DirectObject):
                 * core.instance.win.get_y_size(),
             )
 
-    def handle_received_combat_data(self, *args):
+    def handle_combat_data_parsed(self, *args):
         lines = []
+        spell_id = args[0]
+        damage = args[1]
+        source_id = args[2]
         target_ids = args[3]
         for target_id in target_ids:
             lines.append(
-                f"{self.units.get(args[2]).name} -> {self.units.get(target_id).name} {args[1] * self.MULTIPLY_FACTOR}"
+                f"{self.units.get(source_id).name}/{self.units.get(target_id).name}/{damage * self.MULTIPLY_FACTOR}/{spell_id}"
             )
         self.add_lines(lines)
         self.update_view()

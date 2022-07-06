@@ -32,14 +32,17 @@ class BaseSpellHandler(metaclass=MetaClass):
             return
         if not self.session.spell_cache.is_spell_ready(self.spell_data.spell):
             return self.produce_response([], 0)
+
         self.session.spell_cache.trigger_spell_cooldown(self.spell_data.spell)
-        self.publish_spell_update()
-        self.publish_animation_update()
+
         targets = self.calculate_targets()
         hp_change = self.interact_with_tagets(targets)
+        combat_data = self.produce_response(targets, hp_change)
+
         self.publish_health_update(targets, hp_change)
-        self.session.player_cache.publish_mana_update([self.session.player.id], 5)
-        return self.produce_response(targets, hp_change)
+        self.publish_mana_update([self.session.player.id], 5)
+        self.publish_animation_update()
+        self.publish_combat_data(combat_data)
 
     def valid(self) -> bool:
         """
@@ -71,6 +74,17 @@ class BaseSpellHandler(metaclass=MetaClass):
         self.session.player_cache.publish_health_update(
             targets,
             hp_change,
+        )
+
+    def publish_mana_update(self, targets, mana_change):
+        self.session.player_cache.publish_mana_update(
+            targets,
+            mana_change
+        )
+
+    def publish_combat_data(self, combat_data):
+        self.session.spell_cache.publish_combat_data(
+            combat_data
         )
 
     @abstractmethod

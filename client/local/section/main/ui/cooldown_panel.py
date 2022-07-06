@@ -14,7 +14,7 @@ class CooldownPanel(DirectObject):
         DirectObject.__init__(self)
         self.accept("aspectRatioChanged", self.aspect_ratio_change_update)
         self.accept(Event.SET_SPELL_RECEIVED, self.handle_set_spell)
-        self.accept(Event.COMBAT_DATA_RECEIVED, self.handle_combat_data_received)
+        self.accept(Event.COMBAT_DATA_PARSED, self.handle_combat_data_parsed)
         self.node = node.attach_new_node("combat log node")
         self.units = units
 
@@ -97,7 +97,7 @@ class CooldownPanel(DirectObject):
             args.spell_number, args.spell_name, args.spell_cooldown
         )
 
-    def handle_combat_data_received(self, *args):
+    def handle_combat_data_parsed(self, *args):
         spell_id = args[0]
         hp_change = args[1]
         if hp_change == 0:

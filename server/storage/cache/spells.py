@@ -11,6 +11,7 @@ log = logging.getLogger(__name__)
 class SpellCache(EventUser):
     HMSET_PREFIX = "player_trigger_times_"
     SPELL_UPDATE_CHANNEL = "spell_update_"
+    COMBAT_DATA_CHANNEL = "combat_data_"
     GLOBAL_COOLDOWN = 1
     COOLDOWN_TIME_PER_SPELL_ID = {
         0: 1.0,
@@ -48,7 +49,6 @@ class SpellCache(EventUser):
         """
         spell_update = SpellUpdate(**spell._json(), id=self.session.player.id)
         data = json.dumps(dataclasses.asdict(spell_update))
-
         for session_id in self.session.cache.get_other_sessions():
             self.session.redis.publish(
                 self.spell_update_channel_for_session(session_id),
@@ -56,6 +56,13 @@ class SpellCache(EventUser):
             )
 
         return spell_update
+
+    def publish_combat_data(self, combat_data):
+        data = json.dumps(dataclasses.asdict(combat_data))
+        self.session.redis.publish(
+            self.COMBAT_DATA_CHANNEL,
+            data,
+        )
 
     def subscribe(self, subscriber):
         """
@@ -65,6 +72,16 @@ class SpellCache(EventUser):
         p.subscribe(
             **{self.spell_update_channel_for_session(self.session.id): subscriber}
         )
+        thread = p.run_in_thread(sleep_time=0.001)
+        self.listening_threads.append(thread)
+        return thread
+
+    def subscribe_for_combat_data(self, subscriber):
+        """
+        Creates a thread that will subscribe to combat data.
+        """
+        p = self.session.redis.pubsub()
+        p.subscribe(**{self.COMBAT_DATA_CHANNEL: subscriber})
         thread = p.run_in_thread(sleep_time=0.001)
         self.listening_threads.append(thread)
         return thread

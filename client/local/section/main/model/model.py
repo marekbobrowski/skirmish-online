@@ -24,6 +24,7 @@ class MainSectionModel(DirectObject):
             Event.MY_ANIMATION_CHANGE_ATTEMPT, self.handle_my_animation_change_attempt
         )
         self.accept(Event.UNIT_DISCONNECTED, self.handle_unit_disconnected)
+        self.accept(Event.COMBAT_DATA_RECEIVED, self.handle_combat_data_received)
 
     def load(self, state: WorldState) -> None:
         self.player_id = state.player.id
@@ -125,6 +126,15 @@ class MainSectionModel(DirectObject):
         unit = self.units_by_id.get(unit_id, None)
         unit.actor.delete()
         del unit
+
+    def handle_combat_data_received(self, *args):
+        spell_id = args[0]
+        hp_change = args[1]
+        source_id = args[2]
+        target_ids = args[3]
+        this_player_is_source = source_id == self.player_id
+        this_player_is_target = self.player_id in target_ids
+        core.instance.messenger.send(Event.COMBAT_DATA_PARSED, sentArgs=[spell_id, hp_change, source_id, target_ids, this_player_is_source, this_player_is_target])
 
     def get_unit_by_name(self, name):
         for unit in self.units_by_id.values():

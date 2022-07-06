@@ -17,14 +17,11 @@ class SpellHandler:
 
     def __call__(self) -> CombatData:
         """
-        This is the main procedure. Hadles the spell, and produces
-        CombatData packet that is distrubuted to original client.
-
-        Additionally, publishing spell information should be done
-        here
+        Handle the spell.
         """
         handler = self.get_handler()
-        return CombatData.from_dataclass(handler())
+        handler()
+        #return CombatData.from_dataclass(handler())
 
     def get_handler(self):
         """

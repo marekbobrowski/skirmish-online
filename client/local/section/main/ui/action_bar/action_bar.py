@@ -16,7 +16,7 @@ class ActionBar(DirectObject):
 
     def __init__(self, node):
         DirectObject.__init__(self)
-        self.accept(Event.COMBAT_DATA_RECEIVED, self.handle_combat_data_received)
+        self.accept(Event.COMBAT_DATA_PARSED, self.handle_combat_data_parsed)
         self.node = node.attach_new_node("action bar")
         self.frame = Frame(node=self.node,
                            anchor=Anchor.CENTER,
@@ -51,10 +51,12 @@ class ActionBar(DirectObject):
         task = Task(slot.update_cooldown_view, "update cooldown view")
         core.instance.task_mgr.add(task, extraArgs=[task, spell_cooldown])
 
-    def handle_combat_data_received(self, *args):
+    def handle_combat_data_parsed(self, *args):
         spell_id = args[0]
         hp_change = args[1]
-        if hp_change == 0:
+        this_player_is_source = args[4]
+
+        if not this_player_is_source or hp_change == 0:
             return
 
         slot = self.spell_slots[spell_id]
