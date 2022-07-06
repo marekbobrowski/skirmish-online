@@ -105,6 +105,11 @@ class Console(DirectObject):
         self.accept("aspectRatioChanged", self.aspect_ratio_change_update)
         self.accept("enter", self.focus_entry)
         self.accept(Event.MSG_RECEIVED, self.add_msg)
+        self.accept(Event.NEW_UNIT_CREATED, self.handle_new_unit_created)
+
+    def handle_new_unit_created(self, *args):
+        unit = args[0]
+        self.add_msg(name=None, time=None, msg=f"{unit.name} has joined the game.")
 
     def send_msg_event(self, msg):
         self.input_symbol_node.hide()
