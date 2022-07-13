@@ -41,11 +41,11 @@ class Console(DirectObject):
 
         # -- set up console components -- #
 
-        self.frame = Frame(node=node,
+        self.frame = Frame(parent_node=node,
                            anchor=Anchor.LEFT_BOTTOM,
                            color=(0, 0, 0, 0.6),
-                           x_offset=0.03,
-                           y_offset=0.041,
+                           x=0.03,
+                           y=0.041,
                            width=0.3,
                            height=0.21)
 
@@ -60,7 +60,7 @@ class Console(DirectObject):
 
         # create node for each line of text, so it can be displaced when resizing the window
         for i in range(n_lines):
-            self.text_nodes.append(self.node.attach_new_node(f"text node {i}"))
+            self.text_nodes.append(self.node.attach_new_node(f"text_panels node {i}"))
 
         # lines of text that are going to be displayed in the terminal
         self.lines_queue = ["" for i in range(n_lines)]

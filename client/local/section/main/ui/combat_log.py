@@ -44,11 +44,11 @@ class CombatLog(DirectObject):
 
         # -- set up console components -- #
 
-        self.frame = Frame(node=node,
+        self.frame = Frame(parent_node=node,
                            anchor=Anchor.LEFT_BOTTOM,
                            color=(0, 0, 0, 0.6),
-                           x_offset=0.67,
-                           y_offset=0.041,
+                           x=0.67,
+                           y=0.041,
                            width=0.3,
                            height=0.21)
 

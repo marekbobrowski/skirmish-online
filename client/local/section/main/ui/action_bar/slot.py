@@ -18,15 +18,12 @@ class SpellSlot(DirectObject):
             icon = tracker_cls.ICON
             text = tracker_cls.DISPLAYED_TEXT
 
-        self.frame = Frame(node=self.node,
-                           anchor=None,
+        self.frame = Frame(parent_node=self.node,
                            color=color,
-                           x_offset=x_offset,
-                           y_offset=y_offset,
+                           x=x_offset,
+                           y=y_offset,
                            width=0.026,
                            height=0.046,
-                           scale=1000,
-                           parent_frame=parent_frame,
                            hpr=(0, 0, 180),
                            image=icon,
                            text=text,

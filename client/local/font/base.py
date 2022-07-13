@@ -8,6 +8,5 @@ class FontBase:
     Panda3D font with specified font path.
     """
     def __new__(cls):
-        return core.instance.loader.load_font(cls.FONT_PATH)
-
-# main_font = "local/assets/font/font.ttf"
+        font = core.instance.loader.load_font(cls.FONT_PATH)
+        return font
