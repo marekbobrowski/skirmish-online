@@ -140,11 +140,8 @@ class PlayerCache(EventUser):
         self.session.player_position_cache.update_position(player)
 
         data = json.dumps(dataclasses.asdict(player))
-
-        self.session.redis.publish(
-            self.NEW_PLAYER_CHANNEL,
-            data,
-        )
+        self.send_event(event=self.NEW_PLAYER_CHANNEL,
+                        prepared_data=data)
 
     def publish_position_update(self, position):
         """
@@ -168,10 +165,8 @@ class PlayerCache(EventUser):
         data["event_dtime"] = event_dtime.timestamp()
         data = json.dumps(data)
 
-        self.session.redis.publish(
-            self.POSITION_UPDATE_CHANNEL,
-            data,
-        )
+        self.send_event(event=self.POSITION_UPDATE_CHANNEL,
+                        prepared_data=data)
 
         return position_update
 
@@ -182,10 +177,8 @@ class PlayerCache(EventUser):
 
         data = json.dumps(dataclasses.asdict(animation_update))
 
-        self.session.redis.publish(
-            self.ANIMATION_UPDATE_CHANNEL,
-            data,
-        )
+        self.send_event(event=self.ANIMATION_UPDATE_CHANNEL,
+                        prepared_data=data)
 
         return animation_update
 
@@ -200,10 +193,8 @@ class PlayerCache(EventUser):
 
         data = json.dumps([dataclasses.asdict(hu) for hu in health_updates])
 
-        self.session.redis.publish(
-            self.HEALTH_UPDATE_CHANNEL,
-            data,
-        )
+        self.send_event(event=self.HEALTH_UPDATE_CHANNEL,
+                        prepared_data=data)
 
     def publish_mana_update(self, targets, mana_change) -> None:
         affected_players = [self.load(id_) for id_ in targets]
@@ -216,29 +207,26 @@ class PlayerCache(EventUser):
 
         data = json.dumps([dataclasses.asdict(hu) for hu in mana_updates])
 
-        self.session.redis.publish(
-            self.MANA_UPDATE_CHANNEL,
-            data,
-        )
+        self.send_event(event=self.MANA_UPDATE_CHANNEL,
+                        prepared_data=data)
 
     def publish_name_update(self, name):
         self.session.player.name = name
         self.save(self.session.player)
         data = json.dumps(dataclasses.asdict(NameUpdate(self.session.player.id,
                                                         self.session.player.name)))
-        self.session.redis.publish(
-            self.NAME_UPDATE_CHANNEL,
-            data,
-        )
+
+        self.send_event(event=self.NAME_UPDATE_CHANNEL,
+                        prepared_data=data)
 
     def publish_model_update(self, model):
         self.session.player.model_id = model
         self.save(self.session.player)
         data = json.dumps(dataclasses.asdict(ModelUpdate(self.session.player.id,
                                                          self.session.player.model_id)))
-        self.session.redis.publish(
-            self.MODEL_UPDATE_CHANNEL,
-            data,
+        self.send_event(
+            event=self.MODEL_UPDATE_CHANNEL,
+            prepared_data=data
         )
 
     def publish_weapon_update(self, weapon_id):
@@ -246,22 +234,22 @@ class PlayerCache(EventUser):
         self.save(self.session.player)
         data = json.dumps(dataclasses.asdict(WeaponUpdate(self.session.player.id,
                                                           self.session.player.weapon_id)))
-        self.session.redis.publish(
-            self.WEAPON_UPDATE_CHANNEL,
-            data,
+        self.send_event(
+            event=self.WEAPON_UPDATE_CHANNEL,
+            prepared_data=data,
         )
 
     def publish_disconnect(self):
         data = json.dumps(dataclasses.asdict(Disconnection(self.session.player.id)))
-        self.session.redis.publish(
-            self.DISCONNECT_CHANNEL,
-            data,
+        self.send_event(
+            event=self.DISCONNECT_CHANNEL,
+            prepared_data=data
         )
 
     def raise_connection_check_event(self):
-        self.session.redis.publish(
-            self.CONNECTION_CHECK_CHANNEL,
-            json.dumps("")
+        self.send_event(
+            event=self.CONNECTION_CHECK_CHANNEL,
+            prepared_data=json.dumps("")
         )
 
     # Subscribtions for channels
@@ -271,107 +259,97 @@ class PlayerCache(EventUser):
         Creates a thread that will subscribe to the channel
         specific for current user
         """
-        p = self.session.redis.pubsub()
-        p.subscribe(**{self.POSITION_UPDATE_CHANNEL: subscriber})
-        thread = p.run_in_thread(sleep_time=0.1)
-        self.listening_threads.append(thread)
-        return thread
+        self.accept_event(
+            event=self.POSITION_UPDATE_CHANNEL,
+            handler=subscriber
+        )
 
     def subscribe_new_players(self, subscriber):
         """
         Creates a thread that will subscribe to the channel
         specific for current user
         """
-        p = self.session.redis.pubsub()
-        p.subscribe(**{self.NEW_PLAYER_CHANNEL: subscriber})
-        thread = p.run_in_thread(sleep_time=0.25)
-        self.listening_threads.append(thread)
-        return thread
+        self.accept_event(
+            event=self.NEW_PLAYER_CHANNEL,
+            handler=subscriber
+        )
 
     def subscribe_animation_update(self, subscriber):
         """
         Creates a thread that will subscribe to the channel
         specific for current user
         """
-        p = self.session.redis.pubsub()
-        p.subscribe(**{self.ANIMATION_UPDATE_CHANNEL: subscriber})
-        thread = p.run_in_thread(sleep_time=0.05)
-        self.listening_threads.append(thread)
-        return thread
+        self.accept_event(
+            event=self.ANIMATION_UPDATE_CHANNEL,
+            handler=subscriber
+        )
 
     def subscribe_health_update(self, subscriber):
         """
         Creates a thread that will subscribe to the channel
         specific for current user
         """
-        p = self.session.redis.pubsub()
-        p.subscribe(**{self.HEALTH_UPDATE_CHANNEL: subscriber})
-        thread = p.run_in_thread(sleep_time=0.1)
-        self.listening_threads.append(thread)
-        return thread
+        self.accept_event(
+            event=self.HEALTH_UPDATE_CHANNEL,
+            handler=subscriber
+        )
 
     def subscribe_mana_update(self, subscriber):
         """
         Creates a thread that will subscribe to the channel
         specific for current user
         """
-        p = self.session.redis.pubsub()
-        p.subscribe(**{self.MANA_UPDATE_CHANNEL: subscriber})
-        thread = p.run_in_thread(sleep_time=0.1)
-        self.listening_threads.append(thread)
-        return thread
+        self.accept_event(
+            event=self.MANA_UPDATE_CHANNEL,
+            handler=subscriber
+        )
 
     def subscribe_name_update(self, subscriber):
         """
         Creates a thread that will subscribe to the channel
         specific for current user
         """
-        p = self.session.redis.pubsub()
-        p.subscribe(**{self.NAME_UPDATE_CHANNEL: subscriber})
-        thread = p.run_in_thread(sleep_time=0.25)
-        self.listening_threads.append(thread)
-        return thread
+        self.accept_event(
+            event=self.NAME_UPDATE_CHANNEL,
+            handler=subscriber
+        )
 
     def subscribe_model_update(self, subscriber):
         """
         Creates a thread that will subscribe to the channel
         specific for current user
         """
-        p = self.session.redis.pubsub()
-        p.subscribe(**{self.MODEL_UPDATE_CHANNEL: subscriber})
-        thread = p.run_in_thread(sleep_time=0.25)
-        self.listening_threads.append(thread)
-        return thread
+        self.accept_event(
+            event=self.MODEL_UPDATE_CHANNEL,
+            handler=subscriber
+        )
 
     def subscribe_weapon_update(self, subscriber):
         """
         Creates a thread that will subscribe to the channel
         specific for current user
         """
-        p = self.session.redis.pubsub()
-        p.subscribe(**{self.WEAPON_UPDATE_CHANNEL: subscriber})
-        thread = p.run_in_thread(sleep_time=0.25)
-        self.listening_threads.append(thread)
-        return thread
+        self.accept_event(
+            event=self.WEAPON_UPDATE_CHANNEL,
+            handler=subscriber
+        )
 
     def subscribe_connection_check(self, subscriber):
         """
         Creates a thread that will subscribe to the channel
         specific for current user
         """
-        p = self.session.redis.pubsub()
-        p.subscribe(**{self.CONNECTION_CHECK_CHANNEL: subscriber})
-        thread = p.run_in_thread(sleep_time=0.25)
-        self.listening_threads.append(thread)
-        return thread
+        self.accept_event(
+            event=self.CONNECTION_CHECK_CHANNEL,
+            handler=subscriber
+        )
 
     def subscribe_disconnect(self, subscriber):
         """
         Creates a thread that will subscribe to the channel
         specific for current user
         """
-        p = self.session.redis.pubsub()
-        p.subscribe(**{self.DISCONNECT_CHANNEL: subscriber})
-        thread = p.run_in_thread(sleep_time=0.25)
-        self.listening_threads.append(thread)
-        return thread
+        self.accept_event(
+            event=self.DISCONNECT_CHANNEL,
+            handler=subscriber
+        )

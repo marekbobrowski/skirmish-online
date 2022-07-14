@@ -50,41 +50,28 @@ class SpellCache(EventUser):
         spell_update = SpellUpdate(**spell._json(), id=self.session.player.id)
         data = json.dumps(dataclasses.asdict(spell_update))
         for session_id in self.session.cache.get_other_sessions():
-            self.session.redis.publish(
-                self.spell_update_channel_for_session(session_id),
-                data,
-            )
-
+            self.send_event(event=self.spell_update_channel_for_session(session_id),
+                            prepared_data=data)
         return spell_update
 
     def publish_combat_data(self, combat_data):
         data = json.dumps(dataclasses.asdict(combat_data))
-        self.session.redis.publish(
-            self.COMBAT_DATA_CHANNEL,
-            data,
-        )
+        self.send_event(event=self.COMBAT_DATA_CHANNEL,
+                        prepared_data=data)
 
     def subscribe(self, subscriber):
         """
         Creates a thread that will subscribe to spell updates.
         """
-        p = self.session.redis.pubsub()
-        p.subscribe(
-            **{self.spell_update_channel_for_session(self.session.id): subscriber}
-        )
-        thread = p.run_in_thread(sleep_time=0.001)
-        self.listening_threads.append(thread)
-        return thread
+        self.accept_event(event=self.spell_update_channel_for_session(self.session.id),
+                          handler=subscriber)
 
     def subscribe_for_combat_data(self, subscriber):
         """
         Creates a thread that will subscribe to combat data.
         """
-        p = self.session.redis.pubsub()
-        p.subscribe(**{self.COMBAT_DATA_CHANNEL: subscriber})
-        thread = p.run_in_thread(sleep_time=0.001)
-        self.listening_threads.append(thread)
-        return thread
+        self.accept_event(event=self.COMBAT_DATA_CHANNEL,
+                          handler=subscriber)
 
     def initialize_trigger_times(self) -> None:
         """

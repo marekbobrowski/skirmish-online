@@ -60,7 +60,7 @@ class Console(DirectObject):
 
         # create node for each line of text, so it can be displaced when resizing the window
         for i in range(n_lines):
-            self.text_nodes.append(self.node.attach_new_node(f"text_panels node {i}"))
+            self.text_nodes.append(self.node.attach_new_node(f"text node {i}"))
 
         # lines of text that are going to be displayed in the terminal
         self.lines_queue = ["" for i in range(n_lines)]

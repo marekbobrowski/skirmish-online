@@ -32,19 +32,16 @@ class TextMessageCache(EventUser):
         data = json.dumps(message_dict)
 
         for session_id in self.session.cache.get_all_sessions():
-            self.session.redis.publish(
-                self.text_message_channel_for_session(session_id),
-                data,
+            self.send_event(
+                event=self.text_message_channel_for_session(session_id),
+                prepared_data=data,
             )
 
     def subscribe(self, subscriber):
         """
         Creates a thread that will subscribe to text messages
         """
-        p = self.session.redis.pubsub()
-        p.subscribe(
-            **{self.text_message_channel_for_session(self.session.id): subscriber}
+        self.accept_event(
+            event=self.text_message_channel_for_session(self.session.id),
+            handler=subscriber,
         )
-        thread = p.run_in_thread(sleep_time=0.001)
-        self.listening_threads.append(thread)
-        return thread

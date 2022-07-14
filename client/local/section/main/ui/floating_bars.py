@@ -65,7 +65,7 @@ class FloatingBars(DirectObject):
     def update_name_label(self, unit):
         bar = self.floating_bars.get(unit.id, None)
         if bar is not None:
-            bar.name_label["text_panels"] = unit.name
+            bar.name_label["text"] = unit.name
 
     def update_vertical_position(self, unit):
         bar = self.floating_bars.get(unit.id)
