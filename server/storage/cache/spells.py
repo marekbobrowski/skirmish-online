@@ -43,17 +43,6 @@ class SpellCache(EventUser):
         """
         return f"{cls.SPELL_UPDATE_CHANNEL}{session_id}"
 
-    def publish_spell_update(self, spell):
-        """
-        Broadcasts a spell.
-        """
-        spell_update = SpellUpdate(**spell._json(), id=self.session.player.id)
-        data = json.dumps(dataclasses.asdict(spell_update))
-        for session_id in self.session.cache.get_other_sessions():
-            self.send_event(event=self.spell_update_channel_for_session(session_id),
-                            prepared_data=data)
-        return spell_update
-
     def publish_combat_data(self, combat_data):
         data = json.dumps(dataclasses.asdict(combat_data))
         self.send_event(event=self.COMBAT_DATA_CHANNEL,

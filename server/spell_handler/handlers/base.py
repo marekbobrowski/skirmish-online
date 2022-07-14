@@ -50,13 +50,6 @@ class BaseSpellHandler(metaclass=MetaClass):
         """
         return True
 
-    def publish_spell_update(self):
-        """
-        Notifies all other players about
-        spell being casted
-        """
-        self.session.spell_cache.publish_spell_update(self.spell_data)
-
     def publish_animation_update(self):
         """
         Notifies all other players about

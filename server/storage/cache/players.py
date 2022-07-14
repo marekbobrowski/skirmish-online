@@ -1,6 +1,5 @@
 from ..domain import Player, PlayerPositionUpdate, PlayerAnimationUpdate, HealthUpdate, NameUpdate, ModelUpdate, WeaponUpdate, Disconnection, ManaUpdate
 from server.event.event_user import EventUser
-from server.event.event import Event
 import json
 import dataclasses
 import logging
@@ -183,7 +182,14 @@ class PlayerCache(EventUser):
         return animation_update
 
     def publish_health_update(self, targets, hp_change) -> None:
-        affected_players = [self.load(id_) for id_ in targets]
+        affected_players = []
+
+        for id_ in targets:
+            try:
+                player = self.load(id_)
+                affected_players.append(player)
+            except AssertionError:
+                continue
 
         for player in affected_players:
             player.health = min(max((player.health - hp_change, 0)), 100)

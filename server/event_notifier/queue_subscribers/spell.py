@@ -27,5 +27,4 @@ class SpellSubscriber:
         """
         Creates thread subscribed to the channel
         """
-        log.info('zasubowal')
         self.event_notifier.session.spell_cache.subscribe(self)
