@@ -32,6 +32,7 @@ class DmgText(DirectObject):
     def handle_combat_data_parsed(self, *args):
         hp_change = args[1]
         targets_ids = args[3]
+        this_player_is_source = args[4]
         this_player_is_target = args[5]
 
         if this_player_is_target:
@@ -39,11 +40,12 @@ class DmgText(DirectObject):
             self.create_randomly_placed_text(self.model.player_unit.base_node, hp_change, color)
             return
 
-        color = (204, 204, 0, 1)
-        for target_id in targets_ids:
-            unit = self.model.units_by_id.get(target_id, None)
-            if unit is not None:
-                self.create_randomly_placed_text(unit.base_node, hp_change, color)
+        elif this_player_is_source:
+            color = (204, 204, 0, 1)
+            for target_id in targets_ids:
+                unit = self.model.units_by_id.get(target_id, None)
+                if unit is not None:
+                    self.create_randomly_placed_text(unit.base_node, hp_change, color)
 
     def create_randomly_placed_text(self, node, value, color):
         font = MainFont()
