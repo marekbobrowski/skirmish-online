@@ -18,9 +18,10 @@ class DisconnectSubscriber:
         Subscribed method, prepares response and pushes it
         """
         data = json.loads(message["data"])
-        self.event_notifier.notify(
-            messages.DisconnectResponse.build(data),
-        )
+        data = messages.DisconnectResponse.build(data)
+
+        self.event_notifier.notify(data)
+        self.event_notifier.session.player_position_cache.remove_positions([data.data.id])
 
     def run(self):
         """

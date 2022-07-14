@@ -19,7 +19,7 @@ class EventUser:
         count = len(self.listening_threads)
         for thread in self.listening_threads:
             thread.stop()
-        log.info(f"Stopped {count} threads.")
+        # log.info(f"Stopped {count} threads.")
 
     def accept_event(self, event, handler, sleep_time=0.25):
         """

@@ -203,7 +203,14 @@ class PlayerCache(EventUser):
                         prepared_data=data)
 
     def publish_mana_update(self, targets, mana_change) -> None:
-        affected_players = [self.load(id_) for id_ in targets]
+        affected_players = []
+
+        for id_ in targets:
+            try:
+                player = self.load(id_)
+                affected_players.append(player)
+            except AssertionError:
+                continue
 
         for player in affected_players:
             player.mana = min(max((player.mana - mana_change, 0)), 100)
