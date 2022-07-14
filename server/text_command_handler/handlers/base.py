@@ -15,16 +15,13 @@ class BaseTextCommandHandler(metaclass=MetaClass):
         self.command_vector = command_vector
 
     def __call__(self):
-        self.validate_command()
-        self.handle_command()
+        if self.is_command_valid():
+            self.handle_command()
 
     @abstractmethod
     def handle_command(self):
         pass
 
-    def validate_command(self):
-        if len(self.command_vector) <= self.LENGTH:
-            raise Exception(
-                f"Not enough words in the passed <{self.command_vector}> command."
-            )
+    def is_command_valid(self):
+        return len(self.command_vector) > self.LENGTH
 
