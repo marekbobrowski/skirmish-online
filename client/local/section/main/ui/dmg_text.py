@@ -18,7 +18,6 @@ class DmgText(DirectObject):
 
     def __init__(self, model):
         DirectObject.__init__(self)
-        self.units_by_id = model.units_by_id
         self.model = model
         self.accept(Event.COMBAT_DATA_PARSED, self.handle_combat_data_parsed)
 
@@ -42,7 +41,7 @@ class DmgText(DirectObject):
 
         color = (204, 204, 0, 1)
         for target_id in targets_ids:
-            unit = self.units_by_id.get(target_id, None)
+            unit = self.model.units_by_id.get(target_id, None)
             if unit is not None:
                 self.create_randomly_placed_text(unit.base_node, hp_change, color)
 
