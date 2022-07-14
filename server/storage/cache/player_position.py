@@ -11,7 +11,12 @@ class PlayerPositionCache:
         down the search
         """
         self.session = session
+
         self.all_positions = pandas.DataFrame(columns=["x", "y", "z"], dtype=float)
+        # init all player position cache
+        all_players = self.session.player_cache.all_players()
+        for player in all_players:
+            self.update_position(player)
 
     def update_position(self, player_position):
         """
