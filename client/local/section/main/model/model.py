@@ -128,8 +128,9 @@ class MainSectionModel(DirectObject):
         del unit
 
     def handle_combat_data_received(self, *args):
+        multiply_factor = 412
         spell_id = args[0]
-        hp_change = args[1]
+        hp_change = args[1] * multiply_factor
         source_id = args[2]
         target_ids = args[3]
         this_player_is_source = source_id == self.player_id
