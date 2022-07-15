@@ -17,7 +17,7 @@ class DisconnectSubscriber:
         """
         Subscribed method, prepares response and pushes it
         """
-        data = json.loads(message["data"])
+        data = json.loads(message)
         data = messages.DisconnectResponse.build(data)
 
         self.event_notifier.notify(data)

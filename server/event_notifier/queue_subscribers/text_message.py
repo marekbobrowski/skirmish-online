@@ -19,7 +19,7 @@ class TextMessageSubscriber:
         """
         Subscribed method, prepares response and pushes it
         """
-        data = json.loads(message["data"])
+        data = json.loads(message)
         if data.get("send_dtime", None):
             data["send_dtime"] = datetime.fromtimestamp(data["send_dtime"])
 

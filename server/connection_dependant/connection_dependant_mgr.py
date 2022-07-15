@@ -22,7 +22,7 @@ class ConnectionDependantManager(EventUser):
         """
         Deletes an object for a connection if a timeout occurred.
         """
-        data = json.loads(event_data["data"])
+        data = json.loads(event_data)
         connection = self.get_connection_by_hash(data["connection_hash"])
         if connection in self.per_connection_dict:
             obj = self.per_connection_dict[connection]

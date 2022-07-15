@@ -10,6 +10,7 @@ from .cache.players import PlayerCache
 from .cache.player_position import PlayerPositionCache
 from .cache.spells import SpellCache
 from .cache.text_message import TextMessageCache
+from server import config
 
 
 log = logging.getLogger(__name__)
@@ -49,7 +50,7 @@ class Session(ConnectionDependantObj):
         """
         self.id = uuid.uuid4().hex
         self.player = None
-        self.redis = Redis(host="redis")
+        self.redis = Redis(host=config.redis_host)
 
         self.cache = SessionCache(self)
         self.cache.store()

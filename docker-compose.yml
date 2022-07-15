@@ -20,6 +20,8 @@ services:
     image: redis
     networks:
     - skirmish-online
+    ports:
+      - 6379:6379
 
   server:
     restart: unless-stopped

@@ -20,7 +20,7 @@ class PositionUpdateSubscriber:
         """
         Subscribed method, prepares response and pushes it
         """
-        data = json.loads(message["data"])
+        data = json.loads(message)
         if (
             self.event_notifier.session.player is not None
             and data["id"] == self.event_notifier.session.player.id

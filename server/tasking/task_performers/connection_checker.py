@@ -19,7 +19,7 @@ class ConnectionChecker(TaskPerformerBase, EventUser):
 
     def __init__(self, session, connection, server):
         TaskPerformerBase.__init__(self, session, connection, server)
-        EventUser.__init__(self, host="redis")
+        EventUser.__init__(self, host=config.redis_host)
         self.last_connection_check = datetime.now()
         self.session.player_cache.subscribe_connection_check(self)
 

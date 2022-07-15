@@ -11,6 +11,7 @@ from .queue_subscribers.disconnect import DisconnectSubscriber
 from .queue_subscribers.combat_data import CombatDataSubscriber
 from server.connection_dependant.connection_dependant_mgr import ConnectionDependantManager
 from server.connection_dependant.connection_dependant import ConnectionDependantObj
+from server import config
 
 from redis import Redis
 from direct.distributed.PyDatagram import PyDatagram
@@ -46,7 +47,7 @@ class EventNotifier(ConnectionDependantObj):
         self.session = session
         self.connection = connection
 
-        self.redis = Redis(host="redis")
+        self.redis = Redis(host=config.redis_host)
 
         self.subsubscribers = [
             PositionUpdateSubscriber(self),

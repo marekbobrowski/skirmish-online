@@ -15,3 +15,7 @@ welcome_msg += help
 position_update_delay = 100
 
 connection_check_timeout = 2
+
+redis_host = "redis"
+
+use_redis_pubsub = False

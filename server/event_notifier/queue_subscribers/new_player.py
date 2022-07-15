@@ -1,6 +1,9 @@
 from protocol import messages, domain
 from ...storage.domain import PlayerPositionUpdate
 import json
+import logging
+
+log = logging.getLogger(__name__)
 
 
 class NewPlayerSubscriber:
@@ -15,7 +18,7 @@ class NewPlayerSubscriber:
         """
         Subscribed method, prepares response and pushes it
         """
-        data = json.loads(message["data"])
+        data = json.loads(message)
 
         if (
             self.event_notifier.session.player is not None

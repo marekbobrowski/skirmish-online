@@ -17,7 +17,7 @@ class WeaponUpdateSubscriber:
         """
         Subscribed method, prepares response and pushes it
         """
-        data = json.loads(message["data"])
+        data = json.loads(message)
 
         self.event_notifier.notify(
             messages.WeaponUpdateMessage.build(data),
