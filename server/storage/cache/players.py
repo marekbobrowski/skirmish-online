@@ -224,6 +224,7 @@ class PlayerCache(EventUser):
                         prepared_data=data)
 
     def publish_name_update(self, name):
+        self.session.player = self.load(id_=self.session.player.id)
         self.session.player.name = name
         self.save(self.session.player)
         data = json.dumps(dataclasses.asdict(NameUpdate(self.session.player.id,
@@ -233,6 +234,7 @@ class PlayerCache(EventUser):
                         prepared_data=data)
 
     def publish_model_update(self, model):
+        self.session.player = self.load(id_=self.session.player.id)
         self.session.player.model_id = model
         self.save(self.session.player)
         data = json.dumps(dataclasses.asdict(ModelUpdate(self.session.player.id,
@@ -243,6 +245,7 @@ class PlayerCache(EventUser):
         )
 
     def publish_weapon_update(self, weapon_id):
+        self.session.player = self.load(id_=self.session.player.id)
         self.session.player.weapon_id = weapon_id
         self.save(self.session.player)
         data = json.dumps(dataclasses.asdict(WeaponUpdate(self.session.player.id,
