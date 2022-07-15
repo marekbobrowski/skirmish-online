@@ -2,6 +2,7 @@ from direct.showbase.DirectObject import DirectObject
 from client.local.section.main.ui.utils.frame import Frame
 from client.local.section.main.ui.utils.wait_bar import WaitBar
 from direct.task.Task import Task
+from client.local import core
 
 
 class SpellSlot(DirectObject):
@@ -35,6 +36,9 @@ class SpellSlot(DirectObject):
             self.update_view(self.remaining_time, tracker_cls.DEFAULT_COOLDOWN)
             self.accept(self.tracker_cls.KEY_EVENT, self.handle_spell_key_pressed)
             self.accept(f"{self.tracker_cls.KEY_EVENT}-up", self.handle_spell_key_released)
+            # trigger cooldown for the spell
+            task = Task(self.update_cooldown_view, "update cooldown view")
+            core.instance.task_mgr.add(task, extraArgs=[task, self.tracker_cls.DEFAULT_COOLDOWN])
 
     def update_cooldown_view(self, task, cooldown):
         remaining_time = cooldown - task.time

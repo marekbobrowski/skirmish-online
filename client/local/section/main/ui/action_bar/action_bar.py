@@ -35,11 +35,16 @@ class ActionBar(DirectObject):
                 tracker_cls = tracker_classes[i]
             else:
                 tracker_cls = None
-            self.spell_slots.append(SpellSlot(node=self.node,
-                                              tracker_cls=tracker_cls,
-                                              x_offset=x_offset,
-                                              y_offset=y_offset,
-                                              parent_frame=None))
+
+            slot = SpellSlot(
+                node=self.node,
+                tracker_cls=tracker_cls,
+                x_offset=x_offset,
+                y_offset=y_offset,
+                parent_frame=None
+             )
+            self.spell_slots.append(slot)
+            # self.set_cooldown_tracking()
             x_offset += spell_slot_width + padding
 
         self.accept("aspectRatioChanged", self.aspect_ratio_change_update)
