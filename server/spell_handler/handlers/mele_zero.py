@@ -1,25 +1,11 @@
 from .base import BaseSpellHandler
 from typing import List
 from protocol.domain import Spells, AnimationName
-import random
+
 
 class MeleZeroHandler(BaseSpellHandler):
     SPELL = Spells.mele_zero
     ANIMATION = AnimationName.MeleAttack1
-
-    def calculate_targets(self) -> List[int]:
-        """
-        Calculates targets
-        """
-        return self.session.player_position_cache.get_nearby(
-            self.session.player,
-            0.4,
-            0.4,
-            0.4,
-        )
-
-    def interact_with_tagets(self, targets: List[int]) -> int:
-        """
-        Does animation on other targets and calculates hp change
-        """
-        return random.randint(8, 15)
+    DAMAGE_RANGE = (8, 15)
+    MANA_COST = 5
+    AOE_RANGE = 0.4

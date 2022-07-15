@@ -7,20 +7,6 @@ import random
 class MeleThreeHandler(BaseSpellHandler):
     SPELL = Spells.mele_three
     ANIMATION = AnimationName.MeleAttack1
-
-    def calculate_targets(self) -> List[int]:
-        """
-        Calculates targets
-        """
-        return self.session.player_position_cache.get_nearby(
-            self.session.player,
-            0.4,
-            0.4,
-            0.4,
-        )
-
-    def interact_with_tagets(self, targets: List[int]) -> int:
-        """
-        Does animation on other targets and calculates hp change
-        """
-        return random.randint(30, 37)
+    DAMAGE_RANGE = (30, 37)
+    MANA_COST = 20
+    AOE_RANGE = 0.4

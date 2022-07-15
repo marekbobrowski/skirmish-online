@@ -4,6 +4,7 @@ from .bank import MetaClass
 from abc import abstractmethod
 from typing import List
 import logging
+import random
 
 log = logging.getLogger(__name__)
 
@@ -12,6 +13,9 @@ class BaseSpellHandler(metaclass=MetaClass):
     SPELL: Spells = None
     ANIMATION: AnimationName = None
     LOOP: int = 0
+    MANA_COST: int = 0
+    DAMAGE_RANGE: tuple = (0, 10)
+    AOE_RANGE: float = 0.4
 
     def __init__(self, session, spell_data):
         """
@@ -36,11 +40,11 @@ class BaseSpellHandler(metaclass=MetaClass):
         self.session.spell_cache.trigger_spell_cooldown(self.spell_data.spell)
 
         targets = self.calculate_targets()
-        hp_change = self.interact_with_tagets(targets)
+        hp_change = self.calculate_damage(targets)
         combat_data = self.produce_response(targets, hp_change)
 
         self.publish_health_update(targets, hp_change)
-        self.publish_mana_update([self.session.player.id], 5)
+        self.publish_mana_update([self.session.player.id], self.MANA_COST)
         self.publish_animation_update()
         self.publish_combat_data(combat_data)
 
@@ -80,19 +84,22 @@ class BaseSpellHandler(metaclass=MetaClass):
             combat_data
         )
 
-    @abstractmethod
     def calculate_targets(self) -> List[int]:
         """
         Calculates targets
         """
-        pass
+        return self.session.player_position_cache.get_nearby(
+            self.session.player,
+            self.AOE_RANGE,
+            self.AOE_RANGE,
+            self.AOE_RANGE,
+        )
 
-    @abstractmethod
-    def interact_with_tagets(self, targets: List[int]) -> int:
+    def calculate_damage(self, targets: List[int]) -> int:
         """
-        Does animation on other targets and calculates hp change
+        Calculates damage for targets
         """
-        pass
+        return random.randint(self.DAMAGE_RANGE[0], self.DAMAGE_RANGE[1])
 
     def produce_response(self, targets: List[int], hp_change: int) -> CombatData:
         """
