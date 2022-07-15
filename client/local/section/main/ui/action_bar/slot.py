@@ -32,13 +32,20 @@ class SpellSlot(DirectObject):
 
         if tracker_cls is not None:
             self.cd_bar = WaitBar(parent=self.frame.node)
-            self.remaining_time = 0
-            self.update_view(self.remaining_time, tracker_cls.DEFAULT_COOLDOWN)
+            self.remaining_time = tracker_cls.DEFAULT_COOLDOWN
+            self.temp_cooldown = tracker_cls.DEFAULT_COOLDOWN
+            self.update_view(self.remaining_time, self.temp_cooldown)
             self.accept(self.tracker_cls.KEY_EVENT, self.handle_spell_key_pressed)
             self.accept(f"{self.tracker_cls.KEY_EVENT}-up", self.handle_spell_key_released)
             # trigger cooldown for the spell
             task = Task(self.update_cooldown_view, "update cooldown view")
             core.instance.task_mgr.add(task, extraArgs=[task, self.tracker_cls.DEFAULT_COOLDOWN])
+
+        self.accept("aspectRatioChanged", self.aspect_ratio_change_update)
+
+    def aspect_ratio_change_update(self):
+        if self.tracker_cls is not None:
+            self.update_view(self.remaining_time, self.temp_cooldown)
 
     def update_cooldown_view(self, task, cooldown):
         remaining_time = cooldown - task.time

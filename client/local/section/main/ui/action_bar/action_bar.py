@@ -64,13 +64,6 @@ class ActionBar(DirectObject):
         y_px = - wh + y_offset_px
         self.node.set_pos(x_px, 0, y_px)
 
-    def set_cooldown_tracking(self, slot_number, spell_cooldown):
-        slot = self.spell_slots[slot_number]
-        slot.default_cooldown = spell_cooldown
-        slot.temp_cooldown = spell_cooldown
-        task = Task(slot.update_cooldown_view, "update cooldown view")
-        core.instance.task_mgr.add(task, extraArgs=[task, spell_cooldown])
-
     def handle_combat_data_parsed(self, *args):
         spell_id = args[0]
         hp_change = args[1]
@@ -92,7 +85,8 @@ class ActionBar(DirectObject):
                 if slot.remaining_time < 1:
                     task = Task(slot.update_cooldown_view, "update cooldown view")
                     slot.remaining_time = 1
-                    core.instance.task_mgr.add(task, extraArgs=[task, 1])
+                    slot.temp_cooldown = 1
+                    core.instance.task_mgr.add(task, extraArgs=[task, slot.temp_cooldown])
 
 
 
