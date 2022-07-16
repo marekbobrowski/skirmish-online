@@ -24,6 +24,16 @@ The server detects timeouts and removes players who actually left the game.
 
 Here are some screenshots and a video showing current state of the project.
 
+## Setting up the project
+
+Make sure you have [Python](https://www.python.org/) and [Docker](https://www.docker.com/) installed.
+Open the project directory.
+
+1. `pip install -r requirements.txt` to install all dependencies,
+2. `docker compose build server` to build the docker image,
+3. `docker compose up` to run the server and memory app (redis),
+4. `python -m client` to run the client.
+
 ## Documentation (for future me)
 
-### 1. Adding new message that can be sent between server and clients.
+#### Adding new message that can be sent between server and clients.
