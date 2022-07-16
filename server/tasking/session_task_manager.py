@@ -2,10 +2,9 @@ from .task_performers.health_regen import HealthRegenerator
 from .task_performers.mana_regen import ManaRegenerator
 from .task_performers.connection_checker import ConnectionChecker
 from server.event.event_user import EventUser
-from server.connection_dependant.connection_dependant import ConnectionDependantObj
 
 
-class SessionTaskManager(ConnectionDependantObj):
+class SessionTaskManager:
     """
     Creates, runs and stores all task performers for the specified connection/session.
     """
@@ -21,11 +20,8 @@ class SessionTaskManager(ConnectionDependantObj):
         for task_performer in self.task_performers:
             task_performer.start_task()
 
-    def stop_listening_threads(self):
-        for obj in self.task_performers:
-            obj._continue = False
-            obj.stop_task_thread()
-            if isinstance(obj, EventUser):
-                obj.stop_listening_threads()
+    def stop_tasks(self):
+        for performer in self.task_performers:
+            performer._continue = False
 
 

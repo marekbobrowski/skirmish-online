@@ -2,9 +2,8 @@ from redis import Redis
 import uuid
 import logging
 import json
-from server.connection_dependant.connection_dependant_mgr import ConnectionDependantManager
-from server.connection_dependant.connection_dependant import ConnectionDependantObj
 from server.event.event_user import EventUser
+from server.event.event import Event
 from .cache.sessions import SessionCache
 from .cache.players import PlayerCache
 from .cache.player_position import PlayerPositionCache
@@ -16,13 +15,17 @@ from server import config
 log = logging.getLogger(__name__)
 
 
-class SessionManager(ConnectionDependantManager):
+class SessionManager(EventUser):
     def __init__(self):
         """
         SessionManager is a container for all active sessions
         """
+        super().__init__()
         self.sessions = {}
-        super().__init__(self.sessions)
+        self.accept_event(
+            event=Event.CLIENT_DISCONNECTION_PUBLISHED,
+            handler=self.handle_client_disconnection_published
+        )
 
     def for_connection(self, connection):
         """
@@ -38,12 +41,11 @@ class SessionManager(ConnectionDependantManager):
         self.sessions[connection] = session
         return session
 
-    def stop_listening_threads(self):
-        for session in self.sessions.values():
-            session.stop_listening_threads()
+    def handle_client_disconnection_published(self, connection):
+        del self.sessions[connection]
 
 
-class Session(ConnectionDependantObj):
+class Session:
     def __init__(self):
         """
         Creates empty session
@@ -61,12 +63,6 @@ class Session(ConnectionDependantObj):
         self.text_message_cache = TextMessageCache(self)
         self.ready_for_continuous_sync = False
         self.closed = False
-
-    def stop_listening_threads(self):
-        self.closed = True
-        for member in self.__dict__.values():
-            if isinstance(member, EventUser):
-                member.stop_listening_threads()
 
     def dump(self):
         """
