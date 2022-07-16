@@ -36,7 +36,6 @@ class SpellCache(EventUser):
         return f"{self.HMSET_PREFIX}{self.session.player.id}"
 
     def publish_combat_data(self, combat_data):
-        data = json.dumps(dataclasses.asdict(combat_data))
         self.send_event(event=Event.COMBAT_DATA_CREATED,
                         prepared_data=combat_data)
 

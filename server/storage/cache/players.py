@@ -150,9 +150,6 @@ class PlayerCache(EventUser):
 
         self.session.player_position_cache.update_position(position_update)
 
-        data = dataclasses.asdict(position_update)
-        data = json.dumps(data)
-
         self.send_event(event=Event.POSITION_UPDATED,
                         prepared_data=position_update)
 
@@ -162,8 +159,6 @@ class PlayerCache(EventUser):
         animation_update = PlayerAnimationUpdate(
             **animation._json(), id=self.session.player.id
         )
-
-        data = json.dumps(dataclasses.asdict(animation_update))
 
         self.send_event(event=Event.ANIMATION_UPDATED,
                         prepared_data=animation_update)
@@ -186,8 +181,6 @@ class PlayerCache(EventUser):
 
         health_updates = [HealthUpdate(p.id, p.health) for p in affected_players]
 
-        data = json.dumps([dataclasses.asdict(hu) for hu in health_updates])
-
         self.send_event(event=Event.HEALTH_UPDATED,
                         prepared_data=health_updates)
 
@@ -207,8 +200,6 @@ class PlayerCache(EventUser):
 
         mana_updates = [ManaUpdate(p.id, p.mana) for p in affected_players]
 
-        data = json.dumps([dataclasses.asdict(hu) for hu in mana_updates])
-
         self.send_event(event=Event.MANA_UPDATED,
                         prepared_data=mana_updates)
 
@@ -218,7 +209,6 @@ class PlayerCache(EventUser):
         self.save(self.session.player)
         name_update = NameUpdate(self.session.player.id,
                                  self.session.player.name)
-        data = json.dumps(dataclasses.asdict(name_update))
 
         self.send_event(event=Event.NAME_UPDATED,
                         prepared_data=name_update)
@@ -229,7 +219,6 @@ class PlayerCache(EventUser):
         self.save(self.session.player)
         model_update = ModelUpdate(self.session.player.id,
                                    self.session.player.model_id)
-        data = json.dumps(dataclasses.asdict(model_update))
         self.send_event(
             event=Event.MODEL_UPDATED,
             prepared_data=model_update
@@ -241,7 +230,6 @@ class PlayerCache(EventUser):
         self.save(self.session.player)
         weapon_update = WeaponUpdate(self.session.player.id,
                                      self.session.player.weapon_id)
-        data = json.dumps(dataclasses.asdict(weapon_update))
         self.send_event(
             event=Event.WEAPON_UPDATED,
             prepared_data=weapon_update,
@@ -249,7 +237,6 @@ class PlayerCache(EventUser):
 
     def publish_disconnect(self):
         disconnection = Disconnection(self.session.player.id)
-        data = json.dumps(dataclasses.asdict(disconnection))
         self.send_event(
             event=Event.DISCONNECTION,
             prepared_data=disconnection
@@ -258,7 +245,7 @@ class PlayerCache(EventUser):
     def send_connection_check_event(self):
         self.send_event(
             event=self.CONNECTION_CHECK_EVENT,
-            prepared_data=json.dumps("")
+            prepared_data=None
         )
 
     def subscribe_connection_check(self, subscriber):

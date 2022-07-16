@@ -1,6 +1,4 @@
 from ..domain import TextMessage
-import json
-import dataclasses
 import logging
 from server.event.event_user import EventUser
 from server.event.event import Event

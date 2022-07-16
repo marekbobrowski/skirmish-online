@@ -94,10 +94,7 @@ class Server(EventUser):
                     )
             time.sleep(0.01)
 
-    def close_connection(self, event_data):
-        data = json.loads(event_data)
-        connection_hash = data["connection_hash"]
-        connection = self.find_connection_by_hash(connection_hash)
+    def close_connection(self, connection):
         self.manager.close_connection(connection)
         self.connections.remove(connection)
 

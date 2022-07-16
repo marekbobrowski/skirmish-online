@@ -36,10 +36,9 @@ class ConnectionChecker(TaskPerformerBase, EventUser):
             self.server.writer.send(datagram, self.connection)
         else:
             log.info(f"Timeout on player {self.session.player.name}")
-            data = json.dumps({"connection_hash": hash(self.connection)})
             self.session.player_cache.delete()
             self.session.player_cache.publish_disconnect()
-            self.send_event(Event.CLIENT_DISCONNECTION_PUBLISHED, data)
+            self.send_event(event=Event.CLIENT_DISCONNECTION_PUBLISHED, prepared_data=self.connection)
             self._continue = False
 
 

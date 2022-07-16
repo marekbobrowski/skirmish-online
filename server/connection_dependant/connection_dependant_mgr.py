@@ -18,18 +18,11 @@ class ConnectionDependantManager(EventUser):
         self.per_connection_dict = per_connection_dict
         self.accept_event(Event.CLIENT_DISCONNECTION_PUBLISHED, self.handle_timeout)
 
-    def handle_timeout(self, event_data):
+    def handle_timeout(self, connection):
         """
         Deletes an object for a connection if a timeout occurred.
         """
-        data = json.loads(event_data)
-        connection = self.get_connection_by_hash(data["connection_hash"])
         if connection in self.per_connection_dict:
             obj = self.per_connection_dict[connection]
             obj.stop_listening_threads()
             del obj
-
-    def get_connection_by_hash(self, hash_):
-        for connection in self.per_connection_dict:
-            if hash(connection) == hash_:
-                return connection
