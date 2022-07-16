@@ -21,7 +21,7 @@ class WorldStateHandler(MessageHandler):
 
         self.session.for_player(id_)
         self.session.spell_cache.initialize_trigger_times()
-
+        log.info(f"{self.session.player.name} joined the game.")
         message = messages.WorldStateResponse.build(
             player=self.session.player,
             other_players=current_players,

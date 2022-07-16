@@ -31,6 +31,8 @@ class TextMessageHandler(MessageHandler):
             message=text_message_string,
         )
 
+        log.info(f"{self.session.player.name} wrote: {text_message_string}")
+
         self.session.text_message_cache.publish_text_message(text_message)
 
 
