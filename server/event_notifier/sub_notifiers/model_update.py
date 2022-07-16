@@ -1,17 +1,15 @@
 from protocol import messages, domain
 import json
-from datetime import datetime
 import logging
-
 
 log = logging.getLogger(__name__)
 
 
-class TextMessageSubscriber:
+class ModelUpdateNotifier:
     def __init__(self, event_notifier):
         """
-        TextMessageSubscriber notifies user
-        with new text messages
+        NameUpdateSubscriber notifies user
+        with name changes
         """
         self.event_notifier = event_notifier
 
@@ -20,15 +18,13 @@ class TextMessageSubscriber:
         Subscribed method, prepares response and pushes it
         """
         data = json.loads(message)
-        if data.get("send_dtime", None):
-            data["send_dtime"] = datetime.fromtimestamp(data["send_dtime"])
 
         self.event_notifier.notify(
-            messages.TextMessageResponse.build(data),
+            messages.ModelUpdateMessage.build(data),
         )
 
-    def run(self):
+    def start_listening(self):
         """
         Creates thread subscribed to the channel
         """
-        self.event_notifier.session.text_message_cache.subscribe(self)
+        self.event_notifier.session.player_cache.subscribe_model_update(self)

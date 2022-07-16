@@ -1,15 +1,15 @@
-from protocol import messages
+from protocol import messages, domain
 import json
 import logging
 
 log = logging.getLogger(__name__)
 
 
-class SpellSubscriber:
+class HealthUpdateNotifier:
     def __init__(self, event_notifier):
         """
-        AnimationUpdateSubscriber notifies user of animation changes
-        for all other users
+        HealthUpdateSubscriber notifies user
+        with health changes
         """
         self.event_notifier = event_notifier
 
@@ -19,11 +19,11 @@ class SpellSubscriber:
         """
         data = json.loads(message)
         self.event_notifier.notify(
-            messages.CombatDataResponse.build(data),
+            messages.HealthUpdateResponse.build(data),
         )
 
-    def run(self):
+    def start_listening(self):
         """
         Creates thread subscribed to the channel
         """
-        self.event_notifier.session.spell_cache.subscribe(self)
+        self.event_notifier.session.player_cache.subscribe_health_update(self)

@@ -5,7 +5,7 @@ import logging
 log = logging.getLogger(__name__)
 
 
-class DisconnectSubscriber:
+class ManaUpdateNotifier:
     def __init__(self, event_notifier):
         """
         HealthUpdateSubscriber notifies user
@@ -18,13 +18,12 @@ class DisconnectSubscriber:
         Subscribed method, prepares response and pushes it
         """
         data = json.loads(message)
-        data = messages.DisconnectResponse.build(data)
+        self.event_notifier.notify(
+            messages.ManaUpdateResponse.build(data),
+        )
 
-        self.event_notifier.notify(data)
-        self.event_notifier.session.player_position_cache.remove_positions([data.data.id])
-
-    def run(self):
+    def start_listening(self):
         """
         Creates thread subscribed to the channel
         """
-        self.event_notifier.session.player_cache.subscribe_disconnect(self)
+        self.event_notifier.session.player_cache.subscribe_mana_update(self)

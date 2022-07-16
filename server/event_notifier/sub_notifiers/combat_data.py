@@ -5,11 +5,11 @@ import logging
 log = logging.getLogger(__name__)
 
 
-class ManaUpdateSubscriber:
+class CombatDataNotifier:
     def __init__(self, event_notifier):
         """
-        HealthUpdateSubscriber notifies user
-        with health changes
+        NameUpdateSubscriber notifies user
+        with name changes
         """
         self.event_notifier = event_notifier
 
@@ -18,12 +18,13 @@ class ManaUpdateSubscriber:
         Subscribed method, prepares response and pushes it
         """
         data = json.loads(message)
+
         self.event_notifier.notify(
-            messages.ManaUpdateResponse.build(data),
+            messages.CombatDataResponse.build(data),
         )
 
-    def run(self):
+    def start_listening(self):
         """
         Creates thread subscribed to the channel
         """
-        self.event_notifier.session.player_cache.subscribe_mana_update(self)
+        self.event_notifier.session.spell_cache.subscribe_for_combat_data(self)

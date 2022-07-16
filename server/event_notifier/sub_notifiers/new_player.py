@@ -6,7 +6,7 @@ import logging
 log = logging.getLogger(__name__)
 
 
-class NewPlayerSubscriber:
+class NewPlayerNotifier:
     def __init__(self, event_notifier):
         """
         NewPlayerSubscriber notifies user
@@ -41,7 +41,7 @@ class NewPlayerSubscriber:
             messages.NewPlayerResponse.build(data),
         )
 
-    def run(self):
+    def start_listening(self):
         """
         Creates thread subscribed to the channel
         """

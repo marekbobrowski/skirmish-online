@@ -2,14 +2,14 @@ from protocol import messages, domain
 import json
 import logging
 
+
 log = logging.getLogger(__name__)
 
 
-class HealthUpdateSubscriber:
+class AnimationUpdateNotifier:
     def __init__(self, event_notifier):
         """
-        HealthUpdateSubscriber notifies user
-        with health changes
+        Notify
         """
         self.event_notifier = event_notifier
 
@@ -19,11 +19,11 @@ class HealthUpdateSubscriber:
         """
         data = json.loads(message)
         self.event_notifier.notify(
-            messages.HealthUpdateResponse.build(data),
+            messages.AnimationResponse.build(data),
         )
 
-    def run(self):
+    def start_listening(self):
         """
         Creates thread subscribed to the channel
         """
-        self.event_notifier.session.player_cache.subscribe_health_update(self)
+        self.event_notifier.session.player_cache.subscribe_animation_update(self)

@@ -5,11 +5,11 @@ import logging
 log = logging.getLogger(__name__)
 
 
-class NameUpdateSubscriber:
+class DisconnectionNotifier:
     def __init__(self, event_notifier):
         """
-        NameUpdateSubscriber notifies user
-        with name changes
+        HealthUpdateSubscriber notifies user
+        with health changes
         """
         self.event_notifier = event_notifier
 
@@ -18,12 +18,13 @@ class NameUpdateSubscriber:
         Subscribed method, prepares response and pushes it
         """
         data = json.loads(message)
-        self.event_notifier.notify(
-            messages.SetNameResponse.build(data),
-        )
+        data = messages.DisconnectResponse.build(data)
 
-    def run(self):
+        self.event_notifier.notify(data)
+        self.event_notifier.session.player_position_cache.remove_positions([data.data.id])
+
+    def start_listening(self):
         """
         Creates thread subscribed to the channel
         """
-        self.event_notifier.session.player_cache.subscribe_name_update(self)
+        self.event_notifier.session.player_cache.subscribe_disconnect(self)

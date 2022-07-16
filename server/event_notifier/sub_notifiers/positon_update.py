@@ -8,7 +8,7 @@ from datetime import datetime
 log = logging.getLogger(__name__)
 
 
-class PositionUpdateSubscriber:
+class PositionUpdateNotifier:
     def __init__(self, event_notifier):
         """
         PositionUpdateSubscriber notifies user of position changes
@@ -36,7 +36,7 @@ class PositionUpdateSubscriber:
             messages.PosHPRResponse.build(data),
         )
 
-    def run(self):
+    def start_listening(self):
         """
         Creates thread subscribed to the channel
         """

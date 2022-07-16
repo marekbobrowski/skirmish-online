@@ -2,15 +2,14 @@ from protocol import messages, domain
 import json
 import logging
 
-
 log = logging.getLogger(__name__)
 
 
-class AnimationUpdateSubscriber:
+class WeaponUpdateNotifier:
     def __init__(self, event_notifier):
         """
-        AnimationUpdateSubscriber notifies user of animation changes
-        for all other users
+        NameUpdateSubscriber notifies user
+        with name changes
         """
         self.event_notifier = event_notifier
 
@@ -19,12 +18,13 @@ class AnimationUpdateSubscriber:
         Subscribed method, prepares response and pushes it
         """
         data = json.loads(message)
+
         self.event_notifier.notify(
-            messages.AnimationResponse.build(data),
+            messages.WeaponUpdateMessage.build(data),
         )
 
-    def run(self):
+    def start_listening(self):
         """
         Creates thread subscribed to the channel
         """
-        self.event_notifier.session.player_cache.subscribe_animation_update(self)
+        self.event_notifier.session.player_cache.subscribe_weapon_update(self)

@@ -5,7 +5,7 @@ import logging
 log = logging.getLogger(__name__)
 
 
-class WeaponUpdateSubscriber:
+class NameUpdateNotifier:
     def __init__(self, event_notifier):
         """
         NameUpdateSubscriber notifies user
@@ -18,13 +18,12 @@ class WeaponUpdateSubscriber:
         Subscribed method, prepares response and pushes it
         """
         data = json.loads(message)
-
         self.event_notifier.notify(
-            messages.WeaponUpdateMessage.build(data),
+            messages.SetNameResponse.build(data),
         )
 
-    def run(self):
+    def start_listening(self):
         """
         Creates thread subscribed to the channel
         """
-        self.event_notifier.session.player_cache.subscribe_weapon_update(self)
+        self.event_notifier.session.player_cache.subscribe_name_update(self)
