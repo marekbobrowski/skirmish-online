@@ -124,8 +124,10 @@ class MainSectionModel(DirectObject):
     def handle_unit_disconnected(self, *args):
         unit_id = args[0]
         unit = self.units_by_id.get(unit_id, None)
+        name = unit.name
         unit.actor.delete()
         del unit
+        core.instance.messenger.send(Event.UNIT_DELETED, sentArgs=[name])
 
     def handle_combat_data_received(self, *args):
         multiply_factor = 412

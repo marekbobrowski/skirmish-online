@@ -43,4 +43,5 @@ class Event:
     MY_SPELL_ATTEMPT = "my-spell-attempt"
     COMMAND_TO_SERVER_ENTERED = "local-command-to-server-entered"
     COMBAT_DATA_PARSED = "combat-data-parsed"
+    UNIT_DELETED = "unit-deleted"
     # -----------------------------------------------

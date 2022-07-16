@@ -7,10 +7,15 @@ class ChatLog(TextLog):
         super().__init__(parent_node, width=0.25, height=0.265, n_lines=12)
         self.accept(Event.MSG_RECEIVED, self.add_msg)
         self.accept(Event.NEW_UNIT_CREATED, self.handle_new_unit_created)
+        self.accept(Event.UNIT_DELETED, self.handle_unit_deleted)
 
     def handle_new_unit_created(self, *args):
         unit = args[0]
         self.add_msg(name=None, time=None, msg=f"{unit.name} has joined the game.")
+
+    def handle_unit_deleted(self, *args):
+        unit_name = args[0]
+        self.add_msg(name=None, time=None, msg=f"{unit_name} has left the game.")
 
     def add_msg(self, name, time, msg):
         if name is None:
