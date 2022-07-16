@@ -1,30 +1,13 @@
-from protocol import messages, domain
-import json
+from protocol import messages
+from .base import SubNotifierBase
+from server.event.event import Event
+
 import logging
 
 log = logging.getLogger(__name__)
 
 
-class WeaponUpdateNotifier:
-    def __init__(self, event_notifier):
-        """
-        NameUpdateSubscriber notifies user
-        with name changes
-        """
-        self.event_notifier = event_notifier
+class WeaponUpdateNotifier(SubNotifierBase):
+    MESSAGE = messages.WeaponUpdateMessage
+    EVENT = Event.WEAPON_UPDATED
 
-    def __call__(self, message):
-        """
-        Subscribed method, prepares response and pushes it
-        """
-        data = json.loads(message)
-
-        self.event_notifier.notify(
-            messages.WeaponUpdateMessage.build(data),
-        )
-
-    def start_listening(self):
-        """
-        Creates thread subscribed to the channel
-        """
-        self.event_notifier.session.player_cache.subscribe_weapon_update(self)

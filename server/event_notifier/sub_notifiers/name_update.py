@@ -1,29 +1,13 @@
-from protocol import messages, domain
-import json
+from protocol import messages
+from .base import SubNotifierBase
+from server.event.event import Event
+
 import logging
 
 log = logging.getLogger(__name__)
 
 
-class NameUpdateNotifier:
-    def __init__(self, event_notifier):
-        """
-        NameUpdateSubscriber notifies user
-        with name changes
-        """
-        self.event_notifier = event_notifier
+class NameUpdateNotifier(SubNotifierBase):
+    MESSAGE = messages.SetNameResponse
+    EVENT = Event.NAME_UPDATED
 
-    def __call__(self, message):
-        """
-        Subscribed method, prepares response and pushes it
-        """
-        data = json.loads(message)
-        self.event_notifier.notify(
-            messages.SetNameResponse.build(data),
-        )
-
-    def start_listening(self):
-        """
-        Creates thread subscribed to the channel
-        """
-        self.event_notifier.session.player_cache.subscribe_name_update(self)

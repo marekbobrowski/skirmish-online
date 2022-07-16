@@ -1,24 +1,19 @@
-from protocol import messages, domain
-import json
+from protocol import messages
+from .base import SubNotifierBase
+from server.event.event import Event
 from datetime import datetime
-import logging
 
+import logging
+import json
 
 log = logging.getLogger(__name__)
 
 
-class TextMessageNotifier:
-    def __init__(self, event_notifier):
-        """
-        TextMessageSubscriber notifies user
-        with new text messages
-        """
-        self.event_notifier = event_notifier
+class TextMessageNotifier(SubNotifierBase):
+    MESSAGE = messages.TextMessageResponse
+    EVENT = Event.TEXT_MESSAGE
 
     def __call__(self, message):
-        """
-        Subscribed method, prepares response and pushes it
-        """
         data = json.loads(message)
         if data.get("send_dtime", None):
             data["send_dtime"] = datetime.fromtimestamp(data["send_dtime"])
@@ -27,8 +22,3 @@ class TextMessageNotifier:
             messages.TextMessageResponse.build(data),
         )
 
-    def start_listening(self):
-        """
-        Creates thread subscribed to the channel
-        """
-        self.event_notifier.session.text_message_cache.subscribe(self)

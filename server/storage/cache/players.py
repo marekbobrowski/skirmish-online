@@ -1,5 +1,6 @@
 from ..domain import Player, PlayerPositionUpdate, PlayerAnimationUpdate, HealthUpdate, NameUpdate, ModelUpdate, WeaponUpdate, Disconnection, ManaUpdate
 from server.event.event_user import EventUser
+from server.event.event import Event
 import json
 import dataclasses
 import logging
@@ -15,21 +16,12 @@ log = logging.getLogger(__name__)
 class PlayerCache(EventUser):
     SET_KEY = "players"
     PREFIX = "player_"
-    POSITION_UPDATE_CHANNEL = "position_update"
-    MODEL_UPDATE_CHANNEL = "model_update"
-    ANIMATION_UPDATE_CHANNEL = "animation_update"
-    HEALTH_UPDATE_CHANNEL = "health_update"
-    MANA_UPDATE_CHANNEL = "mana_update"
-    NAME_UPDATE_CHANNEL = "name_update"
-    NEW_PLAYER_CHANNEL = "new_player"
-    WEAPON_UPDATE_CHANNEL = "weapon_update"
-    DISCONNECT_CHANNEL = "disconnect_channel"
 
     def __init__(self, session):
         super().__init__()
         self.session = session
         self.last_position_update = datetime.now()
-        self.CONNECTION_CHECK_CHANNEL = "connection_check_" + self.session.id
+        self.CONNECTION_CHECK_EVENT = "connection_check_" + self.session.id
 
     def key(self, id_=None):
         """
@@ -139,7 +131,7 @@ class PlayerCache(EventUser):
         self.session.player_position_cache.update_position(player)
 
         data = json.dumps(dataclasses.asdict(player))
-        self.send_event(event=self.NEW_PLAYER_CHANNEL,
+        self.send_event(event=Event.NEW_PLAYER_JOINED,
                         prepared_data=data)
 
     def publish_position_update(self, position):
@@ -164,7 +156,7 @@ class PlayerCache(EventUser):
         data["event_dtime"] = event_dtime.timestamp()
         data = json.dumps(data)
 
-        self.send_event(event=self.POSITION_UPDATE_CHANNEL,
+        self.send_event(event=Event.POSITION_UPDATED,
                         prepared_data=data)
 
         return position_update
@@ -176,7 +168,7 @@ class PlayerCache(EventUser):
 
         data = json.dumps(dataclasses.asdict(animation_update))
 
-        self.send_event(event=self.ANIMATION_UPDATE_CHANNEL,
+        self.send_event(event=Event.ANIMATION_UPDATED,
                         prepared_data=data)
 
         return animation_update
@@ -199,7 +191,7 @@ class PlayerCache(EventUser):
 
         data = json.dumps([dataclasses.asdict(hu) for hu in health_updates])
 
-        self.send_event(event=self.HEALTH_UPDATE_CHANNEL,
+        self.send_event(event=Event.HEALTH_UPDATED,
                         prepared_data=data)
 
     def publish_mana_update(self, targets, mana_change) -> None:
@@ -220,7 +212,7 @@ class PlayerCache(EventUser):
 
         data = json.dumps([dataclasses.asdict(hu) for hu in mana_updates])
 
-        self.send_event(event=self.MANA_UPDATE_CHANNEL,
+        self.send_event(event=Event.MANA_UPDATED,
                         prepared_data=data)
 
     def publish_name_update(self, name):
@@ -230,7 +222,7 @@ class PlayerCache(EventUser):
         data = json.dumps(dataclasses.asdict(NameUpdate(self.session.player.id,
                                                         self.session.player.name)))
 
-        self.send_event(event=self.NAME_UPDATE_CHANNEL,
+        self.send_event(event=Event.NAME_UPDATED,
                         prepared_data=data)
 
     def publish_model_update(self, model):
@@ -240,7 +232,7 @@ class PlayerCache(EventUser):
         data = json.dumps(dataclasses.asdict(ModelUpdate(self.session.player.id,
                                                          self.session.player.model_id)))
         self.send_event(
-            event=self.MODEL_UPDATE_CHANNEL,
+            event=Event.MODEL_UPDATED,
             prepared_data=data
         )
 
@@ -251,103 +243,21 @@ class PlayerCache(EventUser):
         data = json.dumps(dataclasses.asdict(WeaponUpdate(self.session.player.id,
                                                           self.session.player.weapon_id)))
         self.send_event(
-            event=self.WEAPON_UPDATE_CHANNEL,
+            event=Event.WEAPON_UPDATED,
             prepared_data=data,
         )
 
     def publish_disconnect(self):
         data = json.dumps(dataclasses.asdict(Disconnection(self.session.player.id)))
         self.send_event(
-            event=self.DISCONNECT_CHANNEL,
+            event=Event.DISCONNECTION,
             prepared_data=data
         )
 
-    def raise_connection_check_event(self):
+    def send_connection_check_event(self):
         self.send_event(
-            event=self.CONNECTION_CHECK_CHANNEL,
+            event=self.CONNECTION_CHECK_EVENT,
             prepared_data=json.dumps("")
-        )
-
-    # Subscribtions for channels
-
-    def subscribe(self, subscriber):
-        """
-        Creates a thread that will subscribe to the channel
-        specific for current user
-        """
-        self.accept_event(
-            event=self.POSITION_UPDATE_CHANNEL,
-            handler=subscriber
-        )
-
-    def subscribe_new_players(self, subscriber):
-        """
-        Creates a thread that will subscribe to the channel
-        specific for current user
-        """
-        self.accept_event(
-            event=self.NEW_PLAYER_CHANNEL,
-            handler=subscriber
-        )
-
-    def subscribe_animation_update(self, subscriber):
-        """
-        Creates a thread that will subscribe to the channel
-        specific for current user
-        """
-        self.accept_event(
-            event=self.ANIMATION_UPDATE_CHANNEL,
-            handler=subscriber
-        )
-
-    def subscribe_health_update(self, subscriber):
-        """
-        Creates a thread that will subscribe to the channel
-        specific for current user
-        """
-        self.accept_event(
-            event=self.HEALTH_UPDATE_CHANNEL,
-            handler=subscriber
-        )
-
-    def subscribe_mana_update(self, subscriber):
-        """
-        Creates a thread that will subscribe to the channel
-        specific for current user
-        """
-        self.accept_event(
-            event=self.MANA_UPDATE_CHANNEL,
-            handler=subscriber
-        )
-
-    def subscribe_name_update(self, subscriber):
-        """
-        Creates a thread that will subscribe to the channel
-        specific for current user
-        """
-        self.accept_event(
-            event=self.NAME_UPDATE_CHANNEL,
-            handler=subscriber
-        )
-
-    def subscribe_model_update(self, subscriber):
-        """
-        Creates a thread that will subscribe to the channel
-        specific for current user
-        """
-        self.accept_event(
-            event=self.MODEL_UPDATE_CHANNEL,
-            handler=subscriber
-        )
-
-    def subscribe_weapon_update(self, subscriber):
-        """
-        Creates a thread that will subscribe to the channel
-        specific for current user
-        """
-        self.accept_event(
-            event=self.WEAPON_UPDATE_CHANNEL,
-            handler=subscriber
         )
 
     def subscribe_connection_check(self, subscriber):
@@ -356,16 +266,6 @@ class PlayerCache(EventUser):
         specific for current user
         """
         self.accept_event(
-            event=self.CONNECTION_CHECK_CHANNEL,
-            handler=subscriber
-        )
-
-    def subscribe_disconnect(self, subscriber):
-        """
-        Creates a thread that will subscribe to the channel
-        specific for current user
-        """
-        self.accept_event(
-            event=self.DISCONNECT_CHANNEL,
+            event=self.CONNECTION_CHECK_EVENT,
             handler=subscriber
         )

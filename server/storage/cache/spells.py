@@ -4,14 +4,13 @@ import json
 import dataclasses
 from datetime import datetime, timedelta
 import logging
+from server.event.event import Event
 
 log = logging.getLogger(__name__)
 
 
 class SpellCache(EventUser):
     HMSET_PREFIX = "player_trigger_times_"
-    SPELL_UPDATE_CHANNEL = "spell_update_"
-    COMBAT_DATA_CHANNEL = "combat_data_"
     GLOBAL_COOLDOWN = 1
     COOLDOWN_TIME_PER_SPELL_ID = {
         0: 1.0,
@@ -36,31 +35,10 @@ class SpellCache(EventUser):
         """
         return f"{self.HMSET_PREFIX}{self.session.player.id}"
 
-    @classmethod
-    def spell_update_channel_for_session(cls, session_id):
-        """
-        Creates a unique channel name for the session.
-        """
-        return f"{cls.SPELL_UPDATE_CHANNEL}{session_id}"
-
     def publish_combat_data(self, combat_data):
         data = json.dumps(dataclasses.asdict(combat_data))
-        self.send_event(event=self.COMBAT_DATA_CHANNEL,
+        self.send_event(event=Event.COMBAT_DATA_CREATED,
                         prepared_data=data)
-
-    def subscribe(self, subscriber):
-        """
-        Creates a thread that will subscribe to spell updates.
-        """
-        self.accept_event(event=self.spell_update_channel_for_session(self.session.id),
-                          handler=subscriber)
-
-    def subscribe_for_combat_data(self, subscriber):
-        """
-        Creates a thread that will subscribe to combat data.
-        """
-        self.accept_event(event=self.COMBAT_DATA_CHANNEL,
-                          handler=subscriber)
 
     def initialize_trigger_times(self) -> None:
         """

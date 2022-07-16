@@ -11,4 +11,4 @@ class ConnectionCheckHandler(MessageHandler):
     response_message = None
 
     def handle_message(self):
-        self.session.player_cache.raise_connection_check_event()
+        self.session.player_cache.send_connection_check_event()

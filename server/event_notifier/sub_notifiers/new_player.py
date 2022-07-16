@@ -1,23 +1,19 @@
-from protocol import messages, domain
+from protocol import messages
+from .base import SubNotifierBase
+from server.event.event import Event
 from ...storage.domain import PlayerPositionUpdate
-import json
+
 import logging
+import json
 
 log = logging.getLogger(__name__)
 
 
-class NewPlayerNotifier:
-    def __init__(self, event_notifier):
-        """
-        NewPlayerSubscriber notifies user
-        with new users
-        """
-        self.event_notifier = event_notifier
+class NewPlayerNotifier(SubNotifierBase):
+    MESSAGE = messages.NewPlayerResponse
+    EVENT = Event.NEW_PLAYER_JOINED
 
     def __call__(self, message):
-        """
-        Subscribed method, prepares response and pushes it
-        """
         data = json.loads(message)
 
         if (
@@ -41,8 +37,3 @@ class NewPlayerNotifier:
             messages.NewPlayerResponse.build(data),
         )
 
-    def start_listening(self):
-        """
-        Creates thread subscribed to the channel
-        """
-        self.event_notifier.session.player_cache.subscribe_new_players(self)

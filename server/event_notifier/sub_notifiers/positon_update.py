@@ -1,25 +1,19 @@
-from protocol import messages, domain
+from protocol import messages
+from .base import SubNotifierBase
+from server.event.event import Event
 from ...storage.domain import PlayerPositionUpdate
+
 import json
 import logging
-from datetime import datetime
-
 
 log = logging.getLogger(__name__)
 
 
-class PositionUpdateNotifier:
-    def __init__(self, event_notifier):
-        """
-        PositionUpdateSubscriber notifies user of position changes
-        for all other users
-        """
-        self.event_notifier = event_notifier
+class PositionUpdateNotifier(SubNotifierBase):
+    MESSAGE = messages.PosHPRResponse
+    EVENT = Event.POSITION_UPDATED
 
     def __call__(self, message):
-        """
-        Subscribed method, prepares response and pushes it
-        """
         data = json.loads(message)
         if (
             self.event_notifier.session.player is not None
@@ -36,8 +30,3 @@ class PositionUpdateNotifier:
             messages.PosHPRResponse.build(data),
         )
 
-    def start_listening(self):
-        """
-        Creates thread subscribed to the channel
-        """
-        self.event_notifier.session.player_cache.subscribe(self)
