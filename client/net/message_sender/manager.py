@@ -7,7 +7,7 @@ from .senders.position import PositionSender
 class MessageSendersManager:
     def __init__(self, manager):
         """
-        This class initializes senders
+        This class initializes and stores senders.
         """
         self.manager = manager
         self.senders = [

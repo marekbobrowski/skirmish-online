@@ -5,6 +5,9 @@ from client.local.section.main.section import MainSection
 
 
 class Client:
+    """
+    Main class of the client app.
+    """
     STARTUP_SECTION = MainSection
 
     def __init__(self, server_ip):

@@ -5,7 +5,7 @@ from protocol.messages import SpellRequest
 
 class SpellSender(BaseSender):
     """
-    Sends spell cliecked
+    Sends spell attempt
     """
 
     MANAGED_EVENT = Event.MY_SPELL_ATTEMPT
@@ -13,6 +13,6 @@ class SpellSender(BaseSender):
 
     def handle(self, ability: int) -> None:
         """
-        Sends the spell cliecked
+        Sends the spell attempt
         """
         self.send(SpellRequest.build(ability))

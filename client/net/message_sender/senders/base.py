@@ -8,20 +8,15 @@ from direct.task.Task import Task
 
 class BaseSender(DirectObject):
     """
-    Base sender implementation
+    Sender sends to the server the specified message type if the specified event occurs.
     """
 
     MANAGED_EVENT: Event
     MESSAGE_CLS: Message
 
     def __init__(self, manager):
-        """
-        Stores manager for request
-        sending
-        """
         super().__init__()
         self.manager = manager
-
         self.accept(self.MANAGED_EVENT, self.handle)
 
     @abstractmethod
@@ -31,7 +26,6 @@ class BaseSender(DirectObject):
         events. This method should:
             - build message from given params
             - send the message using self.send(message)
-        Optionally return self._continue
         """
         pass
 
@@ -47,11 +41,3 @@ class BaseSender(DirectObject):
             datagram,
             connection,
         )
-
-    @property
-    def _continue(self):
-        """
-        Return self.continue for continuing
-        task
-        """
-        return Task.cont
