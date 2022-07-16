@@ -38,7 +38,7 @@ class SpellCache(EventUser):
     def publish_combat_data(self, combat_data):
         data = json.dumps(dataclasses.asdict(combat_data))
         self.send_event(event=Event.COMBAT_DATA_CREATED,
-                        prepared_data=data)
+                        prepared_data=combat_data)
 
     def initialize_trigger_times(self) -> None:
         """

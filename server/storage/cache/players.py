@@ -129,10 +129,8 @@ class PlayerCache(EventUser):
         self.save(player)
         self.session.redis.sadd(self.SET_KEY, player.id)
         self.session.player_position_cache.update_position(player)
-
-        data = json.dumps(dataclasses.asdict(player))
         self.send_event(event=Event.NEW_PLAYER_JOINED,
-                        prepared_data=data)
+                        prepared_data=player)
 
     def publish_position_update(self, position):
         """
@@ -153,11 +151,10 @@ class PlayerCache(EventUser):
         self.session.player_position_cache.update_position(position_update)
 
         data = dataclasses.asdict(position_update)
-        data["event_dtime"] = event_dtime.timestamp()
         data = json.dumps(data)
 
         self.send_event(event=Event.POSITION_UPDATED,
-                        prepared_data=data)
+                        prepared_data=position_update)
 
         return position_update
 
@@ -169,7 +166,7 @@ class PlayerCache(EventUser):
         data = json.dumps(dataclasses.asdict(animation_update))
 
         self.send_event(event=Event.ANIMATION_UPDATED,
-                        prepared_data=data)
+                        prepared_data=animation_update)
 
         return animation_update
 
@@ -192,7 +189,7 @@ class PlayerCache(EventUser):
         data = json.dumps([dataclasses.asdict(hu) for hu in health_updates])
 
         self.send_event(event=Event.HEALTH_UPDATED,
-                        prepared_data=data)
+                        prepared_data=health_updates)
 
     def publish_mana_update(self, targets, mana_change) -> None:
         affected_players = []
@@ -213,45 +210,49 @@ class PlayerCache(EventUser):
         data = json.dumps([dataclasses.asdict(hu) for hu in mana_updates])
 
         self.send_event(event=Event.MANA_UPDATED,
-                        prepared_data=data)
+                        prepared_data=mana_updates)
 
     def publish_name_update(self, name):
         self.session.player = self.load(id_=self.session.player.id)
         self.session.player.name = name
         self.save(self.session.player)
-        data = json.dumps(dataclasses.asdict(NameUpdate(self.session.player.id,
-                                                        self.session.player.name)))
+        name_update = NameUpdate(self.session.player.id,
+                                 self.session.player.name)
+        data = json.dumps(dataclasses.asdict(name_update))
 
         self.send_event(event=Event.NAME_UPDATED,
-                        prepared_data=data)
+                        prepared_data=name_update)
 
     def publish_model_update(self, model):
         self.session.player = self.load(id_=self.session.player.id)
         self.session.player.model_id = model
         self.save(self.session.player)
-        data = json.dumps(dataclasses.asdict(ModelUpdate(self.session.player.id,
-                                                         self.session.player.model_id)))
+        model_update = ModelUpdate(self.session.player.id,
+                                   self.session.player.model_id)
+        data = json.dumps(dataclasses.asdict(model_update))
         self.send_event(
             event=Event.MODEL_UPDATED,
-            prepared_data=data
+            prepared_data=model_update
         )
 
     def publish_weapon_update(self, weapon_id):
         self.session.player = self.load(id_=self.session.player.id)
         self.session.player.weapon_id = weapon_id
         self.save(self.session.player)
-        data = json.dumps(dataclasses.asdict(WeaponUpdate(self.session.player.id,
-                                                          self.session.player.weapon_id)))
+        weapon_update = WeaponUpdate(self.session.player.id,
+                                     self.session.player.weapon_id)
+        data = json.dumps(dataclasses.asdict(weapon_update))
         self.send_event(
             event=Event.WEAPON_UPDATED,
-            prepared_data=data,
+            prepared_data=weapon_update,
         )
 
     def publish_disconnect(self):
-        data = json.dumps(dataclasses.asdict(Disconnection(self.session.player.id)))
+        disconnection = Disconnection(self.session.player.id)
+        data = json.dumps(dataclasses.asdict(disconnection))
         self.send_event(
             event=Event.DISCONNECTION,
-            prepared_data=data
+            prepared_data=disconnection
         )
 
     def send_connection_check_event(self):

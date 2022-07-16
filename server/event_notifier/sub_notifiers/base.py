@@ -3,6 +3,7 @@ from server.event.event_user import EventUser
 from server.event.event import Event
 import json
 import logging
+from abc import abstractmethod
 
 log = logging.getLogger(__name__)
 
@@ -10,6 +11,10 @@ log = logging.getLogger(__name__)
 class SubNotifierBase(EventUser):
     EVENT: Event = None
     MESSAGE: Message = None
+    DROP_FOR_SELF: bool = False
+    """
+    Set it to true of you don't want to notify user about data concerning them.
+    """
 
     def __init__(self, event_notifier):
         """
@@ -18,12 +23,13 @@ class SubNotifierBase(EventUser):
         super().__init__()
         self.event_notifier = event_notifier
 
-    def __call__(self, message):
+    def __call__(self, data):
         """
         Handle event by notifying user.
         """
-        data = json.loads(message)
-
+        if self.DROP_FOR_SELF and self.message_is_about_this_player(data):
+            return
+        self.update_cache(data)
         self.event_notifier.notify(
             self.MESSAGE.build(data),
         )
@@ -34,3 +40,9 @@ class SubNotifierBase(EventUser):
         """
         self.accept_event(event=self.EVENT,
                           handler=self)
+
+    def message_is_about_this_player(self, data):
+        return self.event_notifier.session.player is not None and data.id == self.event_notifier.session.player.id
+
+    def update_cache(self, data):
+        pass

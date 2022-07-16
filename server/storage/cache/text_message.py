@@ -19,13 +19,8 @@ class TextMessageCache(EventUser):
         """
         Broadcasts a spell.
         """
-        message_dict = dataclasses.asdict(text_message)
-        if message_dict.get("send_dtime", None):
-            message_dict["send_dtime"] = message_dict["send_dtime"].timestamp()
-        data = json.dumps(message_dict)
-
         self.send_event(
             event=Event.TEXT_MESSAGE,
-            prepared_data=data,
+            prepared_data=text_message,
         )
 

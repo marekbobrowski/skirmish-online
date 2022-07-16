@@ -13,10 +13,10 @@ class TextMessageNotifier(SubNotifierBase):
     MESSAGE = messages.TextMessageResponse
     EVENT = Event.TEXT_MESSAGE
 
-    def __call__(self, message):
-        data = json.loads(message)
-        if data.get("send_dtime", None):
-            data["send_dtime"] = datetime.fromtimestamp(data["send_dtime"])
+    def __call__(self, data):
+        # data = json.loads(message)
+        # if data.get("send_dtime", None):
+        #     data["send_dtime"] = datetime.fromtimestamp(data["send_dtime"])
 
         self.event_notifier.notify(
             messages.TextMessageResponse.build(data),
