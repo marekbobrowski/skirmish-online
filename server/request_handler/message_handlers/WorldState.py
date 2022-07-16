@@ -1,7 +1,5 @@
 from .base import MessageHandler
-from protocol import messages, domain
-from ... import config
-from ...storage.domain import Player
+from protocol import messages
 import logging
 
 

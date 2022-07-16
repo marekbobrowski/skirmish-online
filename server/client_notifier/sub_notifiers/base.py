@@ -9,6 +9,9 @@ log = logging.getLogger(__name__)
 
 
 class SubNotifierBase(EventUser):
+    """
+    Sub-notifiers listen for their assigned event and notify client about it.
+    """
     EVENT: Event = None
     MESSAGE: Message = None
     DROP_FOR_SELF: bool = False
@@ -45,4 +48,7 @@ class SubNotifierBase(EventUser):
         return self.event_notifier.session.player is not None and data.id == self.event_notifier.session.player.id
 
     def update_cache(self, data):
+        """
+        Update session's cache if needed.
+        """
         pass

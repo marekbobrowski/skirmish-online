@@ -1,6 +1,6 @@
 from .request_handler import Handler
 from .storage.session import SessionManager
-from .event_notifier.notifier import NotifierManager
+from .client_notifier.notifier import NotifierManager
 from .tasking import TaskManager
 from .event.event_user import EventUser
 from .event.event import Event

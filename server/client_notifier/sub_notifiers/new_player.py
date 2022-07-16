@@ -1,7 +1,6 @@
 from protocol import messages
 from .base import SubNotifierBase
 from server.event.event import Event
-from ...storage.domain import PlayerPositionUpdate
 
 import logging
 

@@ -38,13 +38,13 @@ class NotifierManager(EventUser):
         """
         Produce new notifier for connection
         """
-        self.notifiers[connection] = EventNotifier(self.server, session, connection)
+        self.notifiers[connection] = ClientNotifier(self.server, session, connection)
 
     def handle_client_disconnection_published(self, connection):
         del self.notifiers[connection]
 
 
-class EventNotifier:
+class ClientNotifier:
 
     def __init__(self, server, session, connection):
         """
