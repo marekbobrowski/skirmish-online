@@ -58,15 +58,15 @@ Most of the time, UI will update based on the events that were firstly received 
 
 ### Create new type of message that can be sent between clients and server
 
-In `protocol/domain` package create a new schema class (it defines components of message - for example, for message that tells about new position of the player, define x, y, z as 64 bit floats). Then in `protocol/messages` create a new message class and assign it the schema that you defined before. Also assing your message a unique ID and message type (for messages sent from client to server it's usually a `MessageType.request`).
+In `protocol/domain` package create a new schema class (it defines components of message - for example, for message that tells about new position of the player, define x, y, z as 64 bit floats). Then in `protocol/messages` create a new message class and assign it the schema that you defined before. Also assing your message a unique ID and message type (for messages sent from client to server it's usually a `MessageType.request`). Remember to import the created message class in package's `__init__.py` so it will be automatically registered in the message bank.  
 
 ### Sending new type of message from client to server
 
-In order to send some new kind of information to the server, you need to create a new class inside `client/net/message_sender/senders` package and inherit from `BaseSender`. Specify the managed Event in the `MANAGED_EVENT` class field and the Message type thats's going to be sent in `MESSAGE_CLS` class field (look at the existing examples in the `senders` package). Then "somewhere in the client" call specified event with proper arguments and data should be sent to the server.
+In order to send some new kind of information to the server, you need to create a new class inside `client/net/message_sender/senders` package and inherit from `BaseSender`. Specify the managed Event in the `MANAGED_EVENT` class field and the Message type thats's going to be sent in `MESSAGE_CLS` class field (look at the existing examples in the `senders` package). Then "somewhere in the client" call specified event with proper arguments and data should be sent to the server. Remember to import the created sender class in package's `__init__.py` so it will be automatically registered in the sender bank.
 
 ### Handling new type of message sent by the server
 
-Yet to be written about.
+In order to handle some new kind of information from the server, you need to create a new class inside `client/net/message_handler/handler` package and inherit from `MessageHandler`. Specify the handler message type in the `handled_message` class field so it automitcally reacts to that kind of message. Override the abstract `handle_message` method in which you have to simply handle the message. Usually you will want to instantly fire an event with `core.instance.messenger.send(<event class>, sentArgs=[some, event, arguments])`, so that classes from `client/local` can take care of it. Remember to import the created handler class in package's `__init__.py` so it will be automatically registered in the handlers bank.
 
 ## Server Development Manual
 
