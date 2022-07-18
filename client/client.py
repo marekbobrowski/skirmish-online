@@ -2,15 +2,18 @@ from .net.net_client import NetClient
 from .local import core
 from client.local.section.section_manager import SectionManager
 from client.local.section.main.section import MainSection
+from panda3d.core import WindowProperties
+from direct.showbase.DirectObject import DirectObject
 
 
-class Client:
+class Client(DirectObject):
     """
     Main class of the client app.
     """
     STARTUP_SECTION = MainSection
 
     def __init__(self, server_ip):
+        super().__init__()
         self.net_client = NetClient(server_ip)
         self.section_manager = SectionManager()
 
@@ -34,4 +37,16 @@ class Client:
 
     def basic_configuration(self):
         core.instance.disable_mouse()
+        self.accept("aspectRatioChanged", self.handle_aspect_ratio_changed)
         # TODO: set icon, window name etc.
+
+    def handle_aspect_ratio_changed(self):
+        # make sure that aspect ratio is maintained when the window resizes
+        ww, wh = self.get_window_size()
+        props = WindowProperties()
+        new_width = int(16 / 9 * wh)
+        props.setSize(new_width, wh)
+        core.instance.win.requestProperties(props)
+
+    def get_window_size(self):
+        return core.instance.win.get_x_size(), core.instance.win.get_y_size()
