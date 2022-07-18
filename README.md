@@ -57,4 +57,21 @@ The GUI package is located in `client/local/section/main/ui`. That's the place w
 
 Most of the time, UI will update based on the events that were firstly received from the server and then "interpreted" by the client. In `client/event.py` there is a list of those events. In order to make your class respond to chosen events, you need to inherit from `direct.showbase.DirectObject.DirectObject` (Panda3D class) and import all events from `client.event.Event`. Then simply in init method write `self.accept(Event.<some event>, self.event_handler_method)` and in the specified method handle the event by updating your GUI element (you can check verious examples of that in all of the existing GUI classes). In order to know what event arguments are passed with the event, you need to check the place they are called. But for example, with event `UNIT_NAME_UPDATED`, there are passed 2 arguments: unit instance and the unit's old name.
 
+### Create new type of message that can be sent between clients and server
+
+Yet to be written about.
+
+### Sending new type of message from client to server
+
+In order to create some new kind of information that will be sent to the server, you need to create a new class inside `client/net/message_sender/senders` package and inherit from `BaseSender`. Specify the managed Event in the `MANAGED_EVENT` class field and the Message type it's going to send in `MESSAGE_CLS` class field (look at the existing examples in the `senders` package). Then "somewhere in the client" call specified event with proper arguments and data should be sent to the server.
+
+### Handling new type of message sent by the server
+
+Yet to be written about.
+
+## Server Development Manual
+
+Yet to be written about.
+
+
 
