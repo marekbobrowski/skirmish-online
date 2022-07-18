@@ -82,8 +82,9 @@ class MainSectionModel(DirectObject):
         unit = self.units_by_id.get(unit_id, None)
         if unit is None:
             return
+        old_name = unit.name
         unit.name = name
-        core.instance.messenger.send(Event.UNIT_NAME_UPDATED, sentArgs=[unit])
+        core.instance.messenger.send(Event.UNIT_NAME_UPDATED, sentArgs=[unit, old_name])
 
     def handle_unit_animation_received(self, *args):
         unit_id, anim, loop = args
