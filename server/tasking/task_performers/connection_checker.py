@@ -29,7 +29,7 @@ class ConnectionChecker(TaskPerformerBase, EventUser):
     def task_tick(self):
         tick_time = datetime.now()
         time_diff = tick_time - self.last_connection_check
-        if time_diff < timedelta(milliseconds=(config.connection_check_timeout + 1) * 1000):
+        if time_diff < timedelta(milliseconds=(config.connection_check_timeout + 3) * 1000):
             datagram = PyDatagram()
             message = ConnectionCheckResponse.build()
             message.dump(datagram)
