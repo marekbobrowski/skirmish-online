@@ -46,10 +46,9 @@ Open the project directory.
 3. `docker compose up` to run the server and memory app (redis),
 4. `python -m client <server IP without brackets, default is localhost>` to run the client.
 
-
 ## Client Development Manual
 
-This section contains instructions on developing the most important parts of the client.
+This section contains instructions on developing some of the most important parts of the client.
 
 ### Adding new GUI elements
 
@@ -59,11 +58,11 @@ Most of the time, UI will update based on the events that were firstly received 
 
 ### Create new type of message that can be sent between clients and server
 
-Yet to be written about.
+In `protocol/domain` package create a new schema class (it defines components of message - for example, for message that tells about new position of the player, define x, y, z as 64 bit floats). Then in `protocol/messages` create a new message class and assign it the schema that you defined before. Also assing your message a unique ID and message type (for messages sent from client to server it's usually a `MessageType.request`).
 
 ### Sending new type of message from client to server
 
-In order to create some new kind of information that will be sent to the server, you need to create a new class inside `client/net/message_sender/senders` package and inherit from `BaseSender`. Specify the managed Event in the `MANAGED_EVENT` class field and the Message type it's going to send in `MESSAGE_CLS` class field (look at the existing examples in the `senders` package). Then "somewhere in the client" call specified event with proper arguments and data should be sent to the server.
+In order to send some new kind of information to the server, you need to create a new class inside `client/net/message_sender/senders` package and inherit from `BaseSender`. Specify the managed Event in the `MANAGED_EVENT` class field and the Message type thats's going to be sent in `MESSAGE_CLS` class field (look at the existing examples in the `senders` package). Then "somewhere in the client" call specified event with proper arguments and data should be sent to the server.
 
 ### Handling new type of message sent by the server
 
