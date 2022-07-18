@@ -24,6 +24,9 @@ The server detects timeouts and removes players who left the game.
 
 Here are some screenshots and a video showing current state of the project.
 
+<img src="https://raw.githubusercontent.com/marekbobrowski/skirmish-online/master/screenshots/1.png">
+<img src="https://raw.githubusercontent.com/marekbobrowski/skirmish-online/master/screenshots/2.png">
+
 ## Setting up the project
 
 ### Client usage only
