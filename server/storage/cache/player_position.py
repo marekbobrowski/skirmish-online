@@ -33,7 +33,10 @@ class PlayerPositionCache:
             self.update_position(player)
 
     def remove_positions(self, player_ids):
-        self.all_positions.drop(player_ids, inplace=True)
+        try:
+            self.all_positions.drop(player_ids, inplace=True)
+        except KeyError:
+            pass
 
     def get_nearby(self, player_position, x_range, y_range, z_range):
         """
