@@ -1,6 +1,6 @@
 # Skirmish Online
 
-Skrimish Online is a base for a multiplayer ([MMORPG](https://en.wikipedia.org/wiki/Massively_multiplayer_online_role-playing_game) style) game, written in [Python](https://www.python.org/) with [Panda3D](https://www.panda3d.org/). It uses client-server model, with server and it's memory ([Redis](https://redis.io/)) being ran in a [docker](https://www.docker.com/) container.
+Skrimish Online is a base for a multiplayer, online game ([MMORPG](https://en.wikipedia.org/wiki/Massively_multiplayer_online_role-playing_game) style), written in [Python](https://www.python.org/) with [Panda3D](https://www.panda3d.org/). It uses client-server model, with server and it's memory ([Redis](https://redis.io/)) being ran in a [docker](https://www.docker.com/) container.
 
 ## Game description
 
@@ -18,7 +18,7 @@ Every player has:
 
 All of these things are being constantly synchronized between server and all connected clients.
 
-The server detects timeouts and removes players who actually left the game.
+The server detects timeouts and removes players who left the game.
 
 ## Screenshots and videos
 
@@ -26,13 +26,23 @@ Here are some screenshots and a video showing current state of the project.
 
 ## Setting up the project
 
+### Client usage only
+
+Make sure you have [Python](https://www.python.org/) installed. Open the project directory.
+
+1. `pip install -r client-requirements.txt` to install all client dependencies,
+2. `python -m client <server IP without brackets>` to run the client.
+
+### Client and server usage
+
 Make sure you have [Python](https://www.python.org/) and [Docker](https://www.docker.com/) installed.
 Open the project directory.
 
 1. `pip install -r requirements.txt` to install all dependencies,
 2. `docker compose build server` to build the docker image,
 3. `docker compose up` to run the server and memory app (redis),
-4. `python -m client` to run the client.
+4. `python -m client <server IP without brackets, default is localhost>` to run the client.
+
 
 ## Documentation (for future me)
 
