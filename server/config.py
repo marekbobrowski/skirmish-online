@@ -14,7 +14,8 @@ welcome_msg += help
 
 position_update_delay = 100
 
-connection_check_timeout = 2
+connection_check_timeout = 10
+connection_check_interval = 2
 
 redis_host = "redis"
 
