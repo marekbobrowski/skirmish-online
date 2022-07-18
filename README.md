@@ -1,6 +1,6 @@
 # Skirmish Online
 
-Skrimish Online is a base for a multiplayer ([MMORPG](https://en.wikipedia.org/wiki/Massively_multiplayer_online_role-playing_game) style) game, written in [Python](https://www.python.org/) with [Panda3D](https://www.panda3d.org/). It uses client-server model, with server and it's memory ([Redis](https://redis.io/)) being ran in a [docker](https://www.docker.com/) container.
+Skrimish Online is a base for a multiplayer, online game ([MMORPG](https://en.wikipedia.org/wiki/Massively_multiplayer_online_role-playing_game) style), written in [Python](https://www.python.org/) with [Panda3D](https://www.panda3d.org/). It uses client-server model, with server and it's memory ([Redis](https://redis.io/)) being ran in a [docker](https://www.docker.com/) container.
 
 ## Game description
 
