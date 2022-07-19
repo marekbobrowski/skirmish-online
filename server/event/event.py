@@ -11,3 +11,4 @@ class Event:
     DISCONNECTION = "disconnection"
     COMBAT_DATA_CREATED = "combat_data_created"
     TEXT_MESSAGE = "text_message"
+    PLAYER_DIED = "player_died"

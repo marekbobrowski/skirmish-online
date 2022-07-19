@@ -11,6 +11,7 @@ class PlayerPositionUpdate:
     h: float
     p: float
     r: float
+    send_to_owner: bool
 
 
 @dataclass

@@ -1,10 +1,14 @@
 import pandas
 import logging
+from server.event.event_user import EventUser
+from server.event.event import Event
+from protocol.messages.PosHPR import PosHPRRequest
+from random import randint
 
 log = logging.getLogger(__name__)
 
 
-class PlayerPositionCache:
+class PlayerPositionCache(EventUser):
     def __init__(self, session):
         """
         PlayerPositionCache is cache of user positions.
@@ -13,9 +17,28 @@ class PlayerPositionCache:
         in rectangular areas and then allows to narrow
         down the search
         """
+        super().__init__()
         self.session = session
         self.all_positions = pandas.DataFrame(columns=["x", "y", "z"], dtype=float)
         self.update_all_positions()
+        self.accept_event(event=Event.PLAYER_DIED, handler=self.handle_player_died)
+
+    def handle_player_died(self, args):
+        player_id = args[0]
+        if self.session.player.id == player_id:
+            self.teleport_randomly()
+
+    def teleport_randomly(self):
+        self.session.teleport(
+            PosHPRRequest.build(
+                x=0,
+                y=0,
+                z=1,
+                h=120,
+                p=0,
+                r=0,
+            ).data
+        )
 
     def update_position(self, player_position):
         """

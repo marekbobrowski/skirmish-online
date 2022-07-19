@@ -80,15 +80,18 @@ class Session:
         """
         self.player = self.player_cache.load_or_create(id_)
 
-    def set_position(self, position):
+    def set_position(self, position, send_to_owner=False):
         """
         Sets player position
         """
-        position_update = self.player_cache.publish_position_update(position)
+        position_update = self.player_cache.publish_position_update(position, send_to_owner)
         if position_update is not None:
             self.player = self.player_cache.load(self.player.id)
             self.player.update_position(position_update)
             self.player_cache.save(self.player)
+
+    def teleport(self, position):
+        self.set_position(position, send_to_owner=True)
 
     def set_animation(self, animation):
         """

@@ -50,8 +50,17 @@ class MainSectionModel(DirectObject):
         unit.h = args[4]
         unit.p = args[5]
         unit.r = args[6]
-        unit.interpolator.update()
-        core.instance.messenger.send(Event.UNIT_POS_ROT_UPDATED, sentArgs=[unit])
+        if unit is not self.player_unit:
+            unit.interpolator.update()
+        else:
+            unit.base_node.get_parent().set_pos_hpr(
+                unit.x,
+                unit.y,
+                unit.z,
+                unit.h,
+                unit.p,
+                unit.r
+            )
 
     def handle_unit_health_received(self, *args):
         hp_info = args[0]

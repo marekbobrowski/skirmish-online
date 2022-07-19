@@ -22,6 +22,7 @@ class PlayerCache(EventUser):
         self.session = session
         self.last_position_update = datetime.now()
         self.CONNECTION_CHECK_EVENT = "connection_check_" + self.session.id
+        self.accept_event(event=Event.PLAYER_DIED, handler=self.handle_player_died)
 
     def key(self, id_=None):
         """
@@ -120,7 +121,11 @@ class PlayerCache(EventUser):
         """
         return [self.load(id_) for id_ in self.other_player_ids()]
 
-    # channel publication
+    def handle_player_died(self, args):
+        player_id = args[0]
+        if player_id == self.session.player.id:
+            self.publish_health_update([self.session.player.id], -100)
+            self.publish_mana_update([self.session.player.id], -100)
 
     def publish_new_player(self, player):
         """
@@ -132,7 +137,7 @@ class PlayerCache(EventUser):
         self.send_event(event=Event.NEW_PLAYER_JOINED,
                         prepared_data=player)
 
-    def publish_position_update(self, position):
+    def publish_position_update(self, position: dict, send_to_owner: bool = False) -> PlayerPositionUpdate:
         """
         Pushes position update, only if some time passed
         """
@@ -140,12 +145,13 @@ class PlayerCache(EventUser):
 
         if event_dtime - self.last_position_update < timedelta(
             milliseconds=config.position_update_delay
-        ):
+        ) and not send_to_owner:
+            # if it's a teleport we don't want to drop position updating
             return
 
         self.last_position_update = event_dtime
         position_update = PlayerPositionUpdate(
-            **position._json(), id=self.session.player.id
+            **position._json(), id=self.session.player.id, send_to_owner=send_to_owner
         )
 
         self.session.player_position_cache.update_position(position_update)

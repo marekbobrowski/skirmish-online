@@ -1,7 +1,8 @@
 from ...storage.domain.combat_data import CombatData
 from protocol.domain import Spells, AnimationName, Animation
 from .bank import MetaClass
-from abc import abstractmethod
+from server.event.event_user import EventUser
+from server.event.event import Event
 from typing import List
 import logging
 import random
@@ -9,7 +10,7 @@ import random
 log = logging.getLogger(__name__)
 
 
-class BaseSpellHandler(metaclass=MetaClass):
+class BaseSpellHandler(EventUser, metaclass=MetaClass):
     SPELL: Spells = None
     ANIMATION: AnimationName = None
     LOOP: int = 0
@@ -21,6 +22,7 @@ class BaseSpellHandler(metaclass=MetaClass):
         """
         Stores session and spell data
         """
+        EventUser.__init__(self)
         self.session = session
         self.spell_data = spell_data
 
@@ -39,14 +41,19 @@ class BaseSpellHandler(metaclass=MetaClass):
 
         self.session.spell_cache.trigger_spell_cooldown(self.spell_data.spell)
 
-        targets = self.calculate_targets()
-        hp_change = self.calculate_damage(targets)
-        combat_data = self.produce_response(targets, hp_change)
+        targets_ids = self.calculate_targets()
+        hp_change = self.calculate_damage(targets_ids)
+        combat_data = self.produce_response(targets_ids, hp_change)
 
-        self.publish_health_update(targets, hp_change)
+        self.publish_health_update(targets_ids, hp_change)
         self.publish_mana_update([self.session.player.id], self.MANA_COST)
         self.publish_animation_update()
         self.publish_combat_data(combat_data)
+
+        players = [self.session.player_cache.load(target_id) for target_id in targets_ids]
+        for player in players:
+            if player.health <= 0:
+                self.send_event(event=Event.PLAYER_DIED, prepared_data=(player.id, self.session.player.name))
 
     def valid(self) -> bool:
         """
@@ -111,3 +118,6 @@ class BaseSpellHandler(metaclass=MetaClass):
             source=self.session.player.id,
             targets=targets,
         )
+
+    def teleport_player_to_random_place(self, player_id):
+        pass

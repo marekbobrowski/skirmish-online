@@ -1,9 +1,7 @@
 from protocol.messages.base import Message
 from server.event.event_user import EventUser
 from server.event.event import Event
-import json
 import logging
-from abc import abstractmethod
 
 log = logging.getLogger(__name__)
 
@@ -32,6 +30,8 @@ class SubNotifierBase(EventUser):
         """
         if self.DROP_FOR_SELF and self.message_is_about_this_player(data):
             return
+        if self.drop(data):
+            return
         self.update_cache(data)
         self.event_notifier.notify(
             self.MESSAGE.build(data),
@@ -46,6 +46,11 @@ class SubNotifierBase(EventUser):
 
     def message_is_about_this_player(self, data):
         return self.event_notifier.session.player is not None and data.id == self.event_notifier.session.player.id
+
+    def drop(self, data) -> bool:
+        """
+        Add some custom check if needed. Return False if you don't want to continue sending this message.
+        """
 
     def update_cache(self, data):
         """
