@@ -35,5 +35,12 @@ class TextMessageCache(EventUser):
             )
             self.publish_text_message(text_message)
 
+    def send_kill_count_increased(self, kill_count):
+        text_message = TextMessage(
+            player_name=self.session.player.name,
+            send_dtime=datetime.now(),
+            message=f"Kill count: {kill_count}.",
+        )
+        self.publish_text_message(text_message)
 
 

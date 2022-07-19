@@ -40,6 +40,8 @@ class Player:
     r: float
 
     scale: float
+    power: int
+    kill_count: int
 
     def update_position(self, position: PlayerPositionUpdate):
         self.x = position.x

@@ -76,6 +76,8 @@ class PlayerCache(EventUser):
             p=0,
             r=0,
             scale=1,
+            power=1,
+            kill_count=0,
         )
         self.publish_new_player(player)
         return player
@@ -130,10 +132,19 @@ class PlayerCache(EventUser):
             self.publish_mana_update([self.session.player.id], -100)
         if killer_id == self.session.player.id:
             self.session.player = self.session.player_cache.load(self.session.player.id)
-            self.session.player.scale = self.session.player.scale * 1.05
-            self.save(self.session.player)
-            self.publish_scale_update(self.session.player.scale)
+            self.session.player.kill_count += 1
+            self.session.text_message_cache.send_kill_count_increased(self.session.player.kill_count)
 
+            new_scale = self.session.player.scale * 1.05
+            if new_scale <= 3:
+                self.session.player.scale = new_scale
+                self.publish_scale_update(self.session.player.scale)
+
+            new_power = self.session.player.power * 1.05
+            if new_scale <= 3:
+                self.session.player.power = new_power
+
+            self.save(self.session.player)
 
     def publish_new_player(self, player):
         """
