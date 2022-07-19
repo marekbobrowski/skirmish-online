@@ -34,10 +34,14 @@ class BaseSpellHandler(EventUser, metaclass=MetaClass):
             3. interact with targets
             4. produce response
         """
+        self.session.player = self.session.player_cache.load(self.session.player.id)
         if not self.valid():
             return
         if not self.session.spell_cache.is_spell_ready(self.spell_data.spell):
             return self.produce_response([], 0)
+        if not self.session.player.mana >= self.MANA_COST:
+            self.session.player_cache.send_not_enough_mana()
+            return
 
         self.session.spell_cache.trigger_spell_cooldown(self.spell_data.spell)
 
@@ -52,6 +56,7 @@ class BaseSpellHandler(EventUser, metaclass=MetaClass):
 
         players = [self.session.player_cache.load(target_id) for target_id in targets_ids]
 
+        self.session.player_cache.save(self.session.player)
         for player in players:
             if player.health <= 0:
                 self.send_event(event=Event.PLAYER_DIED, prepared_data=(player.id,

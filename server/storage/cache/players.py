@@ -1,4 +1,4 @@
-from ..domain import Player, PlayerPositionUpdate, PlayerAnimationUpdate, HealthUpdate, NameUpdate, ModelUpdate, WeaponUpdate, Disconnection, ManaUpdate, ScaleUpdate
+from ..domain import Player, PlayerPositionUpdate, PlayerAnimationUpdate, HealthUpdate, NameUpdate, ModelUpdate, WeaponUpdate, Disconnection, ManaUpdate, ScaleUpdate, NotEnoughMana
 from server.event.event_user import EventUser
 from server.event.event import Event
 import json
@@ -271,6 +271,12 @@ class PlayerCache(EventUser):
         self.send_event(
             event=Event.SCALE_UPDATED,
             prepared_data=ScaleUpdate(id=self.session.player.id, scale=new_scale)
+        )
+
+    def send_not_enough_mana(self):
+        self.send_event(
+            event=Event.NOT_ENOUGH_MANA,
+            prepared_data=NotEnoughMana(id=self.session.player.id)
         )
 
     def send_connection_check_event(self):

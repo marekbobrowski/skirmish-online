@@ -6,7 +6,7 @@ log = logging.getLogger(__name__)
 
 class ManaRegenerator(TaskPerformerBase):
     INTERVAL: int = 1
-    AMOUNT: int = 2
+    AMOUNT: int = 6
 
     def task_tick(self):
         if self.session.player is not None:

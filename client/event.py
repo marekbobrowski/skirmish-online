@@ -15,6 +15,7 @@ class Event:
     UNIT_WEAPON_RECEIVED = "unit-weapon-received"
     UNIT_SCALE_RECEIVED = "unit-scale-received"
     UNIT_DISCONNECTED = "unit-disconnected"
+    NOT_ENOUGH_MANA = "not-enough-mana"  # concerns only this client
     # -----------------------------------------------
 
     # other data received from server

@@ -16,6 +16,10 @@ class SubNotifierBase(EventUser):
     """
     Set it to true of you don't want to notify user about data concerning them.
     """
+    DROP_FOR_OTHERS: bool = False
+    """
+    Set it to true if you want to notify user only about data concerning them.
+    """
 
     def __init__(self, event_notifier):
         """
@@ -29,6 +33,8 @@ class SubNotifierBase(EventUser):
         Handle event by notifying user.
         """
         if self.DROP_FOR_SELF and self.message_is_about_this_player(data):
+            return
+        if self.DROP_FOR_OTHERS and not self.message_is_about_this_player(data):
             return
         if self.drop(data):
             return
@@ -56,4 +62,7 @@ class SubNotifierBase(EventUser):
         """
         Update session's cache if needed.
         """
+        pass
+
+    def test(self):
         pass

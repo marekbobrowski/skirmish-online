@@ -10,6 +10,7 @@ from .sub_notifiers.weapon_update import WeaponUpdateNotifier
 from .sub_notifiers.disconnect import DisconnectionNotifier
 from .sub_notifiers.combat_data import CombatDataNotifier
 from .sub_notifiers.scale_update import ScaleUpdateNotifier
+from .sub_notifiers.not_enough_mana import NotEnoughManaNotifier
 from server.event.event_user import EventUser
 from server.event.event import Event
 from server import config
@@ -73,7 +74,8 @@ class ClientNotifier:
             WeaponUpdateNotifier(self),
             DisconnectionNotifier(self),
             CombatDataNotifier(self),
-            ScaleUpdateNotifier(self)
+            ScaleUpdateNotifier(self),
+            NotEnoughManaNotifier(self)
         ]
         for sub_notifier in self.sub_notifiers:
             sub_notifier.start_listening()

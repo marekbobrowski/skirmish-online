@@ -17,3 +17,4 @@ from .Disconnect import DisconnectRequest, DisconnectResponse
 from .ConnectionCheckResponse import ConnectionCheckResponse, ConnectionCheckRequest
 from .base import MessagesBank, MessageType
 from .ScaleUpdate import ScaleUpdateResponse
+from .NotEnoughMana import NotEnoughMana

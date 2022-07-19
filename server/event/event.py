@@ -15,3 +15,4 @@ class Event:
     SCALE_UPDATED = "scale_updated"
     POWER_INCREASED = "power_updated"
     KILL_COUNT_INCREASED = "kill_count_increased"
+    NOT_ENOUGH_MANA = "not-enough-mana"
