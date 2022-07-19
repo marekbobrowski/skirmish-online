@@ -17,6 +17,6 @@ class Dwarf(ConfiguredActor):
     def configure(self):
         self.set_play_rate(0.2, self.ANIMATION_MAPPING[Stand()])
         self.set_play_rate(3, self.ANIMATION_MAPPING[MeleeAttack1()])
-        self.set_play_rate(3, self.ANIMATION_MAPPING[MeleeAttack2()])
+        self.set_play_rate(2, self.ANIMATION_MAPPING[MeleeAttack2()])
         self.set_play_rate(3, self.ANIMATION_MAPPING[MagicAttack1()])
 
