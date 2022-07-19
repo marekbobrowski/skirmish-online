@@ -12,3 +12,4 @@ from .SetModel import SetModelHandler
 from .SetWeapon import SetWeaponHandler
 from .ConnectionCheck import ConnectionCheckHandler
 from .Disconnect import DisconnectHandler
+from .SclaeUpdate import ScaleUpdateHandler

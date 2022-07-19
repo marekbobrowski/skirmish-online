@@ -17,6 +17,7 @@ class Unit:
     name: str = "Unknown"
     health: int = 0
     mana: int = 50
+    scale: float = 1
     actor: Optional[ConfiguredActor] = None
     model_id: Optional[int] = None
     animation_str: Optional[str] = None
@@ -45,5 +46,6 @@ class Unit:
             "h": player.h,
             "p": player.p,
             "r": player.r,
+            "scale": player.scale
         }
         return cls(**data)

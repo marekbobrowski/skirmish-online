@@ -13,6 +13,7 @@ class Event:
     UNIT_NAME_RECEIVED = "unit-name-received"
     UNIT_MODEL_RECEIVED = "unit-model-received"
     UNIT_WEAPON_RECEIVED = "unit-weapon-received"
+    UNIT_SCALE_RECEIVED = "unit-scale-received"
     UNIT_DISCONNECTED = "unit-disconnected"
     # -----------------------------------------------
 
@@ -34,6 +35,7 @@ class Event:
     UNIT_ANIMATION_UPDATED = "unit-animation-updated"
     UNIT_MODEL_UPDATED = "unit-model-updated"
     UNIT_WEAPON_UPDATED = "unit-weapon-updated"
+    UNIT_SCALE_UPDATED = "unit-scale-updated"
     # -----------------------------------------------
 
     # local events

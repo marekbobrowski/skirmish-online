@@ -8,3 +8,4 @@ from .name_update import NameUpdate
 from .model_update import ModelUpdate
 from .weapon_update import WeaponUpdate
 from .disconnection import Disconnection
+from .scale_update import ScaleUpdate

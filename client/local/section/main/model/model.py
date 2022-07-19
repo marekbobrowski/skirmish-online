@@ -25,6 +25,7 @@ class MainSectionModel(DirectObject):
         )
         self.accept(Event.UNIT_DISCONNECTED, self.handle_unit_disconnected)
         self.accept(Event.COMBAT_DATA_RECEIVED, self.handle_combat_data_received)
+        self.accept(Event.UNIT_SCALE_RECEIVED, self.handle_unit_scale_received)
 
     def load(self, state: WorldState) -> None:
         self.player_id = state.player.id
@@ -148,6 +149,15 @@ class MainSectionModel(DirectObject):
         this_player_is_source = source_id == self.player_id
         this_player_is_target = self.player_id in target_ids
         core.instance.messenger.send(Event.COMBAT_DATA_PARSED, sentArgs=[spell_id, hp_change, source_id, target_ids, this_player_is_source, this_player_is_target])
+
+    def handle_unit_scale_received(self, *args):
+        unit_id = args[0]
+        scale = args[1]
+        unit = self.units_by_id.get(unit_id)
+        if unit is None:
+            return
+        unit.scale = scale
+        core.instance.messenger.send(Event.UNIT_SCALE_UPDATED, sentArgs=[unit])
 
     def get_unit_by_name(self, name):
         for unit in self.units_by_id.values():

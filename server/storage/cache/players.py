@@ -1,4 +1,4 @@
-from ..domain import Player, PlayerPositionUpdate, PlayerAnimationUpdate, HealthUpdate, NameUpdate, ModelUpdate, WeaponUpdate, Disconnection, ManaUpdate
+from ..domain import Player, PlayerPositionUpdate, PlayerAnimationUpdate, HealthUpdate, NameUpdate, ModelUpdate, WeaponUpdate, Disconnection, ManaUpdate, ScaleUpdate
 from server.event.event_user import EventUser
 from server.event.event import Event
 import json
@@ -75,6 +75,7 @@ class PlayerCache(EventUser):
             h=120,
             p=0,
             r=0,
+            scale=1,
         )
         self.publish_new_player(player)
         return player
@@ -123,9 +124,16 @@ class PlayerCache(EventUser):
 
     def handle_player_died(self, args):
         player_id = args[0]
+        killer_id = args[2]
         if player_id == self.session.player.id:
             self.publish_health_update([self.session.player.id], -100)
             self.publish_mana_update([self.session.player.id], -100)
+        if killer_id == self.session.player.id:
+            self.session.player = self.session.player_cache.load(self.session.player.id)
+            self.session.player.scale = self.session.player.scale * 1.05
+            self.save(self.session.player)
+            self.publish_scale_update(self.session.player.scale)
+
 
     def publish_new_player(self, player):
         """
@@ -246,6 +254,12 @@ class PlayerCache(EventUser):
         self.send_event(
             event=Event.DISCONNECTION,
             prepared_data=disconnection
+        )
+
+    def publish_scale_update(self, new_scale):
+        self.send_event(
+            event=Event.SCALE_UPDATED,
+            prepared_data=ScaleUpdate(id=self.session.player.id, scale=new_scale)
         )
 
     def send_connection_check_event(self):

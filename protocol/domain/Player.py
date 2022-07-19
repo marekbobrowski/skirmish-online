@@ -19,6 +19,8 @@ class Player(BaseModel):
     p = Float64
     r = Float64
 
+    scale = Float64
+
 
 class PlayerPosHPR(BaseModel):
     x = Float64

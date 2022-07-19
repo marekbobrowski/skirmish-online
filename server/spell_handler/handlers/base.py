@@ -51,9 +51,12 @@ class BaseSpellHandler(EventUser, metaclass=MetaClass):
         self.publish_combat_data(combat_data)
 
         players = [self.session.player_cache.load(target_id) for target_id in targets_ids]
+
         for player in players:
             if player.health <= 0:
-                self.send_event(event=Event.PLAYER_DIED, prepared_data=(player.id, self.session.player.name))
+                self.send_event(event=Event.PLAYER_DIED, prepared_data=(player.id,
+                                                                        self.session.player.name,
+                                                                        self.session.player.id))
 
     def valid(self) -> bool:
         """

@@ -14,3 +14,4 @@ from .Weapon import Weapon
 from .Model import Model
 from .Disconnect import Disconnect
 from .base import ListOf
+from .ScaleUpdate import ScaleUpdate

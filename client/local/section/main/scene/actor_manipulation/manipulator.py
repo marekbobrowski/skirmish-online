@@ -21,6 +21,11 @@ class ActorManipulator(DirectObject):
         self.accept(Event.UNIT_ANIMATION_UPDATED, self.handle_unit_animation_updated)
         self.accept(Event.UNIT_MODEL_UPDATED, self.handle_unit_model_updated)
         self.accept(Event.UNIT_WEAPON_UPDATED, self.handle_weapon_changed)
+        self.accept(Event.UNIT_SCALE_UPDATED, self.handle_unit_scale_updated)
+
+    def handle_unit_scale_updated(self, *args):
+        unit = args[0]
+        unit.base_node.set_scale(unit.scale)
 
     def handle_new_unit_created(self, *args):
         unit = args[0]
@@ -53,6 +58,7 @@ class ActorManipulator(DirectObject):
         self.equip_weapon(unit, weapon)
         self.change_animation(unit, unit.animation_str, 1)
         unit.base_node = self.node.attach_new_node("actor base node")
+        unit.base_node.set_scale(unit.scale)
         unit.base_node.set_pos_hpr(unit.x, unit.y, unit.z, unit.h, unit.p, unit.r)
         unit.actor.reparent_to(unit.base_node)
         unit.actor.set_blend(frameBlend=True)

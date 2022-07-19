@@ -39,6 +39,8 @@ class Player:
     p: float
     r: float
 
+    scale: float
+
     def update_position(self, position: PlayerPositionUpdate):
         self.x = position.x
         self.y = position.y

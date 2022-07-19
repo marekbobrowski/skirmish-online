@@ -12,3 +12,4 @@ class Event:
     COMBAT_DATA_CREATED = "combat_data_created"
     TEXT_MESSAGE = "text_message"
     PLAYER_DIED = "player_died"
+    SCALE_UPDATED = "scale_updated"
