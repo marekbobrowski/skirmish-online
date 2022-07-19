@@ -42,7 +42,7 @@ class BaseSpellHandler(EventUser, metaclass=MetaClass):
         self.session.spell_cache.trigger_spell_cooldown(self.spell_data.spell)
 
         targets_ids = self.calculate_targets()
-        hp_change = self.calculate_damage(targets_ids)
+        hp_change = self.calculate_damage(targets_ids) * self.session.player.power
         combat_data = self.produce_response(targets_ids, hp_change)
 
         self.publish_health_update(targets_ids, hp_change)
@@ -100,9 +100,9 @@ class BaseSpellHandler(EventUser, metaclass=MetaClass):
         """
         return self.session.player_position_cache.get_nearby(
             self.session.player,
-            self.AOE_RANGE,
-            self.AOE_RANGE,
-            self.AOE_RANGE,
+            self.AOE_RANGE * self.session.player.power,
+            self.AOE_RANGE * self.session.player.power,
+            self.AOE_RANGE * self.session.player.power,
         )
 
     def calculate_damage(self, targets: List[int]) -> int:

@@ -1,4 +1,4 @@
-from .base import UInt8, String, BaseModel, Float64
+from .base import UInt8, BaseModel, Float64
 
 
 class ScaleUpdate(BaseModel):
