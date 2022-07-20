@@ -95,3 +95,7 @@ The server application has a very simple event system which you can use in your 
 ### Dealing with memory / game state
 
 In `server/storage/cache` you have classes that deal with updating/accessing the game state. Most of the game memory is stored in a separate docker container with Redis. That's why, for example, in class `server/storage/cache/players.PlayerCache` there are methods like `load()` or `save()` for accessing/modifying the player's data in Redis. Usually, if you want to do any change in the game state, you will firstly load the data from redis and after applying changes you want to save it in redis.
+
+### Adding tasks
+
+There's an option to add tasks per every session/connection/player (whatever you want to call it). Task is an operation that is regularly completed with specified time interval (for example - health or mana regen like in World of Warcraft). To create such task, add new task performer class in `server/tasking/task_performers` and inherit from `TaskPerformerBase`. Specify time interval in seconds by assigning it to `INTERVAL` class field. Override `task_tick()` method to perform some operation on available `Session` object. 
