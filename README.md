@@ -70,7 +70,17 @@ In order to handle some new kind of information from the server, you need to cre
 
 ## Server Development Manual
 
-Yet to be written about.
+### Sending new type of message from server to client
+
+In order to send some new kind of information to the client, you need to create a new class inside `server/client_notifier/sub_notifiers` package and inherit from `SubNotifierBase`. Specify:
+- the Event that will trigger the message to be sent (`MANAGED_EVENT` class field)
+- Message class thats's going to be sent (`MESSAGE_CLS` class field)
+
+Look at the existing examples in the mentioned package. Then "somewhere in the server" call specified event with proper arguments and data should be sent to the client. Remember to attach an instance of the created sub_notifier class in `server/client_notifier/notifier.py`.
+
+### Handling new type of message sent by the client
+
+In order to handle some new kind of information from the client, you need to create a new class inside `server/request_handler/message_handlers` package and inherit from `MessageHandler`. Specify the handler message type in the `handled_message` class field so it automitcally reacts to that kind of message. Override the abstract `handle_message` method in which you have to simply handle the message. Remember to import the created handler class in package's `__init__.py` so it will be automatically registered in the handlers bank.
 
 
 
