@@ -27,10 +27,10 @@ class Player:
     name: str
     health: int
     mana: int
-    model: int
+    model_id: int
     animation: str
     loop: int
-    weapon: int
+    weapon_id: int
 
     x: float
     y: float
