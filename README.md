@@ -16,6 +16,12 @@ Every player has:
 - health points that are subtracted when somebody attacks the player; they're restored over time
 - mana points that are consumed when the player uses an ability; they're restored over time
 
+After player's death:
+- the killed player is teleported to the center of the map,
+- the killed player's health and mana points are restored to full,
+- the player who dealt the killing blow has his power increased and from now on will deal slightly more damage, the size of his character slightly increases,
+- the killed player automatically announces his death in the chat :D and the player who killed him announces his kill count.
+
 All of these things are being constantly synchronized between server and all connected clients.
 
 The server detects timeouts and removes players who left the game.
@@ -68,9 +74,38 @@ In order to send some new kind of information to the server, you need to create 
 
 In order to handle some new kind of information from the server, you need to create a new class inside `client/net/message_handler/handler` package and inherit from `MessageHandler`. Specify the handler message type in the `handled_message` class field so it automitcally reacts to that kind of message. Override the abstract `handle_message` method in which you have to simply handle the message. Usually you will want to instantly fire an event with `core.instance.messenger.send(<event class>, sentArgs=[some, event, arguments])`, so that classes from `client/local` can take care of it. Remember to import the created handler class in package's `__init__.py` so it will be automatically registered in the handlers bank.
 
+The mentioned event is triggered so that some more "substantial" update in the client can happen. Most probably model class of the main section (`client/local/section/main/model/model.MainSectionModel`) will listen for the updates so the game state (model) can be updated. Make that model listen for the mentioned event (`self.accept(<event_class>, <callable_handler>)`). Then in the model's handler you want to update the state of the game (most probably it will be updating some fields of a unit). From there you might want to call another event by using `core.instance.messenger.send(<event class>, sentArgs=[some, event, arguments])`. It's because, for example, you received from the server information about player changing their weapon. In the model class you updated that information. But now you need to actually make it visible in the game scene. So you trigger next event and then proper class (in this case `client/local/section/main/scene/actor_manipulation/manipulator.ActorManipulator`) will take care of changing the weapon visually.
+
 ## Server Development Manual
 
-Yet to be written about.
+### Sending new type of message from server to client
 
+In order to send some new kind of information to the client, you need to create a new class inside `server/client_notifier/sub_notifiers` package and inherit from `SubNotifierBase`. Specify:
+- the Event that will trigger the message to be sent (`MANAGED_EVENT` class field)
+- Message class thats's going to be sent (`MESSAGE_CLS` class field)
 
+Look at the existing examples in the mentioned package. Then "somewhere in the server" call specified event with proper arguments and data should be sent to the client. Remember to attach an instance of the created sub_notifier class in `server/client_notifier/notifier.py`.
 
+### Handling new type of message sent by the client
+
+In order to handle some new kind of information from the client, you need to create a new class inside `server/request_handler/message_handlers` package and inherit from `MessageHandler`. Specify the handler message type in the `handled_message` class field so it automitcally reacts to that kind of message. Override the abstract `handle_message` method in which you have to simply handle the message. Remember to import the created handler class in package's `__init__.py` so it will be automatically registered in the handlers bank.
+
+### Working with events
+
+The server application has a very simple event system which you can use in your class by inheriting from the `server/event/event_user.EventUser`. Also import `Event` class from file `server/event/event.py`. To make your class listen to specific event, write `self.accept_event(event=Event.<example>, handler=<callable object>)`. If you want to fire an event, write `self.send_event(event=Event.<example>, prepared_data=<some_data>)`.
+
+### Dealing with memory / game state
+
+In `server/storage/cache` you have classes that deal with updating/accessing the game state. Most of the game memory is stored in a separate docker container with Redis. That's why, for example, in class `server/storage/cache/players.PlayerCache` there are methods like `load()` or `save()` for accessing/modifying the player's data in Redis. Usually, if you want to do any change in the game state, you will firstly load the data from redis and after applying changes you want to save it in redis.
+
+### Adding tasks
+
+There's an option to add tasks per every session/connection/player (whatever you want to call it). Task is an operation that is regularly completed with specified time interval (for example - health or mana regen like in World of Warcraft). To create such task, add new task performer class in `server/tasking/task_performers` and inherit from `TaskPerformerBase`. Specify time interval in seconds by assigning it to `INTERVAL` class field. Override `task_tick()` method to perform some operation on available `Session` object. 
+
+### Adding / handling new spells
+
+In order to create new spell, navigate to `server/spell_handler/handlers` package. Create new class that will inherit from `BaseSpellHandler` and import it in package's `__init__.py` so it's automatically registered in the spell handlers' bank. Currently the spells are quite limited and primitive. They all instantly deal damage and are AoE (since there's no targeting). The only difference is the range of dealt damage, mana cost, cooldown, played animation. You specify those in the class fields `ANIMATION`, `DAMAGE_RANGE`, `MANA_COST` etc. Only with the cooldowns you have to deal inside `server/cache/spells.py` (at least currently).
+
+### Adding / handling new text commands
+
+To create a new text command that can be sent by the client, navigate to `server/text_command_handler/handlers`. Create a class that will inherit from `BaseTextCommandHandler` and import it in package's `__init__.py`. In your new class specify the `KEYWORD` class field (e. g. "/teleport"). Assign `LENGTH` field (an integer) that tells how many arguments your new command requires. Override the abstract method `handle_command()` to handle the command. First passed argument is stored in `self.command_vector[1]`, second is stored in `self.command_vector[2]` etc.
