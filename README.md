@@ -92,5 +92,6 @@ In order to handle some new kind of information from the client, you need to cre
 
 The server application has a very simple event system which you can use in your class by inheriting from the `server/event/event_user.EventUser`. Also import `Event` class from file `server/event/event.py`. To make your class listen to specific event, write `self.accept_event(event=Event.<example>, handler=<callable object>)`. If you want to fire an event, write `self.send_event(event=Event.<example>, prepared_data=<some_data>)`.
 
+### Dealing with memory / game state
 
-
+In `server/storage/cache` you have classes that deal with updating/accessing the game state. Most of the game memory is stored in a separate docker container with Redis. That's why, for example, in class `server/storage/cache/players.PlayerCache` there are methods like `load()` or `save()` for accessing/modifying the player's data in Redis. Usually, if you want to do any change in the game state, you will firstly load the data from redis and after applying changes you want to save it in redis.
