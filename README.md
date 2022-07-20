@@ -16,6 +16,12 @@ Every player has:
 - health points that are subtracted when somebody attacks the player; they're restored over time
 - mana points that are consumed when the player uses an ability; they're restored over time
 
+After player's death:
+- the killed player is teleported to the center of the map,
+- the killed player's health and mana points are restored to full,
+- the player who dealt the killing blow has his power increased and from now on will deal slightly more damage, the size of his character slightly increases,
+- the killed player automatically announces his death in the chat :D and the player who killed him announces his kill count.
+
 All of these things are being constantly synchronized between server and all connected clients.
 
 The server detects timeouts and removes players who left the game.
@@ -81,6 +87,10 @@ Look at the existing examples in the mentioned package. Then "somewhere in the s
 ### Handling new type of message sent by the client
 
 In order to handle some new kind of information from the client, you need to create a new class inside `server/request_handler/message_handlers` package and inherit from `MessageHandler`. Specify the handler message type in the `handled_message` class field so it automitcally reacts to that kind of message. Override the abstract `handle_message` method in which you have to simply handle the message. Remember to import the created handler class in package's `__init__.py` so it will be automatically registered in the handlers bank.
+
+### Working with events
+
+The server application has a very simple event system which you can use in your class by inheriting from the `server/event/event_user.EventUser`. Also import `Event` class from file `server/event/event.py`. To make your class listen to specific event, write `self.accept_event(event=Event.<example>, handler=<callable object>)`. If you want to fire an event, write `self.send_event(event=Event.<example>, prepared_data=<some_data>)`.
 
 
 
