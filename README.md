@@ -99,3 +99,11 @@ In `server/storage/cache` you have classes that deal with updating/accessing the
 ### Adding tasks
 
 There's an option to add tasks per every session/connection/player (whatever you want to call it). Task is an operation that is regularly completed with specified time interval (for example - health or mana regen like in World of Warcraft). To create such task, add new task performer class in `server/tasking/task_performers` and inherit from `TaskPerformerBase`. Specify time interval in seconds by assigning it to `INTERVAL` class field. Override `task_tick()` method to perform some operation on available `Session` object. 
+
+### Adding / handling new spells
+
+In order to create new spell, navigate to `server/spell_handler/handlers` package. Create new class that will inherit from `BaseSpellHandler` and import it in package's `__init__.py` so it's automatically registered in the spell handlers' bank. Currently the spells are quite limited and primitive. They all instantly deal damage and are AoE (since there's no targeting). The only difference is the range of dealt damage, mana cost, cooldown, played animation. You specify those in the class fields `ANIMATION`, `DAMAGE_RANGE`, `MANA_COST` etc. Only with the cooldowns you have to deal inside `server/cache/spells.py` (at least currently).
+
+### Adding / handling new text commands
+
+To create a new text command that can be sent by the client, navigate to `server/text_command_handler/handlers`. Create a class that will inherit from `BaseTextCommandHandler` and import it in package's `__init__.py`. In your new class specify the `KEYWORD` class field (e. g. "/teleport"). Assign `LENGTH` field (an integer) that tells how many arguments your new command requires. Override the abstract method `handle_command()` to handle the command. First passed argument is stored in `self.command_vector[1]`, second is stored in `self.command_vector[2]` etc.
