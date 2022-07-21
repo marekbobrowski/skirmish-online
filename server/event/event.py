@@ -16,3 +16,4 @@ class Event:
     POWER_INCREASED = "power_updated"
     KILL_COUNT_INCREASED = "kill_count_increased"
     NOT_ENOUGH_MANA = "not-enough-mana"
+    SOUND_REQUEST = "sound-requested"

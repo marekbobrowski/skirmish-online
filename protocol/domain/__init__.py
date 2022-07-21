@@ -15,3 +15,4 @@ from .Model import Model
 from .Disconnect import Disconnect
 from .base import ListOf
 from .ScaleUpdate import ScaleUpdate
+from .Sound import Sound

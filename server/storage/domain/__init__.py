@@ -10,3 +10,4 @@ from .weapon_update import WeaponUpdate
 from .disconnection import Disconnection
 from .scale_update import ScaleUpdate
 from .not_enough_mana import NotEnoughMana
+from .sound import Sound

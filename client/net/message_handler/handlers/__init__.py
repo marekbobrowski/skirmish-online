@@ -14,3 +14,4 @@ from .ConnectionCheck import ConnectionCheckHandler
 from .Disconnect import DisconnectHandler
 from .SclaeUpdate import ScaleUpdateHandler
 from .NotEnoughMana import NotEnoughManaHandler
+from .Sound import SoundHandler

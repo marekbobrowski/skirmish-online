@@ -18,3 +18,4 @@ from .ConnectionCheckResponse import ConnectionCheckResponse, ConnectionCheckReq
 from .base import MessagesBank, MessageType
 from .ScaleUpdate import ScaleUpdateResponse
 from .NotEnoughMana import NotEnoughMana
+from .Sound import SoundResponse
