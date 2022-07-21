@@ -37,6 +37,9 @@ class Client(DirectObject):
 
     def basic_configuration(self):
         core.instance.disable_mouse()
+        wind_sound = core.instance.loader.load_sfx("client/local/assets/sounds/wind.ogg")
+        wind_sound.set_loop(True)
+        wind_sound.play()
         self.accept("aspectRatioChanged", self.handle_aspect_ratio_changed)
         # TODO: set icon, window name etc.
 

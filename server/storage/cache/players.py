@@ -1,4 +1,4 @@
-from ..domain import Player, PlayerPositionUpdate, PlayerAnimationUpdate, HealthUpdate, NameUpdate, ModelUpdate, WeaponUpdate, Disconnection, ManaUpdate, ScaleUpdate, NotEnoughMana
+from ..domain import Player, PlayerPositionUpdate, PlayerAnimationUpdate, HealthUpdate, NameUpdate, ModelUpdate, WeaponUpdate, Disconnection, ManaUpdate, ScaleUpdate, NotEnoughMana, Sound
 from server.event.event_user import EventUser
 from server.event.event import Event
 import json
@@ -8,7 +8,6 @@ from datetime import datetime, timedelta
 from protocol.domain import Weapon, Model
 import random
 from server import config
-
 
 log = logging.getLogger(__name__)
 
@@ -130,6 +129,8 @@ class PlayerCache(EventUser):
         if player_id == self.session.player.id:
             self.publish_health_update([self.session.player.id], -100)
             self.publish_mana_update([self.session.player.id], -100)
+            self.send_event(event=Event.SOUND_REQUEST, prepared_data=Sound(file="slinky-death.ogg"))
+
         if killer_id == self.session.player.id:
             self.session.player = self.session.player_cache.load(self.session.player.id)
             self.session.player.kill_count += 1
