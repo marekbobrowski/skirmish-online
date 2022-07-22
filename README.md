@@ -37,6 +37,11 @@ Here are some screenshots and a video showing current state of the project.
 <img src="https://raw.githubusercontent.com/marekbobrowski/skirmish-online/master/doc/screenshots/1.png">
 <img src="https://raw.githubusercontent.com/marekbobrowski/skirmish-online/master/doc/screenshots/2.png">
 
+A video stylized for such that could be done in 2000s:
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/4J1rMSQ3HlI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
 ## Setting up the project
 
 ### Client usage only
