@@ -42,6 +42,8 @@ https://user-images.githubusercontent.com/49000055/180601512-38ccca6c-144e-4d86-
 
 https://user-images.githubusercontent.com/49000055/180602562-98c32ae0-a53d-4cba-9f64-7c231b918673.mp4
 
+There's also a longer video on YouTube: [link](https://youtu.be/4J1rMSQ3HlI) (made in old-school style on purpose =D).
+
 
 ## Setting up the project
 
