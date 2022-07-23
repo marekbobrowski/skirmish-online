@@ -37,6 +37,9 @@ Here are some screenshots and GIFs showing current state of the project.
 <img src="https://raw.githubusercontent.com/marekbobrowski/skirmish-online/master/doc/screenshots/1.png">
 <img src="https://raw.githubusercontent.com/marekbobrowski/skirmish-online/master/doc/screenshots/2.png">
 
+
+https://user-images.githubusercontent.com/49000055/180601512-38ccca6c-144e-4d86-89eb-00e57c4dae08.mp4
+
 ## Setting up the project
 
 ### Client usage only
