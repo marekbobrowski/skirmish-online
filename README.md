@@ -38,7 +38,7 @@ Here are some screenshots and GIFs showing current state of the project.
 <img src="https://raw.githubusercontent.com/marekbobrowski/skirmish-online/master/doc/screenshots/2.png">
 
 <img src="https://github.com/marekbobrowski/skirmish-online/blob/master/doc/gif/text-commands.gif" width=100%>
-
+<img src="https://github.com/marekbobrowski/skirmish-online/blob/master/doc/gif/gameplay.gif" width=100%>
 
 ## Setting up the project
 
