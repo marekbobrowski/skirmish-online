@@ -30,16 +30,14 @@ All of these things are being constantly synchronized between server and all con
 
 The server detects timeouts and removes players who left the game.
 
-## Screenshots and videos
+## Screenshots and GIFs
 
-Here are some screenshots and a video showing current state of the project.
+Here are some screenshots and GIFs showing current state of the project.
 
 <img src="https://raw.githubusercontent.com/marekbobrowski/skirmish-online/master/doc/screenshots/1.png">
 <img src="https://raw.githubusercontent.com/marekbobrowski/skirmish-online/master/doc/screenshots/2.png">
 
-A video stylized for such that could be done in 2000s:
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/4J1rMSQ3HlI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<img src="https://github.com/marekbobrowski/skirmish-online/blob/master/doc/gif/text-commands.gif" width=100%>
 
 
 ## Setting up the project
