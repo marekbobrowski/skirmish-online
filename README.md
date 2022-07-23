@@ -15,7 +15,7 @@ Currently, player can do few things after connecting to the game server:
 - change their character's model (text command "/setmodel <model_id>"),
 - change their character's weapon model (text command "/setweapon <weapon_id>"),
 - change their nickname (text command "/setname <name>").
-- request a sound to be played on every other client (text command "/sound <funny_sound_file_name>" (the sound needs to be located on every client in `client/local/assets/sounds`).
+- request a sound to be played on every other client (text command "/sound <funny_sound_file_name>", the sound needs to be located on every client in `client/local/assets/sounds`).
 
 Every player has:
 - health points that are subtracted when somebody attacks the player; they're restored over time
@@ -27,9 +27,9 @@ After player's death:
 - the player who dealt the killing blow has his power increased and from now on will deal slightly more damage, the size of his character slightly increases,
 - the killed player automatically announces his death in the chat and the player who killed him announces his kill count.
 
-All of these things are being constantly synchronized between server and all connected clients.
-
 The server detects timeouts and removes players who left the game.
+
+<ins>**In all of these aspects, server and all connected clients are being constantly synchronized.**</ins>
 
 ## Screenshots and videos
 
